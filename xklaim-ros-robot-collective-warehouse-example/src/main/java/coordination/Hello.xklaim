@@ -1,0 +1,13 @@
+package coordination
+
+/*
+ * This is an example Xklaim application.
+ *
+ * Right click on the file and select "Run As" -> "Xklaim Application".
+ */
+net HelloNet physical "localhost:9999" {
+	node Hello {
+		println("Hello World!")
+		System.exit(0)
+	}
+}

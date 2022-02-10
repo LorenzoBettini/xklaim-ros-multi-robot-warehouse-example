@@ -1,0 +1,17 @@
+.DS_Store
+*.class
+bin/
+*~
+logs.zip
+*.orig
+*.java._trace
+*.xtendbin
+*.smap
+*.log
+
+# src-gen is excluded on a per project basis
+#src-gen/
+
+# for Maven builds
+target
+
