@@ -1,0 +1,79 @@
+package xklaim.arm
+
+import ros.Publisher
+import ros.RosBridge
+import ros.SubscriptionRequestMsg
+import java.JointTrajectory
+
+proc GetDown(String rosbridgeWebsocketURI) {
+	val local = self;
+
+	// create the bridge and connect it to the ROS bridge
+	val bridge = new RosBridge()
+	bridge.connect(rosbridgeWebsocketURI, true)
+
+	// initialize a publisher for the topic related to the control of the movements of the arm robot 
+	val pub = new Publisher("/arm_controller/command", "trajectory_msgs/JointTrajectory", bridge)
+
+	// set joint positions for performing the first movement of the arm
+	val trajectoryPositions = #[-3.14, -0.2169, -0.5822, 3.14, 1.66, -0.01412]
+	val JointTrajectory firstMovement = new JointTrajectory().positions(trajectoryPositions).jointNames(#[
+		"joint1",
+		"joint2",
+		"joint3",
+		"joint4",
+		"joint5",
+		"joint6"
+	])
+
+	// set joint positions for performing the second movement of the arm
+	val secondTrajectoryPositions = #[-3.1415, -0.9975, -0.4970, 3.1400, 1.6613, -0.0142]
+	val JointTrajectory secondMovement = new JointTrajectory().positions(secondTrajectoryPositions).jointNames(#[
+		"joint1",
+		"joint2",
+		"joint3",
+		"joint4",
+		"joint5",
+		"joint6"
+	])
+
+	// publish the first movement trajectory
+	pub.publish(firstMovement)
+
+	// subscribe to the topic providing the actual status of the arm 
+	bridge.subscribe(
+		SubscriptionRequestMsg.generate("/arm_controller/state").setType("control_msgs/JointTrajectoryControllerState").
+			setThrottleRate(1).setQueueLength(1),
+		[ data, stringRep |
+			// extract the actual joint positions from the arm's status	
+			val actual = data.get("msg").get("actual").get("positions")
+
+			// calculate the delta between the actual joint positions and the destination positions
+			// to measure the completeness of the first and second movements
+			var delta1 = 0.0
+			var delta2 = 0.0
+			val tolerance1 = 0.000001
+			val tolerance2 = 0.00001
+			for (var i = 0; i < trajectoryPositions.size; i++) {
+				delta1 += Math.abs(actual.get(i).asDouble() - trajectoryPositions.get(i))
+				delta2 += Math.pow(actual.get(i).asDouble() - secondTrajectoryPositions.get(i), 2.0)
+			}
+			val norm = Math.sqrt(delta2)
+
+			if (delta1 <= tolerance1) {
+				// the arm has completed the first movement
+				// publish the second movement trajectory
+				pub.publish(secondMovement)
+			}
+
+			if (norm <= tolerance2) {
+				// the arm has completed the second movement
+				// activate the grip Process
+				out("getDownMovementsCompleted")@local
+
+				// unsubscribe from the arm state topic
+				bridge.unsubscribe("/arm_controller/state")				
+			}
+		]
+	)
+}

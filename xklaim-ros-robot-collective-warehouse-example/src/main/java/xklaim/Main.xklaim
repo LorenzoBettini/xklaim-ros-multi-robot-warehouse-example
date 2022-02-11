@@ -1,0 +1,43 @@
+package xklaim
+
+import xklaim.arm.GetDown
+import xklaim.arm.GetUp
+import xklaim.arm.GoToInitialPosition
+import xklaim.arm.Grip
+import xklaim.arm.Lay
+import xklaim.arm.Release
+import xklaim.arm.Rotate
+import xklaim.deliveryRobot.DeliverItem
+import xklaim.deliveryRobot.MovetoArm
+
+net RobotColl physical "localhost:9999" {
+	node Arm {
+		val rosbridgeWebsocketURI = "ws://0.0.0.0:9090" 
+		
+		eval(new GetDown(rosbridgeWebsocketURI))@self
+			
+		eval(new Grip(rosbridgeWebsocketURI))@self
+		
+		eval(new GetUp(rosbridgeWebsocketURI))@self
+		
+		eval(new Rotate(rosbridgeWebsocketURI,DeliveryRobot))@self
+	 
+		eval(new Lay(rosbridgeWebsocketURI,DeliveryRobot))@self
+		
+		eval(new Release(rosbridgeWebsocketURI,DeliveryRobot))@self
+						
+		eval(new GoToInitialPosition(rosbridgeWebsocketURI,DeliveryRobot))@self
+		
+		in("initialPositionReached")@self
+		in("itemDelivered")@DeliveryRobot
+		System.exit(0)
+		
+	}
+	node DeliveryRobot {
+		val rosbridgeWebsocketURI = "ws://0.0.0.0:9090"
+		
+		eval(new MovetoArm(rosbridgeWebsocketURI,Arm))@self
+		
+		eval(new DeliverItem(rosbridgeWebsocketURI))@self	 		
+	}
+}

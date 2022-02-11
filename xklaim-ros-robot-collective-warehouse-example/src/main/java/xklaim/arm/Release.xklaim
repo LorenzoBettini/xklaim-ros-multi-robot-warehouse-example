@@ -1,0 +1,64 @@
+package xklaim.arm
+
+import java.JointTrajectory
+import klava.Locality
+import ros.Publisher
+import ros.RosBridge
+import ros.SubscriptionRequestMsg
+
+proc Release(String rosbridgeWebsocketURI,Locality deliveryRobot) {
+	val local = self
+
+	// create the bridge and connect it to the ROS bridge
+	val bridge = new RosBridge()
+	bridge.connect(rosbridgeWebsocketURI, true)
+	
+	in("layCompleted")@self
+
+	// initialize a publisher for the topic related to the control of the gripper
+	val pub = new Publisher("/gripper_controller/command", "trajectory_msgs/JointTrajectory", bridge);
+
+	val jointPositions = #[
+		0.0,
+		0.0
+	]
+	val JointTrajectory openGripperTrajectory = new JointTrajectory().positions(jointPositions).jointNames(#[
+		"f_joint1",
+		"f_joint2"
+	]);
+	pub.publish(openGripperTrajectory)
+
+	// inform the delivery robot that the gripper is opened
+	out("gripperOpening")@deliveryRobot
+
+	// subscribe to the topic providing the actual status of the gripper 
+	bridge.subscribe(
+		SubscriptionRequestMsg.generate("/gripper_controller/state").setType(
+			"control_msgs/JointTrajectoryControllerState").setThrottleRate(1).setQueueLength(1),
+		[ data, stringRep |
+			val actual = data.get("msg").get("actual").get("positions")
+
+			var delta = 0.0
+			val tolerance = 0.0009
+			for (var i = 0; i < jointPositions.size; i = i + 1) {
+				delta += Math.pow(actual.get(i).asDouble() - jointPositions.get(i), 2.0)
+			}
+			val norm = Math.sqrt(delta)
+
+			if (norm <= tolerance) {
+				// the gripper is completely opened
+				// activate the GoToInitialPosition process
+				out("releaseCompleted")@local
+				
+				// communicate the destination position to the delivery robot
+				val x = -6.0
+				val y = -5.0
+				val w = 1.0  
+				out("destination", x, y, w)@deliveryRobot
+
+				// unsubscribe from the griper state topic
+				bridge.unsubscribe("/gripper_controller/state")
+			}
+		]
+	)
+}

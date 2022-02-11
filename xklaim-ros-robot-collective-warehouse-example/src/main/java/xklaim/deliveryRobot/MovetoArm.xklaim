@@ -1,0 +1,37 @@
+package xklaim.deliveryRobot
+
+import java.PoseStamped
+import klava.Locality
+import ros.Publisher
+import ros.RosBridge
+import ros.msgs.geometry_msgs.Twist
+
+proc MovetoArm(String rosbridgeWebsocketURI,Locality arm) {
+
+	// create the bridge and connect it to the ROS bridge
+	val bridge = new RosBridge()
+	bridge.connect(rosbridgeWebsocketURI, true)
+
+	// initialize a publisher for the topic related to the control of the robot's wheels
+	val pub = new Publisher("/robot1/move_base_simple/goal", "geometry_msgs/PoseStamped", bridge);
+
+	// wait for a call by the arm robot, which includes the destination position
+	in("comeHere", var Double x, var Double y, var Double w)@self
+
+	// publish the destination position
+	val destination = new PoseStamped()
+		.headerFrameId("world")
+		.posePositionXY(x, y)
+		.poseOrientation(w);
+	pub.publish(destination);
+	
+	// stop the robot movement
+	val pubvel = new Publisher("/robot1/cmd_vel", "geometry_msgs/Twist", bridge);
+	val twistMsg = new Twist();
+	pubvel.publish(twistMsg);
+	
+	// TODO: add here a subscribe block for waiting until the destination position is reached
+	
+	// notify that is ready to receive the item
+	out("ready")@arm
+}

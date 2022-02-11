@@ -1,0 +1,59 @@
+package xklaim.arm
+
+import java.JointTrajectory
+import ros.Publisher
+import ros.RosBridge
+import ros.SubscriptionRequestMsg
+
+proc Grip(String rosbridgeWebsocketURI) {
+	val local = self
+
+	// create the bridge and connect it to the ROS bridge
+	val bridge = new RosBridge()
+	bridge.connect(rosbridgeWebsocketURI, true)
+
+	// initialize a publisher for the topic related to the control of the arm's gripper
+	val pub = new Publisher("/gripper_controller/command", "trajectory_msgs/JointTrajectory", bridge)
+
+	// set joint positions for performing the first movement of the arm
+	val gripperPositions = #[0.019927757424255833, -0.010904802339570573]
+	val JointTrajectory grip = new JointTrajectory().positions(gripperPositions).jointNames(#[
+		"f_joint1",
+		"f_joint2"
+	])
+
+	// wait for the completion of the GetDown movement
+	in("getDownMovementsCompleted")@self
+
+	// publish the grip trajectory to activate the gripper
+	pub.publish(grip)
+
+	// subscribe to the topic providing the actual status of the gripper 
+	bridge.subscribe(
+		SubscriptionRequestMsg.generate("/gripper_controller/state").setType(
+			"control_msgs/JointTrajectoryControllerState").setThrottleRate(1).setQueueLength(1),
+		[ data, stringRep |
+			// extract the actual joint positions from the gripper's status	
+			val actual = data.get("msg").get("actual").get("positions")
+
+			// calculate the delta between the actual joint positions and the destination positions
+			// to measure the completeness of the gripper movement
+			var delta = 0.0
+			val tolerance = 0.007
+			for (var i = 0; i < gripperPositions.size; i++) {
+				delta += Math.pow(actual.get(i).asDouble() - gripperPositions.get(i), 2.0)
+			}
+			val norm = Math.sqrt(delta)
+
+			if (norm <= tolerance) {
+				// the gripper has completed the grip movement
+				
+				// activate the get up process
+				out("gripCompleted")@local
+
+				// unsubscribe from the gripper state topic
+				bridge.unsubscribe("/gripper_controller/state")
+			}
+		]
+	)
+}

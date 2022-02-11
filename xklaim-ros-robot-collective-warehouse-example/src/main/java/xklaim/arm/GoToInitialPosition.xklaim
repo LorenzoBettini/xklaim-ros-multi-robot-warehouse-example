@@ -1,0 +1,71 @@
+package xklaim.arm
+
+import java.JointTrajectory
+import klava.Locality
+import ros.Publisher
+import ros.RosBridge
+import ros.SubscriptionRequestMsg
+
+proc GoToInitialPosition(String rosbridgeWebsocketURI,Locality robot2) {
+	val local = self
+
+	// Create the bridge and connect it to the ROS bridge
+	val bridge = new RosBridge()
+	bridge.connect(rosbridgeWebsocketURI, true)
+
+	// wait for the completion of the release of the item
+	in("releaseCompleted")@self
+
+	// wait for a short delay before moving the arm
+	Thread.sleep(1000)
+
+	// Initialize a publisher for the topic related to the control of the robot arm
+	val pub = new Publisher("/arm_controller/command", "trajectory_msgs/JointTrajectory", bridge);
+
+	val jointPositions = #[
+			0.000,
+			0.000,
+			0.000,
+			0.000,
+			0.000,
+			0.000
+		]
+	val JointTrajectory initialPositionsTrajectory = new JointTrajectory().positions(jointPositions).jointNames(#[
+		"joint1",
+		"joint2",
+		"joint3",
+		"joint4",
+		"joint5",
+		"joint6"
+	])
+	pub.publish(initialPositionsTrajectory)
+	
+	// subscribe to the topic providing the actual status of the arm 
+	bridge.subscribe(
+		SubscriptionRequestMsg.generate("/arm_controller/state").setType("control_msgs/JointTrajectoryControllerState").
+			setThrottleRate(1).setQueueLength(1),
+		[ data, stringRep |
+			// extract the actual joint positions from the arm's status	
+			val actual = data.get("msg").get("actual").get("positions")
+
+			// calculate the delta between the actual joint positions and the destination position
+			// to measure the completeness of the arm movement
+			var delta = 0.0
+			val tolerance = 0.008
+			for (var i = 0; i < jointPositions.size; i++) {
+				delta += Math.pow(actual.get(i).asDouble() - jointPositions.get(i), 2.0)
+			}
+			val norm = Math.sqrt(delta)
+
+			if (norm <= tolerance) {
+				// the arm has completed the movement
+				
+				// notify that it has reached the initial position
+				out("initialPositionReached")@local
+
+				// unsubscribe from the arm state topic
+				bridge.unsubscribe("/arm_controller/state")
+			}
+		]
+	)
+}

@@ -1,0 +1,54 @@
+package xklaim.deliveryRobot
+
+import ros.RosBridge
+import ros.Publisher
+import ros.SubscriptionRequestMsg
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.JsonNode
+import java.ContactsState
+import java.PoseStamped
+import java.Twist
+
+proc DeliverItem(String rosbridgeWebsocketURI) {
+	val local = self
+
+	// create the bridge and connect it to the ROS bridge
+	val bridge = new RosBridge()
+	bridge.connect(rosbridgeWebsocketURI, true)
+
+	in("gripperOpening")@self
+
+	// initialize a publisher for the topic related to the control of the robot's wheels
+	val pub = new Publisher("/robot1/move_base_simple/goal", "geometry_msgs/PoseStamped", bridge);
+
+	bridge.subscribe(
+		SubscriptionRequestMsg.generate("/robot1/pressure_sensor_state").setType("gazebo_msgs/ContactsState").
+			setThrottleRate(1).setQueueLength(1),
+		[ data, stringRep |
+			var mapper = new ObjectMapper();
+			var JsonNode rosMsgNode = data.get("msg");
+			var ContactsState state = mapper.treeToValue(rosMsgNode, ContactsState);
+			// print(state.states.get(0).collision1_name)
+			// unit_box_2 is the name of the object
+			if (!state.states.isEmpty && state.states.get(0).collision1_name == "unit_box_2::link::collision") {
+				// wait for the destination position
+				in("destination", var Double x, var Double y, var Double w)@local
+				val deliveryDestination = new PoseStamped().headerFrameId("world").posePositionXY(x, y).
+					poseOrientation(w);
+				pub.publish(deliveryDestination);
+
+				// stop the robot's wheels
+				val pubvel = new Publisher("/robot1/cmd_vel", "geometry_msgs/Twist", bridge);
+				val twistMsg = new Twist();
+				pubvel.publish(twistMsg);
+
+				// notify that the item has been delivered
+				out("itemDelivered")@local
+			}
+		]
+	)
+} 
+
+
+
+
