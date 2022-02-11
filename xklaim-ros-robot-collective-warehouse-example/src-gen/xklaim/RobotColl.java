@@ -25,7 +25,9 @@ import xklaim.deliveryRobot.MovetoArm;
 public class RobotColl extends LogicalNet {
   private static final LogicalLocality Arm = new LogicalLocality("Arm");
   
-  private static final LogicalLocality DeliveryRobot = new LogicalLocality("DeliveryRobot");
+  private static final LogicalLocality DeliveryRobot1 = new LogicalLocality("DeliveryRobot1");
+  
+  private static final LogicalLocality DeliveryRobot2 = new LogicalLocality("DeliveryRobot2");
   
   private static final LogicalLocality SimuationHandler = new LogicalLocality("SimuationHandler");
   
@@ -40,13 +42,13 @@ public class RobotColl extends LogicalNet {
         eval(_grip, this.self);
         GetUp _getUp = new GetUp(rosbridgeWebsocketURI);
         eval(_getUp, this.self);
-        Rotate _rotate = new Rotate(rosbridgeWebsocketURI, RobotColl.DeliveryRobot);
+        Rotate _rotate = new Rotate(rosbridgeWebsocketURI, RobotColl.DeliveryRobot1);
         eval(_rotate, this.self);
-        Lay _lay = new Lay(rosbridgeWebsocketURI, RobotColl.DeliveryRobot);
+        Lay _lay = new Lay(rosbridgeWebsocketURI, RobotColl.DeliveryRobot1);
         eval(_lay, this.self);
-        Release _release = new Release(rosbridgeWebsocketURI, RobotColl.DeliveryRobot);
+        Release _release = new Release(rosbridgeWebsocketURI, RobotColl.DeliveryRobot1);
         eval(_release, this.self);
-        GoToInitialPosition _goToInitialPosition = new GoToInitialPosition(rosbridgeWebsocketURI, RobotColl.DeliveryRobot);
+        GoToInitialPosition _goToInitialPosition = new GoToInitialPosition(rosbridgeWebsocketURI, RobotColl.DeliveryRobot1);
         eval(_goToInitialPosition, this.self);
       }
     }
@@ -60,8 +62,8 @@ public class RobotColl extends LogicalNet {
     }
   }
   
-  public static class DeliveryRobot extends ClientNode {
-    private static class DeliveryRobotProcess extends KlavaNodeCoordinator {
+  public static class DeliveryRobot1 extends ClientNode {
+    private static class DeliveryRobot1Process extends KlavaNodeCoordinator {
       @Override
       public void executeProcess() {
         final String rosbridgeWebsocketURI = "ws://0.0.0.0:9090";
@@ -72,12 +74,33 @@ public class RobotColl extends LogicalNet {
       }
     }
     
-    public DeliveryRobot() {
-      super(new PhysicalLocality("localhost:9999"), new LogicalLocality("DeliveryRobot"));
+    public DeliveryRobot1() {
+      super(new PhysicalLocality("localhost:9999"), new LogicalLocality("DeliveryRobot1"));
     }
     
     public void addMainProcess() throws IMCException {
-      addNodeCoordinator(new RobotColl.DeliveryRobot.DeliveryRobotProcess());
+      addNodeCoordinator(new RobotColl.DeliveryRobot1.DeliveryRobot1Process());
+    }
+  }
+  
+  public static class DeliveryRobot2 extends ClientNode {
+    private static class DeliveryRobot2Process extends KlavaNodeCoordinator {
+      @Override
+      public void executeProcess() {
+        final String rosbridgeWebsocketURI = "ws://0.0.0.0:9090";
+        MovetoArm _movetoArm = new MovetoArm(rosbridgeWebsocketURI, RobotColl.Arm);
+        eval(_movetoArm, this.self);
+        DeliverItem _deliverItem = new DeliverItem(rosbridgeWebsocketURI);
+        eval(_deliverItem, this.self);
+      }
+    }
+    
+    public DeliveryRobot2() {
+      super(new PhysicalLocality("localhost:9999"), new LogicalLocality("DeliveryRobot2"));
+    }
+    
+    public void addMainProcess() throws IMCException {
+      addNodeCoordinator(new RobotColl.DeliveryRobot2.DeliveryRobot2Process());
     }
   }
   
@@ -89,7 +112,7 @@ public class RobotColl extends LogicalNet {
           final String rosbridgeWebsocketURI = "ws://0.0.0.0:9090";
           final RosBridge bridge = new RosBridge();
           bridge.connect(rosbridgeWebsocketURI, true);
-          in(new Tuple(new Object[] {"itemDelivered"}), RobotColl.DeliveryRobot);
+          in(new Tuple(new Object[] {"itemDelivered"}), RobotColl.DeliveryRobot1);
           Thread.sleep(2000);
           final Publisher gazebo = new Publisher("/gazebo/set_model_state", "gazebo_msgs/ModelState", bridge);
           final ModelState modelstate = new ModelState();
@@ -124,10 +147,12 @@ public class RobotColl extends LogicalNet {
   
   public void addNodes() throws IMCException {
     RobotColl.Arm arm = new RobotColl.Arm();
-    RobotColl.DeliveryRobot deliveryRobot = new RobotColl.DeliveryRobot();
+    RobotColl.DeliveryRobot1 deliveryRobot1 = new RobotColl.DeliveryRobot1();
+    RobotColl.DeliveryRobot2 deliveryRobot2 = new RobotColl.DeliveryRobot2();
     RobotColl.SimuationHandler simuationHandler = new RobotColl.SimuationHandler();
     arm.addMainProcess();
-    deliveryRobot.addMainProcess();
+    deliveryRobot1.addMainProcess();
+    deliveryRobot2.addMainProcess();
     simuationHandler.addMainProcess();
   }
 }

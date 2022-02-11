@@ -15,6 +15,9 @@ import xklaim.deliveryRobot.MovetoArm
 
 net RobotColl physical "localhost:9999" {
 	node Arm {
+		
+		// while true seguita da in della tupla dell'item
+		
 		val rosbridgeWebsocketURI = "ws://0.0.0.0:9090"
 
 		eval(new GetDown(rosbridgeWebsocketURI))@self
@@ -23,18 +26,33 @@ net RobotColl physical "localhost:9999" {
 
 		eval(new GetUp(rosbridgeWebsocketURI))@self
 
-		eval(new Rotate(rosbridgeWebsocketURI, DeliveryRobot))@self
 
-		eval(new Lay(rosbridgeWebsocketURI, DeliveryRobot))@self
+// tutte le comunicazioni avvengono su self per l'arm
+// non mi serve avere info del deliveryRobot
+		eval(new Rotate(rosbridgeWebsocketURI, DeliveryRobot1))@self
 
-		eval(new Release(rosbridgeWebsocketURI, DeliveryRobot))@self
+		eval(new Lay(rosbridgeWebsocketURI, DeliveryRobot1))@self
 
-		eval(new GoToInitialPosition(rosbridgeWebsocketURI, DeliveryRobot))@self
+		eval(new Release(rosbridgeWebsocketURI, DeliveryRobot1))@self
+
+		eval(new GoToInitialPosition(rosbridgeWebsocketURI, DeliveryRobot1))@self
 
 	}
 	
-	node DeliveryRobot {
+	node DeliveryRobot1 {
 		val rosbridgeWebsocketURI = "ws://0.0.0.0:9090"
+
+	// while true
+
+		eval(new MovetoArm(rosbridgeWebsocketURI, Arm))@self
+
+		eval(new DeliverItem(rosbridgeWebsocketURI))@self
+	}
+	
+	node DeliveryRobot2 {
+		val rosbridgeWebsocketURI = "ws://0.0.0.0:9090"
+
+	// while true
 
 		eval(new MovetoArm(rosbridgeWebsocketURI, Arm))@self
 
@@ -48,8 +66,19 @@ net RobotColl physical "localhost:9999" {
 		val bridge = new RosBridge()
 		bridge.connect(rosbridgeWebsocketURI, true)
 
+		// initial setup of the scenario
 		
-		in("itemDelivered")@DeliveryRobot
+		// mettiamo delle out delle posizioni degl item nel robot arm
+		
+		// mettiamo la logica di delivery nei delivery robot che mappano il tipo dell'item con la destinazione
+		
+		
+		
+		
+		
+		
+		
+		in("itemDelivered")@DeliveryRobot1
 
 		Thread.sleep(2000)
 		
