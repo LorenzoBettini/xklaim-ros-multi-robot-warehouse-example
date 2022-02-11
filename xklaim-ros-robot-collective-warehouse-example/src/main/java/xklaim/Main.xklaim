@@ -1,5 +1,8 @@
 package xklaim
 
+import java.ModelState
+import ros.Publisher
+import ros.RosBridge
 import xklaim.arm.GetDown
 import xklaim.arm.GetUp
 import xklaim.arm.GoToInitialPosition
@@ -12,32 +15,62 @@ import xklaim.deliveryRobot.MovetoArm
 
 net RobotColl physical "localhost:9999" {
 	node Arm {
-		val rosbridgeWebsocketURI = "ws://0.0.0.0:9090" 
-		
+		val rosbridgeWebsocketURI = "ws://0.0.0.0:9090"
+
 		eval(new GetDown(rosbridgeWebsocketURI))@self
-			
+
 		eval(new Grip(rosbridgeWebsocketURI))@self
-		
+
 		eval(new GetUp(rosbridgeWebsocketURI))@self
-		
-		eval(new Rotate(rosbridgeWebsocketURI,DeliveryRobot))@self
-	 
-		eval(new Lay(rosbridgeWebsocketURI,DeliveryRobot))@self
-		
-		eval(new Release(rosbridgeWebsocketURI,DeliveryRobot))@self
-						
-		eval(new GoToInitialPosition(rosbridgeWebsocketURI,DeliveryRobot))@self
-		
-		in("initialPositionReached")@self
-		in("itemDelivered")@DeliveryRobot
-		System.exit(0)
-		
+
+		eval(new Rotate(rosbridgeWebsocketURI, DeliveryRobot))@self
+
+		eval(new Lay(rosbridgeWebsocketURI, DeliveryRobot))@self
+
+		eval(new Release(rosbridgeWebsocketURI, DeliveryRobot))@self
+
+		eval(new GoToInitialPosition(rosbridgeWebsocketURI, DeliveryRobot))@self
+
 	}
+	
 	node DeliveryRobot {
 		val rosbridgeWebsocketURI = "ws://0.0.0.0:9090"
-		
-		eval(new MovetoArm(rosbridgeWebsocketURI,Arm))@self
-		
-		eval(new DeliverItem(rosbridgeWebsocketURI))@self	 		
+
+		eval(new MovetoArm(rosbridgeWebsocketURI, Arm))@self
+
+		eval(new DeliverItem(rosbridgeWebsocketURI))@self
 	}
+	
+	node SimuationHandler {
+		val rosbridgeWebsocketURI = "ws://0.0.0.0:9090"
+
+		// create the bridge and connect it to the ROS bridge
+		val bridge = new RosBridge()
+		bridge.connect(rosbridgeWebsocketURI, true)
+
+		
+		in("itemDelivered")@DeliveryRobot
+
+		Thread.sleep(2000)
+		
+		// make the item disappear
+		val gazebo = new Publisher("/gazebo/set_model_state", "gazebo_msgs/ModelState", bridge)
+		val modelstate = new ModelState()
+		modelstate.twist.linear.x = 3.0
+		modelstate.twist.angular.z = 1.0
+		modelstate.pose.position.x = -46.0
+		modelstate.pose.position.y = 46.0
+		modelstate.pose.position.z = 0.0
+		modelstate.model_name = "unit_box_2"
+		modelstate.reference_frame = "world"
+		gazebo.publish(modelstate)
+		
+		
+		in("initialPositionReached")@Arm
+		
+		// stop the overall execution
+		System.exit(0)
+
+	}
+
 }

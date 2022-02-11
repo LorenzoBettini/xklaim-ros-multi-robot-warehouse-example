@@ -1,13 +1,14 @@
 package xklaim.deliveryRobot
 
-import ros.RosBridge
-import ros.Publisher
-import ros.SubscriptionRequestMsg
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
 import java.ContactsState
 import java.PoseStamped
+import java.PoseWithCovarianceStamped
 import java.Twist
+import ros.Publisher
+import ros.RosBridge
+import ros.SubscriptionRequestMsg
 
 proc DeliverItem(String rosbridgeWebsocketURI) {
 	val local = self
@@ -17,26 +18,53 @@ proc DeliverItem(String rosbridgeWebsocketURI) {
 	bridge.connect(rosbridgeWebsocketURI, true)
 
 	in("gripperOpening")@self
+	
+	// wait for the destination position
+	in("destination", var Double x, var Double y, var Double w)@local
+	val deliveryDestination = new PoseStamped().headerFrameId("world").posePositionXY(x, y).poseOrientation(w)
 
 	// initialize a publisher for the topic related to the control of the robot's wheels
-	val pub = new Publisher("/robot1/move_base_simple/goal", "geometry_msgs/PoseStamped", bridge);
+	val pub = new Publisher("/robot1/move_base_simple/goal", "geometry_msgs/PoseStamped", bridge)
 
+	// subscribe to the pressure sensor for detecting the presence of the item in the bowl
 	bridge.subscribe(
 		SubscriptionRequestMsg.generate("/robot1/pressure_sensor_state").setType("gazebo_msgs/ContactsState").
 			setThrottleRate(1).setQueueLength(1),
 		[ data, stringRep |
+			var mapper = new ObjectMapper()
+			var JsonNode rosMsgNode = data.get("msg")
+			var ContactsState state = mapper.treeToValue(rosMsgNode, ContactsState)
+			if (!state.states.isEmpty && state.states.get(0).collision1_name == "unit_box_2::link::collision") {
+				
+				// publish destination for the delivery
+				pub.publish(deliveryDestination)
+
+				// unsubscribe from the pressure sensor topic
+				bridge.unsubscribe("/robot1/pressure_sensor_state")
+			}
+		]
+	)
+
+	
+	// subscribe to see the current position of the robot and check if it is arrived at destination
+	bridge.subscribe(
+		SubscriptionRequestMsg.generate("/robot1/amcl_pose").setType("geometry_msgs/PoseWithCovarianceStamped").
+			setThrottleRate(1).setQueueLength(1),
+		[ data, stringRep |
+			// extract the actual position from the delivery robot's status	
 			var mapper = new ObjectMapper();
 			var JsonNode rosMsgNode = data.get("msg");
-			var ContactsState state = mapper.treeToValue(rosMsgNode, ContactsState);
-			// print(state.states.get(0).collision1_name)
-			// unit_box_2 is the name of the object
-			if (!state.states.isEmpty && state.states.get(0).collision1_name == "unit_box_2::link::collision") {
-				// wait for the destination position
-				in("destination", var Double x, var Double y, var Double w)@local
-				val deliveryDestination = new PoseStamped().headerFrameId("world").posePositionXY(x, y).
-					poseOrientation(w);
-				pub.publish(deliveryDestination);
+			var PoseWithCovarianceStamped current_position = mapper.treeToValue(rosMsgNode, PoseWithCovarianceStamped);
 
+			// calculate the delta between the actual position and the destination position
+			// to measure the completeness of the movement
+			val tolerance = 0.16
+			var deltaX = current_position.pose.pose.position.x - deliveryDestination.pose.position.x
+			var deltaY = current_position.pose.pose.position.y - deliveryDestination.pose.position.y
+
+			if (deltaX <= tolerance && deltaY <= tolerance) {
+				// the robot arrived at destination
+				
 				// stop the robot's wheels
 				val pubvel = new Publisher("/robot1/cmd_vel", "geometry_msgs/Twist", bridge);
 				val twistMsg = new Twist();
@@ -44,9 +72,13 @@ proc DeliverItem(String rosbridgeWebsocketURI) {
 
 				// notify that the item has been delivered
 				out("itemDelivered")@local
+
+				// unsubscribe from the position topic
+				bridge.unsubscribe("/robot1/amcl_pose")
 			}
 		]
 	)
+
 } 
 
 

@@ -1,9 +1,9 @@
 package xklaim.arm
 
+import java.JointTrajectory
 import ros.Publisher
 import ros.RosBridge
 import ros.SubscriptionRequestMsg
-import java.JointTrajectory
 
 proc GetDown(String rosbridgeWebsocketURI) {
 	val local = self;
