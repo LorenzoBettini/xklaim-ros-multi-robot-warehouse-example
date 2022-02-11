@@ -66,12 +66,31 @@ net RobotColl physical "localhost:9999" {
 		val bridge = new RosBridge()
 		bridge.connect(rosbridgeWebsocketURI, true)
 
-		// initial setup of the scenario
+		// --- initial setup of the scenario ---
 		
-		// mettiamo delle out delle posizioni degl item nel robot arm
-		
-		// mettiamo la logica di delivery nei delivery robot che mappano il tipo dell'item con la destinazione
-		
+		// insert info about positions of items in the arm robot's local knowledge (i.e., its tuple space)
+		// call the delivery robot
+		/* Note: here I have supposed that the tuple is in a given position (5.0,3.0) 
+		 * and the arm robot is able to compute (also in some ad-hoc way) the jointTrajectory 
+		 * for picking the item; if this is not feasible, we can replace the coordinates of the 
+		 * item directly with the list of doubles forming the jointTrajectory  
+		 */
+		out("item","typeA",5.0,3.0)@Arm
+		out("item","typeB",5.0,3.4)@Arm
+		out("item","typeA",5.0,3.8)@Arm
+		out("item","typeB",5.0,4.2)@Arm   
+		 
+		// insert mapping between item types and destinations in the deliveryrobots' local knowledge (i.e., their tuple spaces)
+		/* Notably, different robot may use different mappings. Indeed we have three destinations
+		 * (i.e., (12.0,34.0),(67.0,14.0) and (134.0,49.0)) and both delivery robots deliver items of type A 
+		 * to the first destination, while items of type B are delivered at different destinations by the 
+		 * two robots. Of course this is the idea, let us see how to better deal with this aspect of the scenario....
+		 * 
+		 */
+		out("type2destination","typeA",12.0,34.0)@DeliveryRobot1
+		out("type2destination","typeB",67.0,14.0)@DeliveryRobot1
+		out("type2destination","typeA",12.0,34.0)@DeliveryRobot2
+		out("type2destination","typeB",134.0,49.0)@DeliveryRobot2 		
 		
 		
 		

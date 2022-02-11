@@ -112,6 +112,14 @@ public class RobotColl extends LogicalNet {
           final String rosbridgeWebsocketURI = "ws://0.0.0.0:9090";
           final RosBridge bridge = new RosBridge();
           bridge.connect(rosbridgeWebsocketURI, true);
+          out(new Tuple(new Object[] {"item", "typeA", 5.0, 3.0}), RobotColl.Arm);
+          out(new Tuple(new Object[] {"item", "typeB", 5.0, 3.4}), RobotColl.Arm);
+          out(new Tuple(new Object[] {"item", "typeA", 5.0, 3.8}), RobotColl.Arm);
+          out(new Tuple(new Object[] {"item", "typeB", 5.0, 4.2}), RobotColl.Arm);
+          out(new Tuple(new Object[] {"type2destination", "typeA", 12.0, 34.0}), RobotColl.DeliveryRobot1);
+          out(new Tuple(new Object[] {"type2destination", "typeB", 67.0, 14.0}), RobotColl.DeliveryRobot1);
+          out(new Tuple(new Object[] {"type2destination", "typeA", 12.0, 34.0}), RobotColl.DeliveryRobot2);
+          out(new Tuple(new Object[] {"type2destination", "typeB", 134.0, 49.0}), RobotColl.DeliveryRobot2);
           in(new Tuple(new Object[] {"itemDelivered"}), RobotColl.DeliveryRobot1);
           Thread.sleep(2000);
           final Publisher gazebo = new Publisher("/gazebo/set_model_state", "gazebo_msgs/ModelState", bridge);
