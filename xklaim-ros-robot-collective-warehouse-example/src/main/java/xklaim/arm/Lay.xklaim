@@ -1,12 +1,11 @@
 package xklaim.arm
 
 import java.JointTrajectory
-import klava.Locality
 import ros.Publisher
 import ros.RosBridge
 import ros.SubscriptionRequestMsg
 
-proc Lay(String rosbridgeWebsocketURI,Locality robot2) {
+proc Lay(String rosbridgeWebsocketURI) {
 	val local = self
 
 	// Create the bridge and connect it to the ROS bridge

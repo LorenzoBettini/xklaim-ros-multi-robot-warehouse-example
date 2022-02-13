@@ -1,8 +1,7 @@
 package xklaim
 
-import java.ModelState
-import ros.Publisher
-import ros.RosBridge
+import java.util.List
+import xklaim.arm.Disappear
 import xklaim.arm.GetDown
 import xklaim.arm.GetUp
 import xklaim.arm.GoToInitialPosition
@@ -11,76 +10,82 @@ import xklaim.arm.Lay
 import xklaim.arm.Release
 import xklaim.arm.Rotate
 import xklaim.deliveryRobot.DeliverItem
-import xklaim.deliveryRobot.MovetoArm
+import xklaim.deliveryRobot.MoveToArm
 
 net RobotColl physical "localhost:9999" {
 	node Arm {
-		
-		// while true seguita da in della tupla dell'item
-		
 		val rosbridgeWebsocketURI = "ws://0.0.0.0:9090"
 
-		eval(new GetDown(rosbridgeWebsocketURI))@self
+		while (true) {
+			in("initialPosition")@self
 
-		eval(new Grip(rosbridgeWebsocketURI))@self
+			in("item",var String itemType,var List<Double> firstTrajectoryPositions, var List<Double> secondTrajectoryPositions)@self
 
-		eval(new GetUp(rosbridgeWebsocketURI))@self
+			eval(new GetDown(rosbridgeWebsocketURI, firstTrajectoryPositions, secondTrajectoryPositions))@self
 
+			eval(new Grip(rosbridgeWebsocketURI))@self
 
-// tutte le comunicazioni avvengono su self per l'arm
-// non mi serve avere info del deliveryRobot
-		eval(new Rotate(rosbridgeWebsocketURI, DeliveryRobot1))@self
+			eval(new GetUp(rosbridgeWebsocketURI))@self
 
-		eval(new Lay(rosbridgeWebsocketURI, DeliveryRobot1))@self
+			eval(new Rotate(rosbridgeWebsocketURI))@self
 
-		eval(new Release(rosbridgeWebsocketURI, DeliveryRobot1))@self
+			eval(new Lay(rosbridgeWebsocketURI))@self
 
-		eval(new GoToInitialPosition(rosbridgeWebsocketURI, DeliveryRobot1))@self
+			eval(new Release(rosbridgeWebsocketURI, itemType))@self
+
+			eval(new GoToInitialPosition(rosbridgeWebsocketURI))@self
+
+		}
 
 	}
-	
+
 	node DeliveryRobot1 {
 		val rosbridgeWebsocketURI = "ws://0.0.0.0:9090"
+		val robotId = "robot1"
 
-	// while true
+		while (true) {
+			in("availableForDelivery")@self
 
-		eval(new MovetoArm(rosbridgeWebsocketURI, Arm))@self
+			eval(new MoveToArm(rosbridgeWebsocketURI, robotId, Arm))@self
 
-		eval(new DeliverItem(rosbridgeWebsocketURI))@self
+			eval(new DeliverItem(rosbridgeWebsocketURI, robotId, Arm))@self
+		}
 	}
-	
+
 	node DeliveryRobot2 {
 		val rosbridgeWebsocketURI = "ws://0.0.0.0:9090"
+		val robotId = "robot2"
 
-	// while true
+		while (true) {
+			in("availableForDelivery")@self
 
-		eval(new MovetoArm(rosbridgeWebsocketURI, Arm))@self
+			eval(new MoveToArm(rosbridgeWebsocketURI, robotId, Arm))@self
 
-		eval(new DeliverItem(rosbridgeWebsocketURI))@self
+			eval(new DeliverItem(rosbridgeWebsocketURI, robotId, Arm))@self
+		}
 	}
-	
+
 	node SimuationHandler {
 		val rosbridgeWebsocketURI = "ws://0.0.0.0:9090"
 
-		// create the bridge and connect it to the ROS bridge
-		val bridge = new RosBridge()
-		bridge.connect(rosbridgeWebsocketURI, true)
-
 		// --- initial setup of the scenario ---
-		
 		// insert info about positions of items in the arm robot's local knowledge (i.e., its tuple space)
 		// call the delivery robot
-		/* Note: here I have supposed that the tuple is in a given position (5.0,3.0) 
-		 * and the arm robot is able to compute (also in some ad-hoc way) the jointTrajectory 
-		 * for picking the item; if this is not feasible, we can replace the coordinates of the 
-		 * item directly with the list of doubles forming the jointTrajectory  
+		//
+		/* Note: for the sake of simplicity here the tuples contain two lists of Double corresponding to the two 
+		 * joint trajectories for the get down movements. It would preferable to indicate in the item tuples just 
+		 * the coordinates of the items, so that the get down process would compute (also in some ad-hoc way) 
+		 * the jointTrajectories for picking the item (however this could be not easy to do).   
 		 */
-		out("item","typeA",5.0,3.0)@Arm
-		out("item","typeB",5.0,3.4)@Arm
-		out("item","typeA",5.0,3.8)@Arm
-		out("item","typeB",5.0,4.2)@Arm   
-		 
-		// insert mapping between item types and destinations in the deliveryrobots' local knowledge (i.e., their tuple spaces)
+		out("item","typeA",#[-3.14, -0.2169, -0.5822, 3.14, 1.66, -0.01412],#[-3.1415, -0.9975, -0.4970, 3.1400, 1.6613,
+			-0.0142])@Arm
+		out("item","typeB",#[-3.14, -0.2169, -0.5822, 3.14, 1.66, -0.01412],#[-3.1415, -0.9975, -0.4970, 3.1400, 1.6613,
+			-0.0142])@Arm // TODO: change the trajectories for the second item
+		out("item","typeA",#[-3.14, -0.2169, -0.5822, 3.14, 1.66, -0.01412],#[-3.1415, -0.9975, -0.4970, 3.1400, 1.6613,
+			-0.0142])@Arm // TODO: change the trajectories for the third item
+		out("item","typeB",#[-3.14, -0.2169, -0.5822, 3.14, 1.66, -0.01412],#[-3.1415, -0.9975, -0.4970, 3.1400, 1.6613,
+			-0.0142])@Arm // TODO: change the trajectories for the fourth item
+		// insert mapping between item types and destinations in the delivery robots' local knowledge (i.e., their tuple spaces)
 		/* Notably, different robot may use different mappings. Indeed we have three destinations
 		 * (i.e., (12.0,34.0),(67.0,14.0) and (134.0,49.0)) and both delivery robots deliver items of type A 
 		 * to the first destination, while items of type B are delivered at different destinations by the 
@@ -90,35 +95,20 @@ net RobotColl physical "localhost:9999" {
 		out("type2destination","typeA",12.0,34.0)@DeliveryRobot1
 		out("type2destination","typeB",67.0,14.0)@DeliveryRobot1
 		out("type2destination","typeA",12.0,34.0)@DeliveryRobot2
-		out("type2destination","typeB",134.0,49.0)@DeliveryRobot2 		
-		
-		
-		
-		
-		
-		
-		in("itemDelivered")@DeliveryRobot1
+		out("type2destination","typeB",134.0,49.0)@DeliveryRobot2
 
-		Thread.sleep(2000)
-		
-		// make the item disappear
-		val gazebo = new Publisher("/gazebo/set_model_state", "gazebo_msgs/ModelState", bridge)
-		val modelstate = new ModelState()
-		modelstate.twist.linear.x = 3.0
-		modelstate.twist.angular.z = 1.0
-		modelstate.pose.position.x = -46.0
-		modelstate.pose.position.y = 46.0
-		modelstate.pose.position.z = 0.0
-		modelstate.model_name = "unit_box_2"
-		modelstate.reference_frame = "world"
-		gazebo.publish(modelstate)
-		
-		
-		in("initialPositionReached")@Arm
-		
-		// stop the overall execution
-		System.exit(0)
+		// activate the arm robot by inserting the information that it is in the initial position
+		out("initialPosition")@Arm
 
+		// activate the DeliveryRobot2 by inserting the information that it is available for a delivery
+		out("availableForDelivery")@DeliveryRobot1
+
+		// activate the DeliveryRobot1 by inserting the information that it is available for a delivery
+		out("availableForDelivery")@DeliveryRobot2
+
+		// activate the processes in charge of making the delivery items to disappear
+		eval(new Disappear(rosbridgeWebsocketURI, DeliveryRobot1))@self
+		eval(new Disappear(rosbridgeWebsocketURI, DeliveryRobot2))@self
 	}
 
 }

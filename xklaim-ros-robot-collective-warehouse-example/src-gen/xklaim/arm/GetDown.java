@@ -2,12 +2,10 @@ package xklaim.arm;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import java.JointTrajectory;
-import java.util.Collections;
 import java.util.List;
 import klava.Locality;
 import klava.Tuple;
 import klava.topology.KlavaProcess;
-import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.Conversions;
 import ros.Publisher;
 import ros.RosBridge;
@@ -18,9 +16,15 @@ import ros.SubscriptionRequestMsg;
 public class GetDown extends KlavaProcess {
   private String rosbridgeWebsocketURI;
   
-  public GetDown(final String rosbridgeWebsocketURI) {
+  private List<Double> trajectoryPositions;
+  
+  private List<Double> secondTrajectoryPositions;
+  
+  public GetDown(final String rosbridgeWebsocketURI, final List<Double> trajectoryPositions, final List<Double> secondTrajectoryPositions) {
     super("xklaim.arm.GetDown");
     this.rosbridgeWebsocketURI = rosbridgeWebsocketURI;
+    this.trajectoryPositions = trajectoryPositions;
+    this.secondTrajectoryPositions = secondTrajectoryPositions;
   }
   
   @Override
@@ -29,11 +33,9 @@ public class GetDown extends KlavaProcess {
     final RosBridge bridge = new RosBridge();
     bridge.connect(this.rosbridgeWebsocketURI, true);
     final Publisher pub = new Publisher("/arm_controller/command", "trajectory_msgs/JointTrajectory", bridge);
-    final List<Double> trajectoryPositions = Collections.<Double>unmodifiableList(CollectionLiterals.<Double>newArrayList(Double.valueOf((-3.14)), Double.valueOf((-0.2169)), Double.valueOf((-0.5822)), Double.valueOf(3.14), Double.valueOf(1.66), Double.valueOf((-0.01412))));
-    final JointTrajectory firstMovement = new JointTrajectory().positions(((double[])Conversions.unwrapArray(trajectoryPositions, double.class))).jointNames(
+    final JointTrajectory firstMovement = new JointTrajectory().positions(((double[])Conversions.unwrapArray(this.trajectoryPositions, double.class))).jointNames(
       new String[] { "joint1", "joint2", "joint3", "joint4", "joint5", "joint6" });
-    final List<Double> secondTrajectoryPositions = Collections.<Double>unmodifiableList(CollectionLiterals.<Double>newArrayList(Double.valueOf((-3.1415)), Double.valueOf((-0.9975)), Double.valueOf((-0.4970)), Double.valueOf(3.1400), Double.valueOf(1.6613), Double.valueOf((-0.0142))));
-    final JointTrajectory secondMovement = new JointTrajectory().positions(((double[])Conversions.unwrapArray(secondTrajectoryPositions, double.class))).jointNames(
+    final JointTrajectory secondMovement = new JointTrajectory().positions(((double[])Conversions.unwrapArray(this.secondTrajectoryPositions, double.class))).jointNames(
       new String[] { "joint1", "joint2", "joint3", "joint4", "joint5", "joint6" });
     pub.publish(firstMovement);
     final RosListenDelegate _function = (JsonNode data, String stringRep) -> {
@@ -42,17 +44,17 @@ public class GetDown extends KlavaProcess {
       double delta2 = 0.0;
       final double tolerance1 = 0.000001;
       final double tolerance2 = 0.00001;
-      for (int i = 0; (i < trajectoryPositions.size()); i++) {
+      for (int i = 0; (i < this.trajectoryPositions.size()); i++) {
         {
           double _delta1 = delta1;
           double _asDouble = actual.get(i).asDouble();
-          Double _get = trajectoryPositions.get(i);
+          Double _get = this.trajectoryPositions.get(i);
           double _minus = (_asDouble - (_get).doubleValue());
           double _abs = Math.abs(_minus);
           delta1 = (_delta1 + _abs);
           double _delta2 = delta2;
           double _asDouble_1 = actual.get(i).asDouble();
-          Double _get_1 = secondTrajectoryPositions.get(i);
+          Double _get_1 = this.secondTrajectoryPositions.get(i);
           double _minus_1 = (_asDouble_1 - (_get_1).doubleValue());
           double _pow = Math.pow(_minus_1, 2.0);
           delta2 = (_delta2 + _pow);

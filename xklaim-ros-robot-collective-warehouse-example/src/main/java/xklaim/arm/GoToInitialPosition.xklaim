@@ -1,12 +1,11 @@
 package xklaim.arm
 
 import java.JointTrajectory
-import klava.Locality
 import ros.Publisher
 import ros.RosBridge
 import ros.SubscriptionRequestMsg
 
-proc GoToInitialPosition(String rosbridgeWebsocketURI,Locality robot2) {
+proc GoToInitialPosition(String rosbridgeWebsocketURI) {
 	val local = self
 
 	// Create the bridge and connect it to the ROS bridge
@@ -23,13 +22,13 @@ proc GoToInitialPosition(String rosbridgeWebsocketURI,Locality robot2) {
 	val pub = new Publisher("/arm_controller/command", "trajectory_msgs/JointTrajectory", bridge);
 
 	val jointPositions = #[
-			0.000,
-			0.000,
-			0.000,
-			0.000,
-			0.000,
-			0.000
-		]
+		0.000,
+		0.000,
+		0.000,
+		0.000,
+		0.000,
+		0.000
+	]
 	val JointTrajectory initialPositionsTrajectory = new JointTrajectory().positions(jointPositions).jointNames(#[
 		"joint1",
 		"joint2",
@@ -39,7 +38,7 @@ proc GoToInitialPosition(String rosbridgeWebsocketURI,Locality robot2) {
 		"joint6"
 	])
 	pub.publish(initialPositionsTrajectory)
-	
+
 	// subscribe to the topic providing the actual status of the arm 
 	bridge.subscribe(
 		SubscriptionRequestMsg.generate("/arm_controller/state").setType("control_msgs/JointTrajectoryControllerState").
@@ -59,9 +58,8 @@ proc GoToInitialPosition(String rosbridgeWebsocketURI,Locality robot2) {
 
 			if (norm <= tolerance) {
 				// the arm has completed the movement
-				
 				// notify that it has reached the initial position
-				out("initialPositionReached")@local
+				out("initialPosition")@local
 
 				// unsubscribe from the arm state topic
 				bridge.unsubscribe("/arm_controller/state")

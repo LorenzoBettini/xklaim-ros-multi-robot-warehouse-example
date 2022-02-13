@@ -10,26 +10,29 @@ import ros.RosBridge
 import ros.SubscriptionRequestMsg
 import ros.msgs.geometry_msgs.Twist
 
-proc MovetoArm(String rosbridgeWebsocketURI,Locality arm) {
+proc MoveToArm(String rosbridgeWebsocketURI,String robotId,Locality Arm) {
+	// Coordinates of the arm robot (notably, the arm robot has a fixed position)  
+	val x = -0.25
+	val y = -2.67
 
 	// create the bridge and connect it to the ROS bridge
 	val bridge = new RosBridge()
 	bridge.connect(rosbridgeWebsocketURI, true)
 
 	// initialize a publisher for the topic related to the control of the robot's wheels
-	val pub = new Publisher("/robot1/move_base_simple/goal", "geometry_msgs/PoseStamped", bridge)
+	val pub = new Publisher("/" + robotId + "/move_base_simple/goal", "geometry_msgs/PoseStamped", bridge)
 
-	// wait for a call by the arm robot, which includes the destination position
-	in("comeHere", var Double x, var Double y, var Double w)@self
+	// wait for a call by the arm robot
+	in("itemReadyForTheDelivery")@Arm
 
 	// publish the destination position
-	val destination = new PoseStamped().headerFrameId("world").posePositionXY(x, y).poseOrientation(w)
+	val destination = new PoseStamped().headerFrameId("world").posePositionXY(x, y).poseOrientation(1.0)
 	pub.publish(destination)
 
 	// waiting until the destination position is reached
 	bridge.subscribe(
-		SubscriptionRequestMsg.generate("/robot1/amcl_pose").setType("geometry_msgs/PoseWithCovarianceStamped").
-			setThrottleRate(1).setQueueLength(1),
+		SubscriptionRequestMsg.generate("/" + robotId + "/amcl_pose").setType(
+			"geometry_msgs/PoseWithCovarianceStamped").setThrottleRate(1).setQueueLength(1),
 		[ data, stringRep |
 			// extract the actual position from the delivery robot's status	
 			var mapper = new ObjectMapper()
@@ -44,16 +47,15 @@ proc MovetoArm(String rosbridgeWebsocketURI,Locality arm) {
 
 			if (deltaX <= tolerance && deltaY <= tolerance) {
 				// the robot arrived to destination
-				
 				// stop the robot movement
-				val pubvel = new Publisher("/robot1/cmd_vel", "geometry_msgs/Twist", bridge)
+				val pubvel = new Publisher("/" + robotId + "/cmd_vel", "geometry_msgs/Twist", bridge)
 				val twistMsg = new Twist()
 				pubvel.publish(twistMsg)
-				
+
 				// notify that is ready to receive the item
-				out("ready")@arm
+				out("ready")@Arm
 				// unsubscribe from the robot state topic
-				bridge.unsubscribe("/robot1/amcl_pose")
+				bridge.unsubscribe("/" + robotId + "/amcl_pose")
 			}
 		]
 	)

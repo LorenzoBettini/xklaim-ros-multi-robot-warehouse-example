@@ -1,18 +1,18 @@
 package xklaim.arm
 
 import java.JointTrajectory
-import klava.Locality
 import ros.Publisher
 import ros.RosBridge
 import ros.SubscriptionRequestMsg
 
-proc Release(String rosbridgeWebsocketURI,Locality deliveryRobot) {
+proc Release(String rosbridgeWebsocketURI,String itemType) {
 	val local = self
 
 	// create the bridge and connect it to the ROS bridge
 	val bridge = new RosBridge()
 	bridge.connect(rosbridgeWebsocketURI, true)
-	
+
+	// wait for the completion of the lay movement
 	in("layCompleted")@self
 
 	// initialize a publisher for the topic related to the control of the gripper
@@ -27,9 +27,6 @@ proc Release(String rosbridgeWebsocketURI,Locality deliveryRobot) {
 		"f_joint2"
 	]);
 	pub.publish(openGripperTrajectory)
-
-	// inform the delivery robot that the gripper is opened
-	out("gripperOpening")@deliveryRobot
 
 	// subscribe to the topic providing the actual status of the gripper 
 	bridge.subscribe(
@@ -49,12 +46,9 @@ proc Release(String rosbridgeWebsocketURI,Locality deliveryRobot) {
 				// the gripper is completely opened
 				// activate the GoToInitialPosition process
 				out("releaseCompleted")@local
-				
-				// communicate the destination position to the delivery robot
-				val x = -6.0
-				val y = -5.0
-				val w = 1.0  
-				out("destination", x, y, w)@deliveryRobot
+
+				// inform the delivery robot that the gripper is opened and communicate the item type
+				out("gripperOpened",itemType)@local
 
 				// unsubscribe from the griper state topic
 				bridge.unsubscribe("/gripper_controller/state")

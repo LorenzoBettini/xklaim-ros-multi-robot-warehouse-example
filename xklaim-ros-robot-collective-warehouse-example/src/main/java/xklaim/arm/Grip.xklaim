@@ -47,7 +47,6 @@ proc Grip(String rosbridgeWebsocketURI) {
 
 			if (norm <= tolerance) {
 				// the gripper has completed the grip movement
-				
 				// activate the get up process
 				out("gripCompleted")@local
 

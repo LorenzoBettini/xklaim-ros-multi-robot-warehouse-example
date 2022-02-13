@@ -18,12 +18,9 @@ import ros.SubscriptionRequestMsg;
 public class Lay extends KlavaProcess {
   private String rosbridgeWebsocketURI;
   
-  private Locality robot2;
-  
-  public Lay(final String rosbridgeWebsocketURI, final Locality robot2) {
+  public Lay(final String rosbridgeWebsocketURI) {
     super("xklaim.arm.Lay");
     this.rosbridgeWebsocketURI = rosbridgeWebsocketURI;
-    this.robot2 = robot2;
   }
   
   @Override

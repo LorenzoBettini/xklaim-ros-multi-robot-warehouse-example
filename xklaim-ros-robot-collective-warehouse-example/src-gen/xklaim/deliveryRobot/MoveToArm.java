@@ -15,31 +15,29 @@ import ros.SubscriptionRequestMsg;
 import ros.msgs.geometry_msgs.Twist;
 
 @SuppressWarnings("all")
-public class MovetoArm extends KlavaProcess {
+public class MoveToArm extends KlavaProcess {
   private String rosbridgeWebsocketURI;
   
-  private Locality arm;
+  private String robotId;
   
-  public MovetoArm(final String rosbridgeWebsocketURI, final Locality arm) {
-    super("xklaim.deliveryRobot.MovetoArm");
+  private Locality Arm;
+  
+  public MoveToArm(final String rosbridgeWebsocketURI, final String robotId, final Locality Arm) {
+    super("xklaim.deliveryRobot.MoveToArm");
     this.rosbridgeWebsocketURI = rosbridgeWebsocketURI;
-    this.arm = arm;
+    this.robotId = robotId;
+    this.Arm = Arm;
   }
   
   @Override
   public void executeProcess() {
+    final double x = (-0.25);
+    final double y = (-2.67);
     final RosBridge bridge = new RosBridge();
     bridge.connect(this.rosbridgeWebsocketURI, true);
-    final Publisher pub = new Publisher("/robot1/move_base_simple/goal", "geometry_msgs/PoseStamped", bridge);
-    Double x = null;
-    Double y = null;
-    Double w = null;
-    Tuple _Tuple = new Tuple(new Object[] {"comeHere", Double.class, Double.class, Double.class});
-    in(_Tuple, this.self);
-    x = (Double) _Tuple.getItem(1);
-    y = (Double) _Tuple.getItem(2);
-    w = (Double) _Tuple.getItem(3);
-    final PoseStamped destination = new PoseStamped().headerFrameId("world").posePositionXY((x).doubleValue(), (y).doubleValue()).poseOrientation((w).doubleValue());
+    final Publisher pub = new Publisher((("/" + this.robotId) + "/move_base_simple/goal"), "geometry_msgs/PoseStamped", bridge);
+    in(new Tuple(new Object[] {"itemReadyForTheDelivery"}), this.Arm);
+    final PoseStamped destination = new PoseStamped().headerFrameId("world").posePositionXY(x, y).poseOrientation(1.0);
     pub.publish(destination);
     final RosListenDelegate _function = (JsonNode data, String stringRep) -> {
       try {
@@ -50,17 +48,18 @@ public class MovetoArm extends KlavaProcess {
         double deltaX = (current_position.pose.pose.position.x - destination.pose.position.x);
         double deltaY = (current_position.pose.pose.position.y - destination.pose.position.y);
         if (((deltaX <= tolerance) && (deltaY <= tolerance))) {
-          final Publisher pubvel = new Publisher("/robot1/cmd_vel", "geometry_msgs/Twist", bridge);
+          final Publisher pubvel = new Publisher((("/" + this.robotId) + "/cmd_vel"), "geometry_msgs/Twist", bridge);
           final Twist twistMsg = new Twist();
           pubvel.publish(twistMsg);
-          out(new Tuple(new Object[] {"ready"}), this.arm);
-          bridge.unsubscribe("/robot1/amcl_pose");
+          out(new Tuple(new Object[] {"ready"}), this.Arm);
+          bridge.unsubscribe((("/" + this.robotId) + "/amcl_pose"));
         }
       } catch (Throwable _e) {
         throw Exceptions.sneakyThrow(_e);
       }
     };
     bridge.subscribe(
-      SubscriptionRequestMsg.generate("/robot1/amcl_pose").setType("geometry_msgs/PoseWithCovarianceStamped").setThrottleRate(Integer.valueOf(1)).setQueueLength(Integer.valueOf(1)), _function);
+      SubscriptionRequestMsg.generate((("/" + this.robotId) + "/amcl_pose")).setType(
+        "geometry_msgs/PoseWithCovarianceStamped").setThrottleRate(Integer.valueOf(1)).setQueueLength(Integer.valueOf(1)), _function);
   }
 }

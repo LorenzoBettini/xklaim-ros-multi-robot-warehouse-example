@@ -18,12 +18,12 @@ import ros.SubscriptionRequestMsg;
 public class Release extends KlavaProcess {
   private String rosbridgeWebsocketURI;
   
-  private Locality deliveryRobot;
+  private String itemType;
   
-  public Release(final String rosbridgeWebsocketURI, final Locality deliveryRobot) {
+  public Release(final String rosbridgeWebsocketURI, final String itemType) {
     super("xklaim.arm.Release");
     this.rosbridgeWebsocketURI = rosbridgeWebsocketURI;
-    this.deliveryRobot = deliveryRobot;
+    this.itemType = itemType;
   }
   
   @Override
@@ -37,7 +37,6 @@ public class Release extends KlavaProcess {
     final JointTrajectory openGripperTrajectory = new JointTrajectory().positions(((double[])Conversions.unwrapArray(jointPositions, double.class))).jointNames(
       new String[] { "f_joint1", "f_joint2" });
     pub.publish(openGripperTrajectory);
-    out(new Tuple(new Object[] {"gripperOpening"}), this.deliveryRobot);
     final RosListenDelegate _function = (JsonNode data, String stringRep) -> {
       final JsonNode actual = data.get("msg").get("actual").get("positions");
       double delta = 0.0;
@@ -53,10 +52,7 @@ public class Release extends KlavaProcess {
       final double norm = Math.sqrt(delta);
       if ((norm <= tolerance)) {
         out(new Tuple(new Object[] {"releaseCompleted"}), local);
-        final double x = (-6.0);
-        final double y = (-5.0);
-        final double w = 1.0;
-        out(new Tuple(new Object[] {"destination", x, y, w}), this.deliveryRobot);
+        out(new Tuple(new Object[] {"gripperOpened", this.itemType}), local);
         bridge.unsubscribe("/gripper_controller/state");
       }
     };

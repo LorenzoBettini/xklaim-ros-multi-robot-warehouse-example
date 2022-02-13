@@ -1,16 +1,16 @@
 package xklaim;
 
-import java.ModelState;
+import java.util.Collections;
+import java.util.List;
 import klava.LogicalLocality;
 import klava.PhysicalLocality;
 import klava.Tuple;
 import klava.topology.ClientNode;
 import klava.topology.KlavaNodeCoordinator;
 import klava.topology.LogicalNet;
-import org.eclipse.xtext.xbase.lib.Exceptions;
+import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.mikado.imc.common.IMCException;
-import ros.Publisher;
-import ros.RosBridge;
+import xklaim.arm.Disappear;
 import xklaim.arm.GetDown;
 import xklaim.arm.GetUp;
 import xklaim.arm.GoToInitialPosition;
@@ -19,7 +19,7 @@ import xklaim.arm.Lay;
 import xklaim.arm.Release;
 import xklaim.arm.Rotate;
 import xklaim.deliveryRobot.DeliverItem;
-import xklaim.deliveryRobot.MovetoArm;
+import xklaim.deliveryRobot.MoveToArm;
 
 @SuppressWarnings("all")
 public class RobotColl extends LogicalNet {
@@ -36,20 +36,33 @@ public class RobotColl extends LogicalNet {
       @Override
       public void executeProcess() {
         final String rosbridgeWebsocketURI = "ws://0.0.0.0:9090";
-        GetDown _getDown = new GetDown(rosbridgeWebsocketURI);
-        eval(_getDown, this.self);
-        Grip _grip = new Grip(rosbridgeWebsocketURI);
-        eval(_grip, this.self);
-        GetUp _getUp = new GetUp(rosbridgeWebsocketURI);
-        eval(_getUp, this.self);
-        Rotate _rotate = new Rotate(rosbridgeWebsocketURI, RobotColl.DeliveryRobot1);
-        eval(_rotate, this.self);
-        Lay _lay = new Lay(rosbridgeWebsocketURI, RobotColl.DeliveryRobot1);
-        eval(_lay, this.self);
-        Release _release = new Release(rosbridgeWebsocketURI, RobotColl.DeliveryRobot1);
-        eval(_release, this.self);
-        GoToInitialPosition _goToInitialPosition = new GoToInitialPosition(rosbridgeWebsocketURI, RobotColl.DeliveryRobot1);
-        eval(_goToInitialPosition, this.self);
+        while (true) {
+          {
+            in(new Tuple(new Object[] {"initialPosition"}), this.self);
+            String itemType = null;
+            List<Double> firstTrajectoryPositions = null;
+            List<Double> secondTrajectoryPositions = null;
+            Tuple _Tuple = new Tuple(new Object[] {"item", String.class, List.class, List.class});
+            in(_Tuple, this.self);
+            itemType = (String) _Tuple.getItem(1);
+            firstTrajectoryPositions = (List) _Tuple.getItem(2);
+            secondTrajectoryPositions = (List) _Tuple.getItem(3);
+            GetDown _getDown = new GetDown(rosbridgeWebsocketURI, firstTrajectoryPositions, secondTrajectoryPositions);
+            eval(_getDown, this.self);
+            Grip _grip = new Grip(rosbridgeWebsocketURI);
+            eval(_grip, this.self);
+            GetUp _getUp = new GetUp(rosbridgeWebsocketURI);
+            eval(_getUp, this.self);
+            Rotate _rotate = new Rotate(rosbridgeWebsocketURI);
+            eval(_rotate, this.self);
+            Lay _lay = new Lay(rosbridgeWebsocketURI);
+            eval(_lay, this.self);
+            Release _release = new Release(rosbridgeWebsocketURI, itemType);
+            eval(_release, this.self);
+            GoToInitialPosition _goToInitialPosition = new GoToInitialPosition(rosbridgeWebsocketURI);
+            eval(_goToInitialPosition, this.self);
+          }
+        }
       }
     }
     
@@ -67,10 +80,16 @@ public class RobotColl extends LogicalNet {
       @Override
       public void executeProcess() {
         final String rosbridgeWebsocketURI = "ws://0.0.0.0:9090";
-        MovetoArm _movetoArm = new MovetoArm(rosbridgeWebsocketURI, RobotColl.Arm);
-        eval(_movetoArm, this.self);
-        DeliverItem _deliverItem = new DeliverItem(rosbridgeWebsocketURI);
-        eval(_deliverItem, this.self);
+        final String robotId = "robot1";
+        while (true) {
+          {
+            in(new Tuple(new Object[] {"availableForDelivery"}), this.self);
+            MoveToArm _moveToArm = new MoveToArm(rosbridgeWebsocketURI, robotId, RobotColl.Arm);
+            eval(_moveToArm, this.self);
+            DeliverItem _deliverItem = new DeliverItem(rosbridgeWebsocketURI, robotId, RobotColl.Arm);
+            eval(_deliverItem, this.self);
+          }
+        }
       }
     }
     
@@ -88,10 +107,16 @@ public class RobotColl extends LogicalNet {
       @Override
       public void executeProcess() {
         final String rosbridgeWebsocketURI = "ws://0.0.0.0:9090";
-        MovetoArm _movetoArm = new MovetoArm(rosbridgeWebsocketURI, RobotColl.Arm);
-        eval(_movetoArm, this.self);
-        DeliverItem _deliverItem = new DeliverItem(rosbridgeWebsocketURI);
-        eval(_deliverItem, this.self);
+        final String robotId = "robot2";
+        while (true) {
+          {
+            in(new Tuple(new Object[] {"availableForDelivery"}), this.self);
+            MoveToArm _moveToArm = new MoveToArm(rosbridgeWebsocketURI, robotId, RobotColl.Arm);
+            eval(_moveToArm, this.self);
+            DeliverItem _deliverItem = new DeliverItem(rosbridgeWebsocketURI, robotId, RobotColl.Arm);
+            eval(_deliverItem, this.self);
+          }
+        }
       }
     }
     
@@ -108,35 +133,22 @@ public class RobotColl extends LogicalNet {
     private static class SimuationHandlerProcess extends KlavaNodeCoordinator {
       @Override
       public void executeProcess() {
-        try {
-          final String rosbridgeWebsocketURI = "ws://0.0.0.0:9090";
-          final RosBridge bridge = new RosBridge();
-          bridge.connect(rosbridgeWebsocketURI, true);
-          out(new Tuple(new Object[] {"item", "typeA", 5.0, 3.0}), RobotColl.Arm);
-          out(new Tuple(new Object[] {"item", "typeB", 5.0, 3.4}), RobotColl.Arm);
-          out(new Tuple(new Object[] {"item", "typeA", 5.0, 3.8}), RobotColl.Arm);
-          out(new Tuple(new Object[] {"item", "typeB", 5.0, 4.2}), RobotColl.Arm);
-          out(new Tuple(new Object[] {"type2destination", "typeA", 12.0, 34.0}), RobotColl.DeliveryRobot1);
-          out(new Tuple(new Object[] {"type2destination", "typeB", 67.0, 14.0}), RobotColl.DeliveryRobot1);
-          out(new Tuple(new Object[] {"type2destination", "typeA", 12.0, 34.0}), RobotColl.DeliveryRobot2);
-          out(new Tuple(new Object[] {"type2destination", "typeB", 134.0, 49.0}), RobotColl.DeliveryRobot2);
-          in(new Tuple(new Object[] {"itemDelivered"}), RobotColl.DeliveryRobot1);
-          Thread.sleep(2000);
-          final Publisher gazebo = new Publisher("/gazebo/set_model_state", "gazebo_msgs/ModelState", bridge);
-          final ModelState modelstate = new ModelState();
-          modelstate.twist.linear.x = 3.0;
-          modelstate.twist.angular.z = 1.0;
-          modelstate.pose.position.x = (-46.0);
-          modelstate.pose.position.y = 46.0;
-          modelstate.pose.position.z = 0.0;
-          modelstate.model_name = "unit_box_2";
-          modelstate.reference_frame = "world";
-          gazebo.publish(modelstate);
-          in(new Tuple(new Object[] {"initialPositionReached"}), RobotColl.Arm);
-          System.exit(0);
-        } catch (Throwable _e) {
-          throw Exceptions.sneakyThrow(_e);
-        }
+        final String rosbridgeWebsocketURI = "ws://0.0.0.0:9090";
+        out(new Tuple(new Object[] {"item", "typeA", Collections.<Double>unmodifiableList(CollectionLiterals.<Double>newArrayList(Double.valueOf((-3.14)), Double.valueOf((-0.2169)), Double.valueOf((-0.5822)), Double.valueOf(3.14), Double.valueOf(1.66), Double.valueOf((-0.01412)))), Collections.<Double>unmodifiableList(CollectionLiterals.<Double>newArrayList(Double.valueOf((-3.1415)), Double.valueOf((-0.9975)), Double.valueOf((-0.4970)), Double.valueOf(3.1400), Double.valueOf(1.6613), Double.valueOf((-0.0142))))}), RobotColl.Arm);
+        out(new Tuple(new Object[] {"item", "typeB", Collections.<Double>unmodifiableList(CollectionLiterals.<Double>newArrayList(Double.valueOf((-3.14)), Double.valueOf((-0.2169)), Double.valueOf((-0.5822)), Double.valueOf(3.14), Double.valueOf(1.66), Double.valueOf((-0.01412)))), Collections.<Double>unmodifiableList(CollectionLiterals.<Double>newArrayList(Double.valueOf((-3.1415)), Double.valueOf((-0.9975)), Double.valueOf((-0.4970)), Double.valueOf(3.1400), Double.valueOf(1.6613), Double.valueOf((-0.0142))))}), RobotColl.Arm);
+        out(new Tuple(new Object[] {"item", "typeA", Collections.<Double>unmodifiableList(CollectionLiterals.<Double>newArrayList(Double.valueOf((-3.14)), Double.valueOf((-0.2169)), Double.valueOf((-0.5822)), Double.valueOf(3.14), Double.valueOf(1.66), Double.valueOf((-0.01412)))), Collections.<Double>unmodifiableList(CollectionLiterals.<Double>newArrayList(Double.valueOf((-3.1415)), Double.valueOf((-0.9975)), Double.valueOf((-0.4970)), Double.valueOf(3.1400), Double.valueOf(1.6613), Double.valueOf((-0.0142))))}), RobotColl.Arm);
+        out(new Tuple(new Object[] {"item", "typeB", Collections.<Double>unmodifiableList(CollectionLiterals.<Double>newArrayList(Double.valueOf((-3.14)), Double.valueOf((-0.2169)), Double.valueOf((-0.5822)), Double.valueOf(3.14), Double.valueOf(1.66), Double.valueOf((-0.01412)))), Collections.<Double>unmodifiableList(CollectionLiterals.<Double>newArrayList(Double.valueOf((-3.1415)), Double.valueOf((-0.9975)), Double.valueOf((-0.4970)), Double.valueOf(3.1400), Double.valueOf(1.6613), Double.valueOf((-0.0142))))}), RobotColl.Arm);
+        out(new Tuple(new Object[] {"type2destination", "typeA", 12.0, 34.0}), RobotColl.DeliveryRobot1);
+        out(new Tuple(new Object[] {"type2destination", "typeB", 67.0, 14.0}), RobotColl.DeliveryRobot1);
+        out(new Tuple(new Object[] {"type2destination", "typeA", 12.0, 34.0}), RobotColl.DeliveryRobot2);
+        out(new Tuple(new Object[] {"type2destination", "typeB", 134.0, 49.0}), RobotColl.DeliveryRobot2);
+        out(new Tuple(new Object[] {"initialPosition"}), RobotColl.Arm);
+        out(new Tuple(new Object[] {"availableForDelivery"}), RobotColl.DeliveryRobot1);
+        out(new Tuple(new Object[] {"availableForDelivery"}), RobotColl.DeliveryRobot2);
+        Disappear _disappear = new Disappear(rosbridgeWebsocketURI, RobotColl.DeliveryRobot1);
+        eval(_disappear, this.self);
+        Disappear _disappear_1 = new Disappear(rosbridgeWebsocketURI, RobotColl.DeliveryRobot2);
+        eval(_disappear_1, this.self);
       }
     }
     

@@ -5,7 +5,7 @@ import ros.RosBridge
 import ros.SubscriptionRequestMsg
 import java.JointTrajectory
 
-proc Rotate(String rosbridgeWebsocketURI,Locality deliveryRobot) {
+proc Rotate(String rosbridgeWebsocketURI) {
 	val local = self
 
 	// create the bridge and connect it to the ROS bridge
@@ -15,7 +15,7 @@ proc Rotate(String rosbridgeWebsocketURI,Locality deliveryRobot) {
 	// initialize a publisher for the topic related to the control of the arm movements
 	val pub = new Publisher("/arm_controller/command", "trajectory_msgs/JointTrajectory", bridge)
 
-	// set joint positions for performing the get up movement of the arm
+	// set joint positions for performing the rotate movement of the arm
 	val jointPositions = #[-0.9546, -0.20, -0.7241, 3.1400, 1.6613, -0.0142]
 	val JointTrajectory rotateTrajectory = new JointTrajectory().positions(jointPositions).jointNames(#[
 		"joint1",
@@ -28,12 +28,9 @@ proc Rotate(String rosbridgeWebsocketURI,Locality deliveryRobot) {
 
 	// wait for the completion of the get up movement
 	in("getUpCompleted")@self
-	
-	// call the delivery robot
-	val x = -0.25
-	val y = -2.67
-	val w = 1.0
-	out("comeHere",x, y, w)@deliveryRobot
+
+	// call for a delivery robot
+	out("itemReadyForTheDelivery")@self
 
 	// publish the trajectory to rotate the arm	 
 	pub.publish(rotateTrajectory)

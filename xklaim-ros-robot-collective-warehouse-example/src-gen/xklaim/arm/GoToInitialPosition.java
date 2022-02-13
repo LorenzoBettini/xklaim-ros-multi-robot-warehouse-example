@@ -19,12 +19,9 @@ import ros.SubscriptionRequestMsg;
 public class GoToInitialPosition extends KlavaProcess {
   private String rosbridgeWebsocketURI;
   
-  private Locality robot2;
-  
-  public GoToInitialPosition(final String rosbridgeWebsocketURI, final Locality robot2) {
+  public GoToInitialPosition(final String rosbridgeWebsocketURI) {
     super("xklaim.arm.GoToInitialPosition");
     this.rosbridgeWebsocketURI = rosbridgeWebsocketURI;
-    this.robot2 = robot2;
   }
   
   @Override
@@ -54,7 +51,7 @@ public class GoToInitialPosition extends KlavaProcess {
         }
         final double norm = Math.sqrt(delta);
         if ((norm <= tolerance)) {
-          out(new Tuple(new Object[] {"initialPositionReached"}), local);
+          out(new Tuple(new Object[] {"initialPosition"}), local);
           bridge.unsubscribe("/arm_controller/state");
         }
       };
