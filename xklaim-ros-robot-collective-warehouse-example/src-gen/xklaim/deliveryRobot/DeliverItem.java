@@ -58,7 +58,7 @@ public class DeliverItem extends KlavaProcess {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode rosMsgNode = data.get("msg");
         ContactsState state = mapper.<ContactsState>treeToValue(rosMsgNode, ContactsState.class);
-        if (((!((List<ContactState>)Conversions.doWrapArray(state.states)).isEmpty()) && Objects.equal((state.states[0]).collision1_name, "unit_box_2::link::collision"))) {
+        if (((!((List<ContactState>)Conversions.doWrapArray(state.states)).isEmpty()) && Objects.equal((state.states[0]).collision1_name, "item_1::link::collision"))) {
           pub.publish(deliveryDestination);
           bridge.unsubscribe((("/" + this.robotId) + "/pressure_sensor_state"));
         }

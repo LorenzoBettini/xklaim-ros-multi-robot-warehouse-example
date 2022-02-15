@@ -12,8 +12,8 @@ import ros.msgs.geometry_msgs.Twist
 
 proc MoveToArm(String rosbridgeWebsocketURI,String robotId,Locality Arm) {
 	// Coordinates of the arm robot (notably, the arm robot has a fixed position)  
-	val x = -0.25
-	val y = -0.67
+	val x = -0.22
+	val y = 0.34
 
 	// create the bridge and connect it to the ROS bridge
 	val bridge = new RosBridge()
@@ -44,7 +44,6 @@ proc MoveToArm(String rosbridgeWebsocketURI,String robotId,Locality Arm) {
 			val tolerance = 0.16
 			var deltaX = current_position.pose.pose.position.x - destination.pose.position.x
 			var deltaY = current_position.pose.pose.position.y - destination.pose.position.y
-
 			if (deltaX <= tolerance && deltaY <= tolerance) {
 				// the robot arrived to destination
 				// stop the robot movement

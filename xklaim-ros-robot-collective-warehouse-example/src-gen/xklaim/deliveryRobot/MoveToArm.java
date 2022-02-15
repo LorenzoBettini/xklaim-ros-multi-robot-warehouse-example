@@ -31,8 +31,8 @@ public class MoveToArm extends KlavaProcess {
   
   @Override
   public void executeProcess() {
-    final double x = (-0.25);
-    final double y = (-0.67);
+    final double x = (-0.22);
+    final double y = 0.34;
     final RosBridge bridge = new RosBridge();
     bridge.connect(this.rosbridgeWebsocketURI, true);
     final Publisher pub = new Publisher((("/" + this.robotId) + "/move_base_simple/goal"), "geometry_msgs/PoseStamped", bridge);

@@ -37,7 +37,7 @@ proc DeliverItem(String rosbridgeWebsocketURI,String robotId,Locality Arm) {
 			var mapper = new ObjectMapper()
 			var JsonNode rosMsgNode = data.get("msg")
 			var ContactsState state = mapper.treeToValue(rosMsgNode, ContactsState)
-			if (!state.states.isEmpty && state.states.get(0).collision1_name == "unit_box_2::link::collision") {
+			if (!state.states.isEmpty && state.states.get(0).collision1_name == "item_1::link::collision") {
 
 				// publish destination for the delivery
 				pub.publish(deliveryDestination)
