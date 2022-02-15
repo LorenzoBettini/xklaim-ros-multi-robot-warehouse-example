@@ -1,14 +1,11 @@
 package xklaim;
 
-import java.util.Collections;
-import java.util.List;
 import klava.LogicalLocality;
 import klava.PhysicalLocality;
 import klava.Tuple;
 import klava.topology.ClientNode;
 import klava.topology.KlavaNodeCoordinator;
 import klava.topology.LogicalNet;
-import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.mikado.imc.common.IMCException;
 import xklaim.arm.Disappear;
 import xklaim.arm.GetDown;
@@ -40,14 +37,14 @@ public class RobotColl extends LogicalNet {
           {
             in(new Tuple(new Object[] {"initialPosition"}), this.self);
             String itemType = null;
-            List<Double> firstTrajectoryPositions = null;
-            List<Double> secondTrajectoryPositions = null;
-            Tuple _Tuple = new Tuple(new Object[] {"item", String.class, List.class, List.class});
+            Double x_coordination = null;
+            Double y_coordination = null;
+            Tuple _Tuple = new Tuple(new Object[] {"item", String.class, Double.class, Double.class});
             in(_Tuple, this.self);
             itemType = (String) _Tuple.getItem(1);
-            firstTrajectoryPositions = (List) _Tuple.getItem(2);
-            secondTrajectoryPositions = (List) _Tuple.getItem(3);
-            GetDown _getDown = new GetDown(rosbridgeWebsocketURI, firstTrajectoryPositions, secondTrajectoryPositions);
+            x_coordination = (Double) _Tuple.getItem(2);
+            y_coordination = (Double) _Tuple.getItem(3);
+            GetDown _getDown = new GetDown(rosbridgeWebsocketURI, x_coordination, y_coordination);
             eval(_getDown, this.self);
             Grip _grip = new Grip(rosbridgeWebsocketURI);
             eval(_grip, this.self);
@@ -134,14 +131,14 @@ public class RobotColl extends LogicalNet {
       @Override
       public void executeProcess() {
         final String rosbridgeWebsocketURI = "ws://0.0.0.0:9090";
-        out(new Tuple(new Object[] {"item", "typeA", Collections.<Double>unmodifiableList(CollectionLiterals.<Double>newArrayList(Double.valueOf((-3.14)), Double.valueOf((-0.2169)), Double.valueOf((-0.5822)), Double.valueOf(3.14), Double.valueOf(1.66), Double.valueOf((-0.01412)))), Collections.<Double>unmodifiableList(CollectionLiterals.<Double>newArrayList(Double.valueOf((-3.1415)), Double.valueOf((-0.9975)), Double.valueOf((-0.4970)), Double.valueOf(3.1400), Double.valueOf(1.6613), Double.valueOf((-0.0142))))}), RobotColl.Arm);
-        out(new Tuple(new Object[] {"item", "typeB", Collections.<Double>unmodifiableList(CollectionLiterals.<Double>newArrayList(Double.valueOf((-3.14)), Double.valueOf((-0.2169)), Double.valueOf((-0.5822)), Double.valueOf(3.14), Double.valueOf(1.66), Double.valueOf((-0.01412)))), Collections.<Double>unmodifiableList(CollectionLiterals.<Double>newArrayList(Double.valueOf((-3.1415)), Double.valueOf((-0.9975)), Double.valueOf((-0.4970)), Double.valueOf(3.1400), Double.valueOf(1.6613), Double.valueOf((-0.0142))))}), RobotColl.Arm);
-        out(new Tuple(new Object[] {"item", "typeA", Collections.<Double>unmodifiableList(CollectionLiterals.<Double>newArrayList(Double.valueOf((-3.14)), Double.valueOf((-0.2169)), Double.valueOf((-0.5822)), Double.valueOf(3.14), Double.valueOf(1.66), Double.valueOf((-0.01412)))), Collections.<Double>unmodifiableList(CollectionLiterals.<Double>newArrayList(Double.valueOf((-3.1415)), Double.valueOf((-0.9975)), Double.valueOf((-0.4970)), Double.valueOf(3.1400), Double.valueOf(1.6613), Double.valueOf((-0.0142))))}), RobotColl.Arm);
-        out(new Tuple(new Object[] {"item", "typeB", Collections.<Double>unmodifiableList(CollectionLiterals.<Double>newArrayList(Double.valueOf((-3.14)), Double.valueOf((-0.2169)), Double.valueOf((-0.5822)), Double.valueOf(3.14), Double.valueOf(1.66), Double.valueOf((-0.01412)))), Collections.<Double>unmodifiableList(CollectionLiterals.<Double>newArrayList(Double.valueOf((-3.1415)), Double.valueOf((-0.9975)), Double.valueOf((-0.4970)), Double.valueOf(3.1400), Double.valueOf(1.6613), Double.valueOf((-0.0142))))}), RobotColl.Arm);
-        out(new Tuple(new Object[] {"type2destination", "typeA", 12.0, 34.0}), RobotColl.DeliveryRobot1);
-        out(new Tuple(new Object[] {"type2destination", "typeB", 67.0, 14.0}), RobotColl.DeliveryRobot1);
-        out(new Tuple(new Object[] {"type2destination", "typeA", 12.0, 34.0}), RobotColl.DeliveryRobot2);
-        out(new Tuple(new Object[] {"type2destination", "typeB", 134.0, 49.0}), RobotColl.DeliveryRobot2);
+        out(new Tuple(new Object[] {"item", "typeA", 0.583518, 0.0}), RobotColl.Arm);
+        out(new Tuple(new Object[] {"item", "typeB", 0.505014, 0.296477}), RobotColl.Arm);
+        out(new Tuple(new Object[] {"item", "typeA", (0.4905 - 0.3237)}), RobotColl.Arm);
+        out(new Tuple(new Object[] {"item", "typeB", 0.30, (-0.51)}), RobotColl.Arm);
+        out(new Tuple(new Object[] {"type2destination", "typeA", (-8.0), (-8.80)}), RobotColl.DeliveryRobot1);
+        out(new Tuple(new Object[] {"type2destination", "typeB", 8.9, (-8.3)}), RobotColl.DeliveryRobot1);
+        out(new Tuple(new Object[] {"type2destination", "typeA", 9.35, 8.60}), RobotColl.DeliveryRobot2);
+        out(new Tuple(new Object[] {"type2destination", "typeB", (-8.41), 8.3}), RobotColl.DeliveryRobot2);
         out(new Tuple(new Object[] {"initialPosition"}), RobotColl.Arm);
         out(new Tuple(new Object[] {"availableForDelivery"}), RobotColl.DeliveryRobot1);
         out(new Tuple(new Object[] {"availableForDelivery"}), RobotColl.DeliveryRobot2);
