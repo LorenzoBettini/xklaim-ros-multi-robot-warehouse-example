@@ -1,4 +1,4 @@
-package java;
+package messages;
 
 public class ModelStates {
 	public String[] name;

@@ -1,12 +1,12 @@
 package xklaim.arm;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import java.JointTrajectory;
 import java.util.Collections;
 import java.util.List;
 import klava.Locality;
 import klava.Tuple;
 import klava.topology.KlavaProcess;
+import messages.JointTrajectory;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.Conversions;
 import org.eclipse.xtext.xbase.lib.Exceptions;

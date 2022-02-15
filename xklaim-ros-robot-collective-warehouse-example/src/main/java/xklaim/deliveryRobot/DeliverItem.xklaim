@@ -2,10 +2,10 @@ package xklaim.deliveryRobot
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
-import java.ContactsState
-import java.PoseStamped
-import java.PoseWithCovarianceStamped
-import java.Twist
+import messages.ContactsState
+import messages.PoseStamped
+import messages.PoseWithCovarianceStamped
+import messages.Twist
 import ros.Publisher
 import ros.RosBridge
 import ros.SubscriptionRequestMsg

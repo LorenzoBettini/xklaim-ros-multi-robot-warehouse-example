@@ -1,4 +1,4 @@
-package java;
+package messages;
 
 public class Wrench {
 	public Vector3 force = new Vector3();

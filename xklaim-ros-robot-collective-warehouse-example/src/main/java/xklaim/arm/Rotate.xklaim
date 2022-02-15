@@ -3,7 +3,7 @@ package xklaim.arm
 import ros.Publisher
 import ros.RosBridge
 import ros.SubscriptionRequestMsg
-import java.JointTrajectory
+import messages.JointTrajectory
 
 proc Rotate(String rosbridgeWebsocketURI) {
 	val local = self

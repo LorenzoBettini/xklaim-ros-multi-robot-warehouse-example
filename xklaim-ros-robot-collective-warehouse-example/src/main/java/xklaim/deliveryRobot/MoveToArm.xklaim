@@ -2,8 +2,8 @@ package xklaim.deliveryRobot
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
-import java.PoseStamped
-import java.PoseWithCovarianceStamped
+import messages.PoseStamped
+import messages.PoseWithCovarianceStamped
 import klava.Locality
 import ros.Publisher
 import ros.RosBridge
@@ -13,7 +13,7 @@ import ros.msgs.geometry_msgs.Twist
 proc MoveToArm(String rosbridgeWebsocketURI,String robotId,Locality Arm) {
 	// Coordinates of the arm robot (notably, the arm robot has a fixed position)  
 	val x = -0.25
-	val y = -2.67
+	val y = -0.67
 
 	// create the bridge and connect it to the ROS bridge
 	val bridge = new RosBridge()

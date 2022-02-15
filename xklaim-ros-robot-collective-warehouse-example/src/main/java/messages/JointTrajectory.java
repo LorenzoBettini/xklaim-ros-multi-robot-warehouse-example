@@ -1,4 +1,4 @@
-package java;
+package messages;
 
 import ros.msgs.std_msgs.Header;
 import ros.msgs.std_msgs.Time;

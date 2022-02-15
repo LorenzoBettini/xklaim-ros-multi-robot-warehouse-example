@@ -1,9 +1,9 @@
 package xklaim.arm;
 
-import java.ModelState;
 import klava.Locality;
 import klava.Tuple;
 import klava.topology.KlavaProcess;
+import messages.ModelState;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 import ros.Publisher;
 import ros.RosBridge;

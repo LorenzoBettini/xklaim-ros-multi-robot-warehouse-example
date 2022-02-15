@@ -1,6 +1,6 @@
 package xklaim.arm
 
-import java.ModelState
+import messages.ModelState
 import klava.Locality
 import ros.Publisher
 import ros.RosBridge

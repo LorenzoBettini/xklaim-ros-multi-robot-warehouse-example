@@ -1,6 +1,6 @@
 package xklaim.arm
 
-import java.JointTrajectory
+import messages.JointTrajectory
 import ros.Publisher
 import ros.RosBridge
 import ros.SubscriptionRequestMsg

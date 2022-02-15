@@ -2,11 +2,11 @@ package xklaim.deliveryRobot;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.PoseStamped;
-import java.PoseWithCovarianceStamped;
 import klava.Locality;
 import klava.Tuple;
 import klava.topology.KlavaProcess;
+import messages.PoseStamped;
+import messages.PoseWithCovarianceStamped;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 import ros.Publisher;
 import ros.RosBridge;
@@ -32,7 +32,7 @@ public class MoveToArm extends KlavaProcess {
   @Override
   public void executeProcess() {
     final double x = (-0.25);
-    final double y = (-2.67);
+    final double y = (-0.67);
     final RosBridge bridge = new RosBridge();
     bridge.connect(this.rosbridgeWebsocketURI, true);
     final Publisher pub = new Publisher((("/" + this.robotId) + "/move_base_simple/goal"), "geometry_msgs/PoseStamped", bridge);
