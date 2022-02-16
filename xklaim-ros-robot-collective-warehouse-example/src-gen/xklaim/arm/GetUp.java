@@ -29,7 +29,7 @@ public class GetUp extends KlavaProcess {
     final RosBridge bridge = new RosBridge();
     bridge.connect(this.rosbridgeWebsocketURI, true);
     final Publisher pub = new Publisher("/arm_controller/command", "trajectory_msgs/JointTrajectory", bridge);
-    final List<Double> jointPositions = Collections.<Double>unmodifiableList(CollectionLiterals.<Double>newArrayList(Double.valueOf(3.1415), Double.valueOf((-0.2862)), Double.valueOf((-0.5000)), Double.valueOf(3.1400), Double.valueOf(1.6613), Double.valueOf((-0.0142))));
+    final List<Double> jointPositions = Collections.<Double>unmodifiableList(CollectionLiterals.<Double>newArrayList(Double.valueOf((-3.1415)), Double.valueOf((-0.2862)), Double.valueOf((-0.5000)), Double.valueOf(3.1400), Double.valueOf(1.6613), Double.valueOf((-0.0142))));
     final JointTrajectory getUpJointTrajectory = new JointTrajectory().positions(((double[])Conversions.unwrapArray(jointPositions, double.class))).jointNames(
       new String[] { "joint1", "joint2", "joint3", "joint4", "joint5", "joint6" });
     in(new Tuple(new Object[] {"gripCompleted"}), this.self);

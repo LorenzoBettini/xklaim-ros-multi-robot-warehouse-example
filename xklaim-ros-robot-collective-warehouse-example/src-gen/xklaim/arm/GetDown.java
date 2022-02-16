@@ -38,13 +38,13 @@ public class GetDown extends KlavaProcess {
     final Publisher pub = new Publisher("/arm_controller/command", "trajectory_msgs/JointTrajectory", bridge);
     double _divide = DoubleExtensions.operator_divide(this.y_coordination, this.x_coordination);
     double _atan = Math.atan(_divide);
-    double _minus = (3.14 - _atan);
+    double _minus = (_atan - 3.14);
     final List<Double> trajectoryPositions = Collections.<Double>unmodifiableList(CollectionLiterals.<Double>newArrayList(Double.valueOf(_minus), Double.valueOf((-0.2169)), Double.valueOf((-0.5822)), Double.valueOf(3.14), Double.valueOf(1.66), Double.valueOf((-0.01412))));
     final JointTrajectory firstMovement = new JointTrajectory().positions(((double[])Conversions.unwrapArray(trajectoryPositions, double.class))).jointNames(
       new String[] { "joint1", "joint2", "joint3", "joint4", "joint5", "joint6" });
     double _divide_1 = DoubleExtensions.operator_divide(this.y_coordination, this.x_coordination);
     double _atan_1 = Math.atan(_divide_1);
-    double _minus_1 = (3.14 - _atan_1);
+    double _minus_1 = (_atan_1 - 3.14);
     final List<Double> secondTrajectoryPositions = Collections.<Double>unmodifiableList(CollectionLiterals.<Double>newArrayList(Double.valueOf(_minus_1), Double.valueOf((-0.9975)), Double.valueOf((-0.4970)), Double.valueOf(3.1400), Double.valueOf(1.6613), Double.valueOf((-0.0142))));
     final JointTrajectory secondMovement = new JointTrajectory().positions(((double[])Conversions.unwrapArray(secondTrajectoryPositions, double.class))).jointNames(
       new String[] { "joint1", "joint2", "joint3", "joint4", "joint5", "joint6" });
