@@ -2,13 +2,13 @@ package xklaim.deliveryRobot;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.Objects;
 import java.util.List;
 import klava.Locality;
 import klava.Tuple;
 import klava.topology.KlavaProcess;
 import messages.ContactState;
 import messages.ContactsState;
+import messages.ModelState;
 import messages.PoseStamped;
 import messages.PoseWithCovarianceStamped;
 import messages.Twist;
@@ -43,6 +43,7 @@ public class DeliverItem extends KlavaProcess {
     Tuple _Tuple = new Tuple(new Object[] {"gripperOpened", String.class});
     in(_Tuple, this.Arm);
     itemType = (String) _Tuple.getItem(1);
+    final String item = itemType;
     Double x = null;
     Double y = null;
     Tuple _Tuple_1 = new Tuple(new Object[] {"type2destination", itemType, Double.class, Double.class});
@@ -58,7 +59,7 @@ public class DeliverItem extends KlavaProcess {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode rosMsgNode = data.get("msg");
         ContactsState state = mapper.<ContactsState>treeToValue(rosMsgNode, ContactsState.class);
-        if (((!((List<ContactState>)Conversions.doWrapArray(state.states)).isEmpty()) && Objects.equal((state.states[0]).collision1_name, "item_1::link::collision"))) {
+        if (((!((List<ContactState>)Conversions.doWrapArray(state.states)).isEmpty()) && ((state.states[0]).total_wrench.force.z != 0.0))) {
           pub.publish(deliveryDestination);
           bridge.unsubscribe((("/" + this.robotId) + "/pressure_sensor_state"));
         }
@@ -80,6 +81,13 @@ public class DeliverItem extends KlavaProcess {
           final Publisher pubvel = new Publisher((("/" + this.robotId) + "/cmd_vel"), "geometry_msgs/Twist", bridge);
           final Twist twistMsg = new Twist();
           pubvel.publish(twistMsg);
+          final Publisher Pose_item = new Publisher("/gazebo/set_model_state", "gazebo_msgs/ModelState", bridge);
+          final ModelState modelstate = new ModelState();
+          modelstate.pose.position.x = (deliveryDestination.pose.position.x + 0.3);
+          modelstate.pose.position.y = (deliveryDestination.pose.position.y + 0.3);
+          modelstate.model_name = item;
+          modelstate.reference_frame = "world";
+          Pose_item.publish(modelstate);
           out(new Tuple(new Object[] {"itemDelivered", destinationX, destinationY}), local);
           out(new Tuple(new Object[] {"availableForDelivery"}), local);
           bridge.unsubscribe((("/" + this.robotId) + "/amcl_pose"));

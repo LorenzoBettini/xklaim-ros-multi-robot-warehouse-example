@@ -9,7 +9,6 @@ import xklaim.arm.Release
 import xklaim.arm.GoToInitialPosition
 import xklaim.deliveryRobot.MoveToArm
 import xklaim.deliveryRobot.DeliverItem
-import xklaim.arm.Disappear
 
 net RobotColl physical "localhost:9999" {
 	node Arm {
@@ -26,14 +25,13 @@ net RobotColl physical "localhost:9999" {
 
 			eval(new GetUp(rosbridgeWebsocketURI))@self
 
-			eval(new Rotate(rosbridgeWebsocketURI))@self
+			eval(new Rotate(rosbridgeWebsocketURI, itemType))@self
 
 			eval(new Lay(rosbridgeWebsocketURI))@self
 
 			eval(new Release(rosbridgeWebsocketURI, itemType))@self
 
 			eval(new GoToInitialPosition(rosbridgeWebsocketURI))@self
-
 		}
 
 	}
@@ -65,7 +63,6 @@ net RobotColl physical "localhost:9999" {
 	}
 
 	node SimuationHandler {
-		val rosbridgeWebsocketURI = "ws://0.0.0.0:9090"
 
 		// --- initial setup of the scenario ---
 		// insert info about positions of items in the arm robot's local knowledge (i.e., its tuple space)
@@ -76,10 +73,11 @@ net RobotColl physical "localhost:9999" {
 		 * the coordinates of the items, so that the get down process would compute (also in some ad-hoc way) 
 		 * the jointTrajectories for picking the item (however this could be not easy to do).   
 		 */
-		out("item","typeA", 0.583518, 0.0)@Arm              //(x,y)coordinates item_1
-		out("item","typeB", 0.505014, 0.296477)@Arm           //(x,y)coordinates item_2
-		out("item","typeA", 0.4905 -0.3237)@Arm               //(x,y)coordinates item_3
-		out("item","typeB", 0.30, -0.51)@Arm                    //(x,y)coordinates item_4
+		 
+		out("item","typeA",0.30, -0.51)@Arm    //(x,y)coordinates item_1
+	    out("item","typeB",0.491347, -0.322471)@Arm         //(x,y)coordinates item_2   		                                                    
+	    out("item","typeC",0.583518, 0.0)@Arm               //(x,y)coordinates item_3
+		out("item","typeD",0.504505, 0.3)@Arm                    //(x,y)coordinates item_4
 		// insert mapping between item types and destinations in the delivery robots' local knowledge (i.e., their tuple spaces)
 		/* Notably, different robot may use different mappings. Indeed we have three destinations
 		 * (i.e., (12.0,34.0),(67.0,14.0) and (134.0,49.0)) and both delivery robots deliver items of type A 
@@ -89,8 +87,8 @@ net RobotColl physical "localhost:9999" {
 		 */
 		out("type2destination","typeA",-8.0,-8.80)@DeliveryRobot1
 		out("type2destination","typeB",8.9,-8.3)@DeliveryRobot1
-		out("type2destination","typeA",9.35,8.60)@DeliveryRobot2
-		out("type2destination","typeB",-8.41,8.3)@DeliveryRobot2
+		out("type2destination","typeC",-8.0,-8.80)@DeliveryRobot2
+		out("type2destination","typeD",8.9,-8.3)@DeliveryRobot2
 
 		// activate the arm robot by inserting the information that it is in the initial position
 		out("initialPosition")@Arm
@@ -102,8 +100,7 @@ net RobotColl physical "localhost:9999" {
 		out("availableForDelivery")@DeliveryRobot2
 
 		// activate the processes in charge of making the delivery items to disappear
-		eval(new Disappear(rosbridgeWebsocketURI, DeliveryRobot1))@self
-		eval(new Disappear(rosbridgeWebsocketURI, DeliveryRobot2))@self
+
 	}
 
 }

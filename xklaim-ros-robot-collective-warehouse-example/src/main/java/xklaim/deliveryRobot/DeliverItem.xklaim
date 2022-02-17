@@ -9,6 +9,7 @@ import messages.Twist
 import ros.Publisher
 import ros.RosBridge
 import ros.SubscriptionRequestMsg
+import messages.ModelState
 
 proc DeliverItem(String rosbridgeWebsocketURI,String robotId,Locality Arm) {
 	val local = self
@@ -18,10 +19,10 @@ proc DeliverItem(String rosbridgeWebsocketURI,String robotId,Locality Arm) {
 	bridge.connect(rosbridgeWebsocketURI, true)
 
 	// wait for the notification that the gripper is opened 
-	in("gripperOpened",var String itemType)@Arm
-
+	in("gripperOpened",var String itemType)@Arm 
+	val item = itemType
 	// retrieve from the local knowledge the destination coordinates
-	read("type2destination",itemType,var Double x,var Double y)@self
+	read("type2destination", itemType,var Double x,var Double y)@self
 	val destinationX = x
 	val destinationY = y
 	val deliveryDestination = new PoseStamped().headerFrameId("world").posePositionXY(x, y).poseOrientation(1.0)
@@ -37,7 +38,7 @@ proc DeliverItem(String rosbridgeWebsocketURI,String robotId,Locality Arm) {
 			var mapper = new ObjectMapper()
 			var JsonNode rosMsgNode = data.get("msg")
 			var ContactsState state = mapper.treeToValue(rosMsgNode, ContactsState)
-			if (!state.states.isEmpty && state.states.get(0).collision1_name == "item_1::link::collision") {
+			if (!state.states.isEmpty && state.states.get(0).total_wrench.force.z != 0.0) {
 
 				// publish destination for the delivery
 				pub.publish(deliveryDestination)
@@ -70,6 +71,14 @@ proc DeliverItem(String rosbridgeWebsocketURI,String robotId,Locality Arm) {
 				val pubvel = new Publisher("/" + robotId + "/cmd_vel", "geometry_msgs/Twist", bridge);
 				val twistMsg = new Twist();
 				pubvel.publish(twistMsg);
+                //posing the item at the destination 
+                val Pose_item = new Publisher("/gazebo/set_model_state", "gazebo_msgs/ModelState", bridge)
+		        val modelstate = new ModelState()
+		        modelstate.pose.position.x = deliveryDestination.pose.position.x+0.3
+		        modelstate.pose.position.y = deliveryDestination.pose.position.y+0.3
+		        modelstate.model_name = item
+		        modelstate.reference_frame="world"
+		        Pose_item.publish(modelstate)
 
 				// notify that the item has been delivered at the destination with coordinates (x,y) 
 				out("itemDelivered",destinationX,destinationY)@local

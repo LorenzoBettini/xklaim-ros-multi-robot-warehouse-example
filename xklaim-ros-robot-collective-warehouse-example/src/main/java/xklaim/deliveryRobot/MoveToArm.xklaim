@@ -18,12 +18,24 @@ proc MoveToArm(String rosbridgeWebsocketURI,String robotId,Locality Arm) {
 	// create the bridge and connect it to the ROS bridge
 	val bridge = new RosBridge()
 	bridge.connect(rosbridgeWebsocketURI, true)
+	in("itemReadyForTheDelivery", var String itemType)@Arm
+	
+//allocation problem 	
+    switch (itemType) {
+    case "typeA":
+    robotId="robot1"
+    case "typeB":
+    robotId="robot2"
+    case "typeC":
+    robotId="robot1"
+    case "typeD":
+    robotId="robot2"
+    }
 
 	// initialize a publisher for the topic related to the control of the robot's wheels
 	val pub = new Publisher("/" + robotId + "/move_base_simple/goal", "geometry_msgs/PoseStamped", bridge)
 
 	// wait for a call by the arm robot
-	in("itemReadyForTheDelivery")@Arm
 
 	// publish the destination position
 	val destination = new PoseStamped().headerFrameId("world").posePositionXY(x, y).poseOrientation(1.0)

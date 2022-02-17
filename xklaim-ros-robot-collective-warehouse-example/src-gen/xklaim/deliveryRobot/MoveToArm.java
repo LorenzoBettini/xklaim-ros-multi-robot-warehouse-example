@@ -35,8 +35,27 @@ public class MoveToArm extends KlavaProcess {
     final double y = 0.34;
     final RosBridge bridge = new RosBridge();
     bridge.connect(this.rosbridgeWebsocketURI, true);
+    String itemType = null;
+    Tuple _Tuple = new Tuple(new Object[] {"itemReadyForTheDelivery", String.class});
+    in(_Tuple, this.Arm);
+    itemType = (String) _Tuple.getItem(1);
+    if (itemType != null) {
+      switch (itemType) {
+        case "typeA":
+          this.robotId = "robot1";
+          break;
+        case "typeB":
+          this.robotId = "robot2";
+          break;
+        case "typeC":
+          this.robotId = "robot1";
+          break;
+        case "typeD":
+          this.robotId = "robot2";
+          break;
+      }
+    }
     final Publisher pub = new Publisher((("/" + this.robotId) + "/move_base_simple/goal"), "geometry_msgs/PoseStamped", bridge);
-    in(new Tuple(new Object[] {"itemReadyForTheDelivery"}), this.Arm);
     final PoseStamped destination = new PoseStamped().headerFrameId("world").posePositionXY(x, y).poseOrientation(1.0);
     pub.publish(destination);
     final RosListenDelegate _function = (JsonNode data, String stringRep) -> {

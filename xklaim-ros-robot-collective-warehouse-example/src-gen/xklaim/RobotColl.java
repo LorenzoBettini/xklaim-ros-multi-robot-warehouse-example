@@ -7,7 +7,6 @@ import klava.topology.ClientNode;
 import klava.topology.KlavaNodeCoordinator;
 import klava.topology.LogicalNet;
 import org.mikado.imc.common.IMCException;
-import xklaim.arm.Disappear;
 import xklaim.arm.GetDown;
 import xklaim.arm.GetUp;
 import xklaim.arm.GoToInitialPosition;
@@ -50,7 +49,7 @@ public class RobotColl extends LogicalNet {
             eval(_grip, this.self);
             GetUp _getUp = new GetUp(rosbridgeWebsocketURI);
             eval(_getUp, this.self);
-            Rotate _rotate = new Rotate(rosbridgeWebsocketURI);
+            Rotate _rotate = new Rotate(rosbridgeWebsocketURI, itemType);
             eval(_rotate, this.self);
             Lay _lay = new Lay(rosbridgeWebsocketURI);
             eval(_lay, this.self);
@@ -130,22 +129,17 @@ public class RobotColl extends LogicalNet {
     private static class SimuationHandlerProcess extends KlavaNodeCoordinator {
       @Override
       public void executeProcess() {
-        final String rosbridgeWebsocketURI = "ws://0.0.0.0:9090";
-        out(new Tuple(new Object[] {"item", "typeA", 0.583518, 0.0}), RobotColl.Arm);
-        out(new Tuple(new Object[] {"item", "typeB", 0.505014, 0.296477}), RobotColl.Arm);
-        out(new Tuple(new Object[] {"item", "typeA", (0.4905 - 0.3237)}), RobotColl.Arm);
-        out(new Tuple(new Object[] {"item", "typeB", 0.30, (-0.51)}), RobotColl.Arm);
+        out(new Tuple(new Object[] {"item", "typeA", 0.30, (-0.51)}), RobotColl.Arm);
+        out(new Tuple(new Object[] {"item", "typeB", 0.491347, (-0.322471)}), RobotColl.Arm);
+        out(new Tuple(new Object[] {"item", "typeC", 0.583518, 0.0}), RobotColl.Arm);
+        out(new Tuple(new Object[] {"item", "typeD", 0.504505, 0.3}), RobotColl.Arm);
         out(new Tuple(new Object[] {"type2destination", "typeA", (-8.0), (-8.80)}), RobotColl.DeliveryRobot1);
         out(new Tuple(new Object[] {"type2destination", "typeB", 8.9, (-8.3)}), RobotColl.DeliveryRobot1);
-        out(new Tuple(new Object[] {"type2destination", "typeA", 9.35, 8.60}), RobotColl.DeliveryRobot2);
-        out(new Tuple(new Object[] {"type2destination", "typeB", (-8.41), 8.3}), RobotColl.DeliveryRobot2);
+        out(new Tuple(new Object[] {"type2destination", "typeC", (-8.0), (-8.80)}), RobotColl.DeliveryRobot2);
+        out(new Tuple(new Object[] {"type2destination", "typeD", 8.9, (-8.3)}), RobotColl.DeliveryRobot2);
         out(new Tuple(new Object[] {"initialPosition"}), RobotColl.Arm);
         out(new Tuple(new Object[] {"availableForDelivery"}), RobotColl.DeliveryRobot1);
         out(new Tuple(new Object[] {"availableForDelivery"}), RobotColl.DeliveryRobot2);
-        Disappear _disappear = new Disappear(rosbridgeWebsocketURI, RobotColl.DeliveryRobot1);
-        eval(_disappear, this.self);
-        Disappear _disappear_1 = new Disappear(rosbridgeWebsocketURI, RobotColl.DeliveryRobot2);
-        eval(_disappear_1, this.self);
       }
     }
     
