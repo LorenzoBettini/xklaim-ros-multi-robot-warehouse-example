@@ -34,10 +34,7 @@ public class MoveToArm extends KlavaProcess {
     final double x = (-0.22);
     final double y = 0.34;
     final XklaimToRosConnection bridge = new XklaimToRosConnection(this.rosbridgeWebsocketURI);
-    String itemType = null;
-    Tuple _Tuple = new Tuple(new Object[] {"itemReadyForTheDelivery", String.class});
-    in(_Tuple, this.Arm);
-    itemType = (String) _Tuple.getItem(1);
+    in(new Tuple(new Object[] {"itemReadyForTheDelivery"}), this.Arm);
     final Publisher pub = new Publisher((("/" + this.robotId) + "/move_base_simple/goal"), "geometry_msgs/PoseStamped", bridge);
     final PoseStamped destination = new PoseStamped().headerFrameId("world").posePositionXY(x, y).poseOrientation(1.0);
     pub.publish(destination);

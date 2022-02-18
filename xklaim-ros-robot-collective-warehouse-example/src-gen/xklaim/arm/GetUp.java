@@ -19,15 +19,15 @@ import ros.SubscriptionRequestMsg;
 public class GetUp extends KlavaProcess {
   private String rosbridgeWebsocketURI;
   
-  private Double x_coordination;
+  private Double x;
   
-  private Double y_coordination;
+  private Double y;
   
-  public GetUp(final String rosbridgeWebsocketURI, final Double x_coordination, final Double y_coordination) {
+  public GetUp(final String rosbridgeWebsocketURI, final Double x, final Double y) {
     super("xklaim.arm.GetUp");
     this.rosbridgeWebsocketURI = rosbridgeWebsocketURI;
-    this.x_coordination = x_coordination;
-    this.y_coordination = y_coordination;
+    this.x = x;
+    this.y = y;
   }
   
   @Override
@@ -35,7 +35,7 @@ public class GetUp extends KlavaProcess {
     final Locality local = this.self;
     final XklaimToRosConnection bridge = new XklaimToRosConnection(this.rosbridgeWebsocketURI);
     final Publisher pub = new Publisher("/arm_controller/command", "trajectory_msgs/JointTrajectory", bridge);
-    double _divide = DoubleExtensions.operator_divide(this.y_coordination, this.x_coordination);
+    double _divide = DoubleExtensions.operator_divide(this.y, this.x);
     double _atan = Math.atan(_divide);
     double _minus = (_atan - 3.14);
     final List<Double> jointPositions = Collections.<Double>unmodifiableList(CollectionLiterals.<Double>newArrayList(Double.valueOf(_minus), Double.valueOf((-0.2862)), Double.valueOf((-0.5000)), Double.valueOf(3.1400), Double.valueOf(1.6613), Double.valueOf((-0.0142))));

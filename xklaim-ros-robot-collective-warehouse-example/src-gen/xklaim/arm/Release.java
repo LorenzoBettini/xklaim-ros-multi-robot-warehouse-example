@@ -18,11 +18,14 @@ import ros.SubscriptionRequestMsg;
 public class Release extends KlavaProcess {
   private String rosbridgeWebsocketURI;
   
+  private String itemId;
+  
   private String itemType;
   
-  public Release(final String rosbridgeWebsocketURI, final String itemType) {
+  public Release(final String rosbridgeWebsocketURI, final String itemId, final String itemType) {
     super("xklaim.arm.Release");
     this.rosbridgeWebsocketURI = rosbridgeWebsocketURI;
+    this.itemId = itemId;
     this.itemType = itemType;
   }
   
@@ -51,7 +54,7 @@ public class Release extends KlavaProcess {
       final double norm = Math.sqrt(delta);
       if ((norm <= tolerance)) {
         out(new Tuple(new Object[] {"releaseCompleted"}), local);
-        out(new Tuple(new Object[] {"gripperOpened", this.itemType}), local);
+        out(new Tuple(new Object[] {"gripperOpened", this.itemId, this.itemType}), local);
         bridge.unsubscribe("/gripper_controller/state");
       }
     };

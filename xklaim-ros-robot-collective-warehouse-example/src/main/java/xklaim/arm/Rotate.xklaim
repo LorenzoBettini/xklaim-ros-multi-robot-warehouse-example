@@ -5,7 +5,7 @@ import messages.XklaimToRosConnection
 import ros.Publisher
 import ros.SubscriptionRequestMsg
 
-proc Rotate(String rosbridgeWebsocketURI, String itemType) {
+proc Rotate(String rosbridgeWebsocketURI) {
 	val local = self
 
 	// connect to the ROS bridge
@@ -29,7 +29,7 @@ proc Rotate(String rosbridgeWebsocketURI, String itemType) {
 	in("getUpCompleted")@self
 
 	// call for a delivery robot
-	out("itemReadyForTheDelivery",itemType)@self
+	out("itemReadyForTheDelivery")@self
 	
 
 	// publish the trajectory to rotate the arm	 

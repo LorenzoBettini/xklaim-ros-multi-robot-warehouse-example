@@ -16,19 +16,19 @@ net RobotColl physical "localhost:9999" {
 		while (true) {
 			in("initialPosition")@self
 
-			in("item",var String itemId,var String itemType,var Double x_coordination, var Double y_coordination)@self
+			in("item",var String itemId,var String itemType,var Double x, var Double y)@self
 
-			eval(new GetDown(rosbridgeWebsocketURI, x_coordination, y_coordination))@self
+			eval(new GetDown(rosbridgeWebsocketURI, x, y))@self
 
 			eval(new Grip(rosbridgeWebsocketURI))@self
 
-			eval(new GetUp(rosbridgeWebsocketURI, x_coordination, y_coordination))@self
+			eval(new GetUp(rosbridgeWebsocketURI, x, y))@self
 
-			eval(new Rotate(rosbridgeWebsocketURI, itemType))@self
+			eval(new Rotate(rosbridgeWebsocketURI))@self
 
 			eval(new Lay(rosbridgeWebsocketURI))@self
 
-			eval(new Release(rosbridgeWebsocketURI, itemId))@self
+			eval(new Release(rosbridgeWebsocketURI, itemId, itemType))@self
 
 			eval(new GoToInitialPosition(rosbridgeWebsocketURI))@self
 

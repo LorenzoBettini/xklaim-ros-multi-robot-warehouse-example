@@ -19,10 +19,11 @@ proc DeliverItem(String rosbridgeWebsocketURI,String robotId,Locality Arm) {
 	val bridge = new XklaimToRosConnection(rosbridgeWebsocketURI)
 
 	// wait for the notification that the gripper is opened 
-	in("gripperOpened")@Arm 
+	in("gripperOpened",var String itemId,var String itemType)@Arm
+	val id = itemId
+
 	// retrieve from the local knowledge the destination coordinates
-	read("type2destination", var String itemId,var Double x,var Double y)@self
-		val ItemId = itemId
+	read("type2destination",itemType,var Double x,var Double y)@self
 	val destinationX = x
 	val destinationY = y
 	val deliveryDestination = new PoseStamped().headerFrameId("world").posePositionXY(x, y).poseOrientation(1.0)
@@ -76,7 +77,7 @@ proc DeliverItem(String rosbridgeWebsocketURI,String robotId,Locality Arm) {
 		        val modelstate = new ModelState()
 		        modelstate.pose.position.x = deliveryDestination.pose.position.x+0.3
 		        modelstate.pose.position.y = deliveryDestination.pose.position.y+0.3
-		        modelstate.model_name = ItemId
+		        modelstate.model_name = id
 		        modelstate.reference_frame="world"
 		        Pose_item.publish(modelstate)
 

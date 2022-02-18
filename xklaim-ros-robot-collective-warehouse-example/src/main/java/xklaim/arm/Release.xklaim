@@ -5,7 +5,7 @@ import messages.XklaimToRosConnection
 import ros.Publisher
 import ros.SubscriptionRequestMsg
 
-proc Release(String rosbridgeWebsocketURI,String itemType) {
+proc Release(String rosbridgeWebsocketURI,String itemId,String itemType) {
 	val local = self
 
 	// connect to the ROS bridge
@@ -47,7 +47,7 @@ proc Release(String rosbridgeWebsocketURI,String itemType) {
 				out("releaseCompleted")@local
 
 				// inform the delivery robot that the gripper is opened and communicate the item type
-				out("gripperOpened",itemType)@local
+				out("gripperOpened",itemId,itemType)@local
 
 				// unsubscribe from the griper state topic
 				bridge.unsubscribe("/gripper_controller/state")

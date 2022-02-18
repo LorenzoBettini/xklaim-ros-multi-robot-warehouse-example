@@ -38,16 +38,19 @@ public class DeliverItem extends KlavaProcess {
   public void executeProcess() {
     final Locality local = this.self;
     final XklaimToRosConnection bridge = new XklaimToRosConnection(this.rosbridgeWebsocketURI);
-    in(new Tuple(new Object[] {"gripperOpened"}), this.Arm);
     String itemId = null;
+    String itemType = null;
+    Tuple _Tuple = new Tuple(new Object[] {"gripperOpened", String.class, String.class});
+    in(_Tuple, this.Arm);
+    itemId = (String) _Tuple.getItem(1);
+    itemType = (String) _Tuple.getItem(2);
+    final String id = itemId;
     Double x = null;
     Double y = null;
-    Tuple _Tuple = new Tuple(new Object[] {"type2destination", String.class, Double.class, Double.class});
-    read(_Tuple, this.self);
-    itemId = (String) _Tuple.getItem(1);
-    x = (Double) _Tuple.getItem(2);
-    y = (Double) _Tuple.getItem(3);
-    final String ItemId = itemId;
+    Tuple _Tuple_1 = new Tuple(new Object[] {"type2destination", itemType, Double.class, Double.class});
+    read(_Tuple_1, this.self);
+    x = (Double) _Tuple_1.getItem(2);
+    y = (Double) _Tuple_1.getItem(3);
     final Double destinationX = x;
     final Double destinationY = y;
     final PoseStamped deliveryDestination = new PoseStamped().headerFrameId("world").posePositionXY((x).doubleValue(), (y).doubleValue()).poseOrientation(1.0);
@@ -83,7 +86,7 @@ public class DeliverItem extends KlavaProcess {
           final ModelState modelstate = new ModelState();
           modelstate.pose.position.x = (deliveryDestination.pose.position.x + 0.3);
           modelstate.pose.position.y = (deliveryDestination.pose.position.y + 0.3);
-          modelstate.model_name = ItemId;
+          modelstate.model_name = id;
           modelstate.reference_frame = "world";
           Pose_item.publish(modelstate);
           out(new Tuple(new Object[] {"itemDelivered", destinationX, destinationY}), local);

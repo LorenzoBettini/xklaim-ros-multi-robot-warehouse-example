@@ -18,15 +18,11 @@ proc MoveToArm(String rosbridgeWebsocketURI,String robotId,Locality Arm) {
 	// connect to the ROS bridge
 	val bridge = new XklaimToRosConnection(rosbridgeWebsocketURI)	
 	
-	in("itemReadyForTheDelivery", var String itemType)@Arm
+	// wait for a call by the arm robot
+	in("itemReadyForTheDelivery")@Arm
 	
-//allocation problem 	
- 
-
 	// initialize a publisher for the topic related to the control of the robot's wheels
 	val pub = new Publisher("/" + robotId + "/move_base_simple/goal", "geometry_msgs/PoseStamped", bridge)
-
-	// wait for a call by the arm robot
 
 	// publish the destination position
 	val destination = new PoseStamped().headerFrameId("world").posePositionXY(x, y).poseOrientation(1.0)
@@ -49,6 +45,7 @@ proc MoveToArm(String rosbridgeWebsocketURI,String robotId,Locality Arm) {
 			var deltaY = current_position.pose.pose.position.y - destination.pose.position.y
 			if (deltaX <= tolerance && deltaY <= tolerance) {
 				// the robot arrived to destination
+				
 				// stop the robot movement
 				val pubvel = new Publisher("/" + robotId + "/cmd_vel", "geometry_msgs/Twist", bridge)
 				val twistMsg = new Twist()

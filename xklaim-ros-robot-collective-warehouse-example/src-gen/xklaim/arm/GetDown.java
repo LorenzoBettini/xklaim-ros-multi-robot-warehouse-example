@@ -19,15 +19,15 @@ import ros.SubscriptionRequestMsg;
 public class GetDown extends KlavaProcess {
   private String rosbridgeWebsocketURI;
   
-  private Double x_coordination;
+  private Double x;
   
-  private Double y_coordination;
+  private Double y;
   
-  public GetDown(final String rosbridgeWebsocketURI, final Double x_coordination, final Double y_coordination) {
+  public GetDown(final String rosbridgeWebsocketURI, final Double x, final Double y) {
     super("xklaim.arm.GetDown");
     this.rosbridgeWebsocketURI = rosbridgeWebsocketURI;
-    this.x_coordination = x_coordination;
-    this.y_coordination = y_coordination;
+    this.x = x;
+    this.y = y;
   }
   
   @Override
@@ -35,13 +35,13 @@ public class GetDown extends KlavaProcess {
     final Locality local = this.self;
     final XklaimToRosConnection bridge = new XklaimToRosConnection(this.rosbridgeWebsocketURI);
     final Publisher pub = new Publisher("/arm_controller/command", "trajectory_msgs/JointTrajectory", bridge);
-    double _divide = DoubleExtensions.operator_divide(this.y_coordination, this.x_coordination);
+    double _divide = DoubleExtensions.operator_divide(this.y, this.x);
     double _atan = Math.atan(_divide);
     double _minus = (_atan - 3.14);
     final List<Double> trajectoryPositions = Collections.<Double>unmodifiableList(CollectionLiterals.<Double>newArrayList(Double.valueOf(_minus), Double.valueOf((-0.2169)), Double.valueOf((-0.5822)), Double.valueOf(3.14), Double.valueOf(1.66), Double.valueOf((-0.01412))));
     final JointTrajectory firstMovement = new JointTrajectory().positions(((double[])Conversions.unwrapArray(trajectoryPositions, double.class))).jointNames(
       new String[] { "joint1", "joint2", "joint3", "joint4", "joint5", "joint6" });
-    double _divide_1 = DoubleExtensions.operator_divide(this.y_coordination, this.x_coordination);
+    double _divide_1 = DoubleExtensions.operator_divide(this.y, this.x);
     double _atan_1 = Math.atan(_divide_1);
     double _minus_1 = (_atan_1 - 3.14);
     final List<Double> secondTrajectoryPositions = Collections.<Double>unmodifiableList(CollectionLiterals.<Double>newArrayList(Double.valueOf(_minus_1), Double.valueOf((-0.9975)), Double.valueOf((-0.4970)), Double.valueOf(3.1400), Double.valueOf(1.6613), Double.valueOf((-0.0142))));
