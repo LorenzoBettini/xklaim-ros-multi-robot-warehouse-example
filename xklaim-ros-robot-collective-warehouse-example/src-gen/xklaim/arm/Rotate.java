@@ -7,10 +7,10 @@ import klava.Locality;
 import klava.Tuple;
 import klava.topology.KlavaProcess;
 import messages.JointTrajectory;
+import messages.XklaimToRosConnection;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.Conversions;
 import ros.Publisher;
-import ros.RosBridge;
 import ros.RosListenDelegate;
 import ros.SubscriptionRequestMsg;
 
@@ -29,8 +29,7 @@ public class Rotate extends KlavaProcess {
   @Override
   public void executeProcess() {
     final Locality local = this.self;
-    final RosBridge bridge = new RosBridge();
-    bridge.connect(this.rosbridgeWebsocketURI, true);
+    final XklaimToRosConnection bridge = new XklaimToRosConnection(this.rosbridgeWebsocketURI);
     final Publisher pub = new Publisher("/arm_controller/command", "trajectory_msgs/JointTrajectory", bridge);
     final List<Double> jointPositions = Collections.<Double>unmodifiableList(CollectionLiterals.<Double>newArrayList(Double.valueOf((-0.9546)), Double.valueOf((-0.20)), Double.valueOf((-0.7241)), Double.valueOf(3.1400), Double.valueOf(1.6613), Double.valueOf((-0.0142))));
     final JointTrajectory rotateTrajectory = new JointTrajectory().positions(((double[])Conversions.unwrapArray(jointPositions, double.class))).jointNames(

@@ -7,10 +7,10 @@ import klava.Locality;
 import klava.Tuple;
 import klava.topology.KlavaProcess;
 import messages.JointTrajectory;
+import messages.XklaimToRosConnection;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.Conversions;
 import ros.Publisher;
-import ros.RosBridge;
 import ros.RosListenDelegate;
 import ros.SubscriptionRequestMsg;
 
@@ -26,8 +26,7 @@ public class Lay extends KlavaProcess {
   @Override
   public void executeProcess() {
     final Locality local = this.self;
-    final RosBridge bridge = new RosBridge();
-    bridge.connect(this.rosbridgeWebsocketURI, true);
+    final XklaimToRosConnection bridge = new XklaimToRosConnection(this.rosbridgeWebsocketURI);
     final Publisher pub = new Publisher("/arm_controller/command", "trajectory_msgs/JointTrajectory", bridge);
     in(new Tuple(new Object[] {"rotationCompleted"}), this.self);
     in(new Tuple(new Object[] {"ready"}), this.self);

@@ -12,10 +12,10 @@ import messages.ModelState;
 import messages.PoseStamped;
 import messages.PoseWithCovarianceStamped;
 import messages.Twist;
+import messages.XklaimToRosConnection;
 import org.eclipse.xtext.xbase.lib.Conversions;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 import ros.Publisher;
-import ros.RosBridge;
 import ros.RosListenDelegate;
 import ros.SubscriptionRequestMsg;
 
@@ -37,8 +37,7 @@ public class DeliverItem extends KlavaProcess {
   @Override
   public void executeProcess() {
     final Locality local = this.self;
-    final RosBridge bridge = new RosBridge();
-    bridge.connect(this.rosbridgeWebsocketURI, true);
+    final XklaimToRosConnection bridge = new XklaimToRosConnection(this.rosbridgeWebsocketURI);
     String itemType = null;
     Tuple _Tuple = new Tuple(new Object[] {"gripperOpened", String.class});
     in(_Tuple, this.Arm);

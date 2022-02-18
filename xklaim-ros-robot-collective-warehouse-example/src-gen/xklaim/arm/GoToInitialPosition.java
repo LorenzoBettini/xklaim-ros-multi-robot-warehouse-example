@@ -7,11 +7,11 @@ import klava.Locality;
 import klava.Tuple;
 import klava.topology.KlavaProcess;
 import messages.JointTrajectory;
+import messages.XklaimToRosConnection;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.Conversions;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 import ros.Publisher;
-import ros.RosBridge;
 import ros.RosListenDelegate;
 import ros.SubscriptionRequestMsg;
 
@@ -28,8 +28,7 @@ public class GoToInitialPosition extends KlavaProcess {
   public void executeProcess() {
     try {
       final Locality local = this.self;
-      final RosBridge bridge = new RosBridge();
-      bridge.connect(this.rosbridgeWebsocketURI, true);
+      final XklaimToRosConnection bridge = new XklaimToRosConnection(this.rosbridgeWebsocketURI);
       in(new Tuple(new Object[] {"releaseCompleted"}), this.self);
       Thread.sleep(1000);
       final Publisher pub = new Publisher("/arm_controller/command", "trajectory_msgs/JointTrajectory", bridge);

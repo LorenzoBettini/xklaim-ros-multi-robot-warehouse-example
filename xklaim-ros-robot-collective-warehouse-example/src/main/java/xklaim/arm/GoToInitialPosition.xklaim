@@ -1,16 +1,15 @@
 package xklaim.arm
 
 import messages.JointTrajectory
+import messages.XklaimToRosConnection
 import ros.Publisher
-import ros.RosBridge
 import ros.SubscriptionRequestMsg
 
 proc GoToInitialPosition(String rosbridgeWebsocketURI) {
 	val local = self
 
-	// Create the bridge and connect it to the ROS bridge
-	val bridge = new RosBridge()
-	bridge.connect(rosbridgeWebsocketURI, true)
+	// connect to the ROS bridge
+	val bridge = new XklaimToRosConnection(rosbridgeWebsocketURI)
 
 	// wait for the completion of the release of the item
 	in("releaseCompleted")@self

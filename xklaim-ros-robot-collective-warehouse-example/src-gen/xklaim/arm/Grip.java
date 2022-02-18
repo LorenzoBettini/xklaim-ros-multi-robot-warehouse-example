@@ -7,10 +7,10 @@ import klava.Locality;
 import klava.Tuple;
 import klava.topology.KlavaProcess;
 import messages.JointTrajectory;
+import messages.XklaimToRosConnection;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.Conversions;
 import ros.Publisher;
-import ros.RosBridge;
 import ros.RosListenDelegate;
 import ros.SubscriptionRequestMsg;
 
@@ -26,8 +26,7 @@ public class Grip extends KlavaProcess {
   @Override
   public void executeProcess() {
     final Locality local = this.self;
-    final RosBridge bridge = new RosBridge();
-    bridge.connect(this.rosbridgeWebsocketURI, true);
+    final XklaimToRosConnection bridge = new XklaimToRosConnection(this.rosbridgeWebsocketURI);
     final Publisher pub = new Publisher("/gripper_controller/command", "trajectory_msgs/JointTrajectory", bridge);
     final List<Double> gripperPositions = Collections.<Double>unmodifiableList(CollectionLiterals.<Double>newArrayList(Double.valueOf(0.0138), Double.valueOf((-0.0138))));
     final JointTrajectory grip = new JointTrajectory().positions(((double[])Conversions.unwrapArray(gripperPositions, double.class))).jointNames(

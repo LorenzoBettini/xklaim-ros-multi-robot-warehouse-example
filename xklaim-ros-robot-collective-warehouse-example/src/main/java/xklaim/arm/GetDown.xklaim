@@ -1,17 +1,16 @@
 package xklaim.arm
 
 import messages.JointTrajectory
+import messages.XklaimToRosConnection
 import ros.Publisher
-import ros.RosBridge
 import ros.SubscriptionRequestMsg
 
 proc GetDown(String rosbridgeWebsocketURI, Double x_coordination, Double y_coordination) {
 	val local = self;
 
-	// create the bridge and connect it to the ROS bridge
-	val bridge = new RosBridge()
-	bridge.connect(rosbridgeWebsocketURI, true)
-
+	// connect to the ROS bridge
+	val bridge = new XklaimToRosConnection(rosbridgeWebsocketURI)
+	
 	// initialize a publisher for the topic related to the control of the movements of the arm robot 
 	val pub = new Publisher("/arm_controller/command", "trajectory_msgs/JointTrajectory", bridge)
 	val trajectoryPositions = #[Math.atan(y_coordination/x_coordination)-3.14, -0.2169, -0.5822, 3.14, 1.66, -0.01412]

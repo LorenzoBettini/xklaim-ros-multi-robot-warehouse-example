@@ -2,21 +2,21 @@ package xklaim.deliveryRobot
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
+import klava.Locality
 import messages.ContactsState
+import messages.ModelState
 import messages.PoseStamped
 import messages.PoseWithCovarianceStamped
 import messages.Twist
+import messages.XklaimToRosConnection
 import ros.Publisher
-import ros.RosBridge
 import ros.SubscriptionRequestMsg
-import messages.ModelState
 
 proc DeliverItem(String rosbridgeWebsocketURI,String robotId,Locality Arm) {
 	val local = self
 
-	// create the bridge and connect it to the ROS bridge
-	val bridge = new RosBridge()
-	bridge.connect(rosbridgeWebsocketURI, true)
+	// connect to the ROS bridge
+	val bridge = new XklaimToRosConnection(rosbridgeWebsocketURI)
 
 	// wait for the notification that the gripper is opened 
 	in("gripperOpened",var String itemType)@Arm 

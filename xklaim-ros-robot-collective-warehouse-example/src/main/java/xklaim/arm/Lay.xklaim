@@ -1,16 +1,15 @@
 package xklaim.arm
 
 import messages.JointTrajectory
+import messages.XklaimToRosConnection
 import ros.Publisher
-import ros.RosBridge
 import ros.SubscriptionRequestMsg
 
 proc Lay(String rosbridgeWebsocketURI) {
 	val local = self
 
-	// Create the bridge and connect it to the ROS bridge
-	val bridge = new RosBridge()
-	bridge.connect(rosbridgeWebsocketURI, true)
+	// connect to the ROS bridge
+	val bridge = new XklaimToRosConnection(rosbridgeWebsocketURI)
 
 	// Initialize a publisher for the topic related to the control of the robot's arm
 	val pub = new Publisher("/arm_controller/command", "trajectory_msgs/JointTrajectory", bridge);

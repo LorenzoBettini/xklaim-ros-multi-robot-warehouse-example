@@ -7,9 +7,9 @@ import klava.Tuple;
 import klava.topology.KlavaProcess;
 import messages.PoseStamped;
 import messages.PoseWithCovarianceStamped;
+import messages.XklaimToRosConnection;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 import ros.Publisher;
-import ros.RosBridge;
 import ros.RosListenDelegate;
 import ros.SubscriptionRequestMsg;
 import ros.msgs.geometry_msgs.Twist;
@@ -33,8 +33,7 @@ public class MoveToArm extends KlavaProcess {
   public void executeProcess() {
     final double x = (-0.22);
     final double y = 0.34;
-    final RosBridge bridge = new RosBridge();
-    bridge.connect(this.rosbridgeWebsocketURI, true);
+    final XklaimToRosConnection bridge = new XklaimToRosConnection(this.rosbridgeWebsocketURI);
     String itemType = null;
     Tuple _Tuple = new Tuple(new Object[] {"itemReadyForTheDelivery", String.class});
     in(_Tuple, this.Arm);

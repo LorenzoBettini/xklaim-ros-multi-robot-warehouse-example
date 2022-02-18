@@ -1,16 +1,15 @@
 package xklaim.arm
 
 import messages.JointTrajectory
+import messages.XklaimToRosConnection
 import ros.Publisher
-import ros.RosBridge
 import ros.SubscriptionRequestMsg
 
 proc Grip(String rosbridgeWebsocketURI) {
 	val local = self
 
-	// create the bridge and connect it to the ROS bridge
-	val bridge = new RosBridge()
-	bridge.connect(rosbridgeWebsocketURI, true)
+	// connect to the ROS bridge
+	val bridge = new XklaimToRosConnection(rosbridgeWebsocketURI)
 
 	// initialize a publisher for the topic related to the control of the arm's gripper
 	val pub = new Publisher("/gripper_controller/command", "trajectory_msgs/JointTrajectory", bridge)
