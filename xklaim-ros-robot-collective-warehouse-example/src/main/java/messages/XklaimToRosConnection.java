@@ -2,11 +2,13 @@ package messages;
 
 import java.net.URI;
 
+import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import org.eclipse.jetty.websocket.client.ClientUpgradeRequest;
 import org.eclipse.jetty.websocket.client.WebSocketClient;
 
 import ros.RosBridge;
 
+@WebSocket
 public class XklaimToRosConnection extends RosBridge {
 	public XklaimToRosConnection(String rosbridgeWebsocketURI) {
 		long timeout = 900000;
