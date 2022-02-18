@@ -16,7 +16,7 @@ proc Grip(String rosbridgeWebsocketURI) {
 	val pub = new Publisher("/gripper_controller/command", "trajectory_msgs/JointTrajectory", bridge)
 
 	// set joint positions for performing the first movement of the arm
-	val gripperPositions = #[0.0159, -0.0159]
+	val gripperPositions = #[0.0138, -0.0138]
 	val JointTrajectory grip = new JointTrajectory().positions(gripperPositions).jointNames(#[
 		"f_joint1",
 		"f_joint2"

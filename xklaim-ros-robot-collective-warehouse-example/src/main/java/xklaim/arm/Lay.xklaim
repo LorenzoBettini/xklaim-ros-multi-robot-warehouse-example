@@ -22,7 +22,7 @@ proc Lay(String rosbridgeWebsocketURI) {
 	in("ready")@self
 
 	val jointPositions = #[
-		5.328,
+		-0.9546,
 		-0.0097,
 		-0.9513,
 		3.1400,
@@ -45,7 +45,7 @@ proc Lay(String rosbridgeWebsocketURI) {
 		[ data, stringRep |
 			val actual = data.get("msg").get("actual").get("positions")
 			var delta = 0.0
-			val tolerance = 0.001
+			val tolerance = 0.002
 			for (var i = 0; i < 6; i = i + 1) {
 				delta += Math.pow(actual.get(i).asDouble() - jointPositions.get(i), 2.0)
 			}

@@ -27,9 +27,9 @@ proc MoveToArm(String rosbridgeWebsocketURI,String robotId,Locality Arm) {
     case "typeB":
     robotId="robot2"
     case "typeC":
-    robotId="robot1"
-    case "typeD":
     robotId="robot2"
+    case "typeD":
+    robotId="robot1"
     }
 
 	// initialize a publisher for the topic related to the control of the robot's wheels

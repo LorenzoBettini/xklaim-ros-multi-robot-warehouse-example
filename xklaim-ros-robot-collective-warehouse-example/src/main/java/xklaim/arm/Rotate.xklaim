@@ -16,7 +16,7 @@ proc Rotate(String rosbridgeWebsocketURI, String itemType) {
 	val pub = new Publisher("/arm_controller/command", "trajectory_msgs/JointTrajectory", bridge)
 
 	// set joint positions for performing the rotate movement of the arm
-	val jointPositions = #[5.328, -0.20, -0.7241, 3.1400, 1.6613, -0.0142]
+	val jointPositions = #[-0.9546, -0.20, -0.7241, 3.1400, 1.6613, -0.0142]
 	val JointTrajectory rotateTrajectory = new JointTrajectory().positions(jointPositions).jointNames(#[
 		"joint1",
 		"joint2",

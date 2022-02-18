@@ -20,7 +20,6 @@ proc GoToInitialPosition(String rosbridgeWebsocketURI) {
 
 	// Initialize a publisher for the topic related to the control of the robot arm
 	val pub = new Publisher("/arm_controller/command", "trajectory_msgs/JointTrajectory", bridge);
-
 	val jointPositions = #[
 		0.000,
 		0.000,
@@ -60,7 +59,7 @@ proc GoToInitialPosition(String rosbridgeWebsocketURI) {
 				// the arm has completed the movement
 				// notify that it has reached the initial position
 				out("initialPosition")@local
-
+                
 				// unsubscribe from the arm state topic
 				bridge.unsubscribe("/arm_controller/state")
 			}

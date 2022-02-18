@@ -9,11 +9,10 @@ import xklaim.arm.Release
 import xklaim.arm.GoToInitialPosition
 import xklaim.deliveryRobot.MoveToArm
 import xklaim.deliveryRobot.DeliverItem
-
+ 
 net RobotColl physical "localhost:9999" {
 	node Arm {
 		val rosbridgeWebsocketURI = "ws://0.0.0.0:9090"
-
 		while (true) {
 			in("initialPosition")@self
 
@@ -23,7 +22,7 @@ net RobotColl physical "localhost:9999" {
 
 			eval(new Grip(rosbridgeWebsocketURI))@self
 
-			eval(new GetUp(rosbridgeWebsocketURI))@self
+			eval(new GetUp(rosbridgeWebsocketURI, x_coordination, y_coordination))@self
 
 			eval(new Rotate(rosbridgeWebsocketURI, itemType))@self
 
@@ -32,6 +31,7 @@ net RobotColl physical "localhost:9999" {
 			eval(new Release(rosbridgeWebsocketURI, itemType))@self
 
 			eval(new GoToInitialPosition(rosbridgeWebsocketURI))@self
+
 		}
 
 	}
@@ -74,8 +74,10 @@ net RobotColl physical "localhost:9999" {
 		 * the jointTrajectories for picking the item (however this could be not easy to do).   
 		 */
 		 
-		out("item","typeA",0.30, -0.51)@Arm    //(x,y)coordinates item_1
-	    out("item","typeB",0.491347, -0.322471)@Arm         //(x,y)coordinates item_2   		                                                    
+		 
+		 
+		//out("item","typeA",0.30, -0.51)@Arm    //(x,y)coordinates item_1
+	    //out("item","typeB",0.491347, 0.322471)@Arm         //(x,y)coordinates item_2   		                                                    
 	    out("item","typeC",0.583518, 0.0)@Arm               //(x,y)coordinates item_3
 		out("item","typeD",0.504505, 0.3)@Arm                    //(x,y)coordinates item_4
 		// insert mapping between item types and destinations in the delivery robots' local knowledge (i.e., their tuple spaces)
@@ -86,9 +88,9 @@ net RobotColl physical "localhost:9999" {
 		 * 
 		 */
 		out("type2destination","typeA",-8.0,-8.80)@DeliveryRobot1
-		out("type2destination","typeB",8.9,-8.3)@DeliveryRobot1
+		out("type2destination","typeB",8.9,-8.3)@DeliveryRobot2
 		out("type2destination","typeC",-8.0,-8.80)@DeliveryRobot2
-		out("type2destination","typeD",8.9,-8.3)@DeliveryRobot2
+		out("type2destination","typeD",8.9,-8.3)@DeliveryRobot1
 
 		// activate the arm robot by inserting the information that it is in the initial position
 		out("initialPosition")@Arm

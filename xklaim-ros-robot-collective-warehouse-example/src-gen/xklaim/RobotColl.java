@@ -47,7 +47,7 @@ public class RobotColl extends LogicalNet {
             eval(_getDown, this.self);
             Grip _grip = new Grip(rosbridgeWebsocketURI);
             eval(_grip, this.self);
-            GetUp _getUp = new GetUp(rosbridgeWebsocketURI);
+            GetUp _getUp = new GetUp(rosbridgeWebsocketURI, x_coordination, y_coordination);
             eval(_getUp, this.self);
             Rotate _rotate = new Rotate(rosbridgeWebsocketURI, itemType);
             eval(_rotate, this.self);
@@ -129,14 +129,12 @@ public class RobotColl extends LogicalNet {
     private static class SimuationHandlerProcess extends KlavaNodeCoordinator {
       @Override
       public void executeProcess() {
-        out(new Tuple(new Object[] {"item", "typeA", 0.30, (-0.51)}), RobotColl.Arm);
-        out(new Tuple(new Object[] {"item", "typeB", 0.491347, (-0.322471)}), RobotColl.Arm);
         out(new Tuple(new Object[] {"item", "typeC", 0.583518, 0.0}), RobotColl.Arm);
         out(new Tuple(new Object[] {"item", "typeD", 0.504505, 0.3}), RobotColl.Arm);
         out(new Tuple(new Object[] {"type2destination", "typeA", (-8.0), (-8.80)}), RobotColl.DeliveryRobot1);
-        out(new Tuple(new Object[] {"type2destination", "typeB", 8.9, (-8.3)}), RobotColl.DeliveryRobot1);
+        out(new Tuple(new Object[] {"type2destination", "typeB", 8.9, (-8.3)}), RobotColl.DeliveryRobot2);
         out(new Tuple(new Object[] {"type2destination", "typeC", (-8.0), (-8.80)}), RobotColl.DeliveryRobot2);
-        out(new Tuple(new Object[] {"type2destination", "typeD", 8.9, (-8.3)}), RobotColl.DeliveryRobot2);
+        out(new Tuple(new Object[] {"type2destination", "typeD", 8.9, (-8.3)}), RobotColl.DeliveryRobot1);
         out(new Tuple(new Object[] {"initialPosition"}), RobotColl.Arm);
         out(new Tuple(new Object[] {"availableForDelivery"}), RobotColl.DeliveryRobot1);
         out(new Tuple(new Object[] {"availableForDelivery"}), RobotColl.DeliveryRobot2);

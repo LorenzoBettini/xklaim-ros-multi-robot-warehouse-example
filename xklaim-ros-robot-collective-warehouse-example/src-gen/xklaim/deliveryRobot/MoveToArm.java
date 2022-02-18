@@ -48,10 +48,10 @@ public class MoveToArm extends KlavaProcess {
           this.robotId = "robot2";
           break;
         case "typeC":
-          this.robotId = "robot1";
+          this.robotId = "robot2";
           break;
         case "typeD":
-          this.robotId = "robot2";
+          this.robotId = "robot1";
           break;
       }
     }

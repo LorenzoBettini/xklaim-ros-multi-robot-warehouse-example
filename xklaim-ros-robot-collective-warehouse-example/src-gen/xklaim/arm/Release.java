@@ -40,7 +40,7 @@ public class Release extends KlavaProcess {
     final RosListenDelegate _function = (JsonNode data, String stringRep) -> {
       final JsonNode actual = data.get("msg").get("actual").get("positions");
       double delta = 0.0;
-      final double tolerance = 0.0009;
+      final double tolerance = 0.0008;
       for (int i = 0; (i < jointPositions.size()); i = (i + 1)) {
         double _delta = delta;
         double _asDouble = actual.get(i).asDouble();
