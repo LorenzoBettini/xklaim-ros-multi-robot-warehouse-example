@@ -38,22 +38,6 @@ public class MoveToArm extends KlavaProcess {
     Tuple _Tuple = new Tuple(new Object[] {"itemReadyForTheDelivery", String.class});
     in(_Tuple, this.Arm);
     itemType = (String) _Tuple.getItem(1);
-    if (itemType != null) {
-      switch (itemType) {
-        case "typeA":
-          this.robotId = "robot1";
-          break;
-        case "typeB":
-          this.robotId = "robot2";
-          break;
-        case "typeC":
-          this.robotId = "robot2";
-          break;
-        case "typeD":
-          this.robotId = "robot1";
-          break;
-      }
-    }
     final Publisher pub = new Publisher((("/" + this.robotId) + "/move_base_simple/goal"), "geometry_msgs/PoseStamped", bridge);
     final PoseStamped destination = new PoseStamped().headerFrameId("world").posePositionXY(x, y).poseOrientation(1.0);
     pub.publish(destination);

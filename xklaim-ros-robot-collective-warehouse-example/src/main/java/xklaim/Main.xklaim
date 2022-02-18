@@ -16,7 +16,7 @@ net RobotColl physical "localhost:9999" {
 		while (true) {
 			in("initialPosition")@self
 
-			in("item",var String itemType,var Double x_coordination, var Double y_coordination)@self
+			in("item",var String itemId,var String itemType,var Double x_coordination, var Double y_coordination)@self
 
 			eval(new GetDown(rosbridgeWebsocketURI, x_coordination, y_coordination))@self
 
@@ -28,7 +28,7 @@ net RobotColl physical "localhost:9999" {
 
 			eval(new Lay(rosbridgeWebsocketURI))@self
 
-			eval(new Release(rosbridgeWebsocketURI, itemType))@self
+			eval(new Release(rosbridgeWebsocketURI, itemId))@self
 
 			eval(new GoToInitialPosition(rosbridgeWebsocketURI))@self
 
@@ -75,10 +75,10 @@ net RobotColl physical "localhost:9999" {
 		 */
 		 
 		 
-		out("item","typeA",0.583518, 0.0)@Arm    //(x,y)coordinates item_1 
-	    out("item","typeB",0.554542, 0.187360)@Arm         //(x,y)coordinates item_2 	
-	    out("item","typeC",0.504, 0.307)@Arm   //(x,y)coordinates item_3	                                                    
-	    out("item","typeD",0.332977,0.470854)@Arm    //(x,y)coordinates item_4
+		out("item","idem1","typeA",0.583518, 0.0)@Arm    //(x,y)coordinates item_1 
+	    out("item","idem2","typeB",0.554542, 0.187360)@Arm         //(x,y)coordinates item_2 	
+	    out("item","idem3","typeA",0.504, 0.307)@Arm   //(x,y)coordinates item_3	                                                    
+	    out("item","idem4","typeB",0.332977,0.470854)@Arm    //(x,y)coordinates item_4
 		                 
 		// insert mapping between item types and destinations in the delivery robots' local knowledge (i.e., their tuple spaces)
 		/* Notably, different robot may use different mappings. Indeed we have three destinations
@@ -87,10 +87,10 @@ net RobotColl physical "localhost:9999" {
 		 * two robots. Of course this is the idea, let us see how to better deal with this aspect of the scenario....
 		 * 
 		 */
-		out("type2destination","typeA",-8.0,-8.80)@DeliveryRobot1
-		out("type2destination","typeB",8.9,-8.3)@DeliveryRobot2
-		out("type2destination","typeC",-8.0,-8.80)@DeliveryRobot2
-		out("type2destination","typeD",8.9,-8.3)@DeliveryRobot1
+		out("type2destination","idem1","typeA",-8.0,-8.80)@DeliveryRobot1
+		out("type2destination","idem2","typeB",-8.41,8.5)@DeliveryRobot2
+		out("type2destination","idem3","typeA",9.34,8.65)@DeliveryRobot1
+		out("type2destination","idem4","typeB",8.9,-8.5)@DeliveryRobot2
 
 		// activate the arm robot by inserting the information that it is in the initial position
 		out("initialPosition")@Arm

@@ -21,16 +21,7 @@ proc MoveToArm(String rosbridgeWebsocketURI,String robotId,Locality Arm) {
 	in("itemReadyForTheDelivery", var String itemType)@Arm
 	
 //allocation problem 	
-    switch (itemType) {
-    case "typeA":
-    robotId="robot1"
-    case "typeB":
-    robotId="robot2"
-    case "typeC":
-    robotId="robot2"
-    case "typeD":
-    robotId="robot1"
-    }
+ 
 
 	// initialize a publisher for the topic related to the control of the robot's wheels
 	val pub = new Publisher("/" + robotId + "/move_base_simple/goal", "geometry_msgs/PoseStamped", bridge)

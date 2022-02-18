@@ -35,14 +35,16 @@ public class RobotColl extends LogicalNet {
         while (true) {
           {
             in(new Tuple(new Object[] {"initialPosition"}), this.self);
+            String itemId = null;
             String itemType = null;
             Double x_coordination = null;
             Double y_coordination = null;
-            Tuple _Tuple = new Tuple(new Object[] {"item", String.class, Double.class, Double.class});
+            Tuple _Tuple = new Tuple(new Object[] {"item", String.class, String.class, Double.class, Double.class});
             in(_Tuple, this.self);
-            itemType = (String) _Tuple.getItem(1);
-            x_coordination = (Double) _Tuple.getItem(2);
-            y_coordination = (Double) _Tuple.getItem(3);
+            itemId = (String) _Tuple.getItem(1);
+            itemType = (String) _Tuple.getItem(2);
+            x_coordination = (Double) _Tuple.getItem(3);
+            y_coordination = (Double) _Tuple.getItem(4);
             GetDown _getDown = new GetDown(rosbridgeWebsocketURI, x_coordination, y_coordination);
             eval(_getDown, this.self);
             Grip _grip = new Grip(rosbridgeWebsocketURI);
@@ -53,7 +55,7 @@ public class RobotColl extends LogicalNet {
             eval(_rotate, this.self);
             Lay _lay = new Lay(rosbridgeWebsocketURI);
             eval(_lay, this.self);
-            Release _release = new Release(rosbridgeWebsocketURI, itemType);
+            Release _release = new Release(rosbridgeWebsocketURI, itemId);
             eval(_release, this.self);
             GoToInitialPosition _goToInitialPosition = new GoToInitialPosition(rosbridgeWebsocketURI);
             eval(_goToInitialPosition, this.self);
@@ -129,14 +131,14 @@ public class RobotColl extends LogicalNet {
     private static class SimuationHandlerProcess extends KlavaNodeCoordinator {
       @Override
       public void executeProcess() {
-        out(new Tuple(new Object[] {"item", "typeA", 0.583518, 0.0}), RobotColl.Arm);
-        out(new Tuple(new Object[] {"item", "typeB", 0.554542, 0.187360}), RobotColl.Arm);
-        out(new Tuple(new Object[] {"item", "typeC", 0.504, 0.307}), RobotColl.Arm);
-        out(new Tuple(new Object[] {"item", "typeD", 0.332977, 0.470854}), RobotColl.Arm);
-        out(new Tuple(new Object[] {"type2destination", "typeA", (-8.0), (-8.80)}), RobotColl.DeliveryRobot1);
-        out(new Tuple(new Object[] {"type2destination", "typeB", 8.9, (-8.3)}), RobotColl.DeliveryRobot2);
-        out(new Tuple(new Object[] {"type2destination", "typeC", (-8.0), (-8.80)}), RobotColl.DeliveryRobot2);
-        out(new Tuple(new Object[] {"type2destination", "typeD", 8.9, (-8.3)}), RobotColl.DeliveryRobot1);
+        out(new Tuple(new Object[] {"item", "idem1", "typeA", 0.583518, 0.0}), RobotColl.Arm);
+        out(new Tuple(new Object[] {"item", "idem2", "typeB", 0.554542, 0.187360}), RobotColl.Arm);
+        out(new Tuple(new Object[] {"item", "idem3", "typeA", 0.504, 0.307}), RobotColl.Arm);
+        out(new Tuple(new Object[] {"item", "idem4", "typeB", 0.332977, 0.470854}), RobotColl.Arm);
+        out(new Tuple(new Object[] {"type2destination", "idem1", "typeA", (-8.0), (-8.80)}), RobotColl.DeliveryRobot1);
+        out(new Tuple(new Object[] {"type2destination", "idem2", "typeB", (-8.41), 8.5}), RobotColl.DeliveryRobot2);
+        out(new Tuple(new Object[] {"type2destination", "idem3", "typeA", 9.34, 8.65}), RobotColl.DeliveryRobot1);
+        out(new Tuple(new Object[] {"type2destination", "idem4", "typeB", 8.9, (-8.5)}), RobotColl.DeliveryRobot2);
         out(new Tuple(new Object[] {"initialPosition"}), RobotColl.Arm);
         out(new Tuple(new Object[] {"availableForDelivery"}), RobotColl.DeliveryRobot1);
         out(new Tuple(new Object[] {"availableForDelivery"}), RobotColl.DeliveryRobot2);
