@@ -9,7 +9,7 @@ import xklaim.arm.Release
 import xklaim.arm.GoToInitialPosition
 import xklaim.deliveryRobot.MoveToArm
 import xklaim.deliveryRobot.DeliverItem
- 
+
 net RobotColl physical "localhost:9999" {
 	node Arm {
 		val rosbridgeWebsocketURI = "ws://0.0.0.0:9090"
@@ -75,11 +75,11 @@ net RobotColl physical "localhost:9999" {
 		 */
 		 
 		 
-		 
-		//out("item","typeA",0.30, -0.51)@Arm    //(x,y)coordinates item_1
-	    //out("item","typeB",0.491347, 0.322471)@Arm         //(x,y)coordinates item_2   		                                                    
-	    out("item","typeC",0.583518, 0.0)@Arm               //(x,y)coordinates item_3
-		out("item","typeD",0.504505, 0.3)@Arm                    //(x,y)coordinates item_4
+		out("item","typeA",0.583518, 0.0)@Arm    //(x,y)coordinates item_1 
+	    out("item","typeB",0.554542, 0.187360)@Arm         //(x,y)coordinates item_2 	
+	    out("item","typeC",0.504, 0.307)@Arm   //(x,y)coordinates item_3	                                                    
+	    out("item","typeD",0.332977,0.470854)@Arm    //(x,y)coordinates item_4
+		                 
 		// insert mapping between item types and destinations in the delivery robots' local knowledge (i.e., their tuple spaces)
 		/* Notably, different robot may use different mappings. Indeed we have three destinations
 		 * (i.e., (12.0,34.0),(67.0,14.0) and (134.0,49.0)) and both delivery robots deliver items of type A 

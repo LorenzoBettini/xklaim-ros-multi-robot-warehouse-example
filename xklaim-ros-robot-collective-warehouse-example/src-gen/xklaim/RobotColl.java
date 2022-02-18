@@ -129,8 +129,10 @@ public class RobotColl extends LogicalNet {
     private static class SimuationHandlerProcess extends KlavaNodeCoordinator {
       @Override
       public void executeProcess() {
-        out(new Tuple(new Object[] {"item", "typeC", 0.583518, 0.0}), RobotColl.Arm);
-        out(new Tuple(new Object[] {"item", "typeD", 0.504505, 0.3}), RobotColl.Arm);
+        out(new Tuple(new Object[] {"item", "typeA", 0.583518, 0.0}), RobotColl.Arm);
+        out(new Tuple(new Object[] {"item", "typeB", 0.554542, 0.187360}), RobotColl.Arm);
+        out(new Tuple(new Object[] {"item", "typeC", 0.504, 0.307}), RobotColl.Arm);
+        out(new Tuple(new Object[] {"item", "typeD", 0.332977, 0.470854}), RobotColl.Arm);
         out(new Tuple(new Object[] {"type2destination", "typeA", (-8.0), (-8.80)}), RobotColl.DeliveryRobot1);
         out(new Tuple(new Object[] {"type2destination", "typeB", 8.9, (-8.3)}), RobotColl.DeliveryRobot2);
         out(new Tuple(new Object[] {"type2destination", "typeC", (-8.0), (-8.80)}), RobotColl.DeliveryRobot2);
