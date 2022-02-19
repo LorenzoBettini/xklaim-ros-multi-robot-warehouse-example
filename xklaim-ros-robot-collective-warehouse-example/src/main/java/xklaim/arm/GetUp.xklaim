@@ -15,7 +15,7 @@ proc GetUp(String rosbridgeWebsocketURI, Double x, Double y) {
 	val pub = new Publisher("/arm_controller/command", "trajectory_msgs/JointTrajectory", bridge)
 
 	// set joint positions for performing the get up movement of the arm
-	val jointPositions = #[Math.atan(y/x)-3.14, -0.2862, -0.5000, 3.1400, 1.6613, -0.0142]
+	val jointPositions = #[Math.atan(y / x) - 3.14, -0.2862, -0.5000, 3.1400, 1.6613, -0.0142]
 	val JointTrajectory getUpJointTrajectory = new JointTrajectory().positions(jointPositions).jointNames(#[
 		"joint1",
 		"joint2",
@@ -27,6 +27,7 @@ proc GetUp(String rosbridgeWebsocketURI, Double x, Double y) {
 
 	// wait for the completion of the grip
 	in("gripCompleted")@self
+
 	// publish the trajectory to move up the arm	 
 	pub.publish(getUpJointTrajectory)
 
@@ -47,8 +48,7 @@ proc GetUp(String rosbridgeWebsocketURI, Double x, Double y) {
 			}
 			val norm = Math.sqrt(delta)
 
-			if (norm <= tolerance) {
-				// the arm has completed the grip movement
+			if (norm <= tolerance) { /* the arm has completed the grip movement */
 				// activate the rotate process
 				out("getUpCompleted")@local
 

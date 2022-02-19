@@ -17,14 +17,14 @@ proc Release(String rosbridgeWebsocketURI,String itemId,String itemType) {
 	// initialize a publisher for the topic related to the control of the gripper
 	val pub = new Publisher("/gripper_controller/command", "trajectory_msgs/JointTrajectory", bridge);
 
-	val jointPositions = #[
-		0.0,
-		0.0
-	]
+	// set joint positions for performing the lay movement
+	val jointPositions = #[0.0, 0.0]
 	val JointTrajectory openGripperTrajectory = new JointTrajectory().positions(jointPositions).jointNames(#[
 		"f_joint1",
 		"f_joint2"
 	]);
+
+	// publish the trajectory to open the gripper for releasing the item 
 	pub.publish(openGripperTrajectory)
 
 	// subscribe to the topic providing the actual status of the gripper 
@@ -32,8 +32,11 @@ proc Release(String rosbridgeWebsocketURI,String itemId,String itemType) {
 		SubscriptionRequestMsg.generate("/gripper_controller/state").setType(
 			"control_msgs/JointTrajectoryControllerState").setThrottleRate(1).setQueueLength(1),
 		[ data, stringRep |
+			// extract the actual joint positions from the arm's status
 			val actual = data.get("msg").get("actual").get("positions")
 
+			// calculate the delta between the actual joint positions and the destination positions
+			// to measure the completeness of the gripper movement
 			var delta = 0.0
 			val tolerance = 0.0008
 			for (var i = 0; i < jointPositions.size; i = i + 1) {
@@ -41,19 +44,21 @@ proc Release(String rosbridgeWebsocketURI,String itemId,String itemType) {
 			}
 			val norm = Math.sqrt(delta)
 
-			if (norm <= tolerance) {
-				// the gripper is completely opened
+			if (norm <= tolerance) { /* the gripper is completely opened */
+				// inform the delivery robot that the gripper is opened and communicate the item id and type
+				//out("gripperOpened",itemId,itemType)@local
+				
 				// activate the GoToInitialPosition process
 				out("releaseCompleted")@local
-
-				// inform the delivery robot that the gripper is opened and communicate the item type
-				out("gripperOpened",itemId,itemType)@local
 
 				// unsubscribe from the griper state topic
 				bridge.unsubscribe("/gripper_controller/state")
 			}
 		]
 	)
-		// inform the delivery robot that the gripper is opened and communicate the item type
-				out("gripperOpened",itemId,itemType)@self
+	// THIS OUT MUST NOT BE PLACED HERE, because it is performed before the gripper is fully opened.
+	// It does not create a problem, because the delivery robot uses the pressure sensor before moving.
+	// Anyway, if it would be necessary to perform this out action outside the lambda, we could move it
+	// before the subscribe (the code would be clearer)       
+	out("gripperOpened",itemId,itemType)@self
 }

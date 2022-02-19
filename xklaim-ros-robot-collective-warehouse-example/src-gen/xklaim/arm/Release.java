@@ -54,7 +54,6 @@ public class Release extends KlavaProcess {
       final double norm = Math.sqrt(delta);
       if ((norm <= tolerance)) {
         out(new Tuple(new Object[] {"releaseCompleted"}), local);
-        out(new Tuple(new Object[] {"gripperOpened", this.itemId, this.itemType}), local);
         bridge.unsubscribe("/gripper_controller/state");
       }
     };

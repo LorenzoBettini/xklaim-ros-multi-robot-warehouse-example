@@ -30,7 +30,6 @@ proc Rotate(String rosbridgeWebsocketURI) {
 
 	// call for a delivery robot
 	out("itemReadyForTheDelivery")@self
-	
 
 	// publish the trajectory to rotate the arm	 
 	pub.publish(rotateTrajectory)
@@ -52,8 +51,7 @@ proc Rotate(String rosbridgeWebsocketURI) {
 			}
 			val norm = Math.sqrt(delta)
 
-			if (norm <= tolerance) {
-				// the arm has completed the rotation movement
+			if (norm <= tolerance) { /* the arm has completed the rotation movement */
 				// activate the get up process
 				out("rotationCompleted")@local
 

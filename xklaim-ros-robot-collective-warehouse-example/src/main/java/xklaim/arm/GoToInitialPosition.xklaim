@@ -18,15 +18,10 @@ proc GoToInitialPosition(String rosbridgeWebsocketURI) {
 	Thread.sleep(1000)
 
 	// Initialize a publisher for the topic related to the control of the robot arm
-	val pub = new Publisher("/arm_controller/command", "trajectory_msgs/JointTrajectory", bridge);
-	val jointPositions = #[
-		0.000,
-		0.000,
-		0.000,
-		0.000,
-		0.000,
-		0.000
-	]
+	val pub = new Publisher("/arm_controller/command", "trajectory_msgs/JointTrajectory", bridge)
+
+	// set joint positions for moving the arm to the initial position
+	val jointPositions = #[0.000, 0.000, 0.000, 0.000, 0.000, 0.000]
 	val JointTrajectory initialPositionsTrajectory = new JointTrajectory().positions(jointPositions).jointNames(#[
 		"joint1",
 		"joint2",
@@ -35,6 +30,8 @@ proc GoToInitialPosition(String rosbridgeWebsocketURI) {
 		"joint5",
 		"joint6"
 	])
+
+	// publish the trajectory to lay the arm
 	pub.publish(initialPositionsTrajectory)
 
 	// subscribe to the topic providing the actual status of the arm 
@@ -54,11 +51,10 @@ proc GoToInitialPosition(String rosbridgeWebsocketURI) {
 			}
 			val norm = Math.sqrt(delta)
 
-			if (norm <= tolerance) {
-				// the arm has completed the movement
-				// notify that it has reached the initial position
+			if (norm <= tolerance) { /* the arm has reached the initial position */
+				// notify that it has reached the initial position, to restart the overall behavior 
 				out("initialPosition")@local
-                
+
 				// unsubscribe from the arm state topic
 				bridge.unsubscribe("/arm_controller/state")
 			}

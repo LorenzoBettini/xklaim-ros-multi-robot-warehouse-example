@@ -44,8 +44,7 @@ proc Grip(String rosbridgeWebsocketURI) {
 			}
 			val norm = Math.sqrt(delta)
 
-			if (norm <= tolerance) {
-				// the gripper has completed the grip movement
+			if (norm <= tolerance) { /* the gripper has completed the grip movement */
 				// activate the get up process
 				out("gripCompleted")@local
 
