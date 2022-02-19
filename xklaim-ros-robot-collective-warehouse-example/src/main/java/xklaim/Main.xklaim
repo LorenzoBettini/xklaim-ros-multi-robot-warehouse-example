@@ -66,28 +66,14 @@ net RobotColl physical "localhost:9999" {
 	node SimuationHandler {
 
 		// --- initial setup of the scenario ---
-		// insert info about positions of items in the arm robot's local knowledge (i.e., its tuple space)
-		// call the delivery robot
-		//
-		/* Note: for the sake of simplicity here the tuples contain two lists of Double corresponding to the two 
-		 * joint trajectories for the get down movements. It would preferable to indicate in the item tuples just 
-		 * the coordinates of the items, so that the get down process would compute (also in some ad-hoc way) 
-		 * the jointTrajectories for picking the item (however this could be not easy to do).   
-		 */
-		 
-		 
-		out("item","idem1","typeA",0.583518, 0.0)@Arm    //(x,y)coordinates item_1 
-	    out("item","idem2","typeB",0.554542, 0.187360)@Arm         //(x,y)coordinates item_2 	
-	    out("item","idem3","typeA",0.504, 0.307)@Arm   //(x,y)coordinates item_3	                                                    
-	    out("item","idem4","typeB",0.332977,0.470854)@Arm    //(x,y)coordinates item_4
+		// insert info about items (id, type and coordinates) in the arm robot's local knowledge 
+		// (i.e., its tuple space) 
+		out("item","idem1","typeA",0.583518, 0.0)@Arm     
+	    out("item","idem2","typeB",0.554542, 0.187360)@Arm          	
+	    out("item","idem3","typeA",0.504, 0.307)@Arm   	                                                    
+	    out("item","idem4","typeB",0.332977,0.470854)@Arm    
 		                 
-		// insert mapping between item types and destinations in the delivery robots' local knowledge (i.e., their tuple spaces)
-		/* Notably, different robot may use different mappings. Indeed we have three destinations
-		 * (i.e., (12.0,34.0),(67.0,14.0) and (134.0,49.0)) and both delivery robots deliver items of type A 
-		 * to the first destination, while items of type B are delivered at different destinations by the 
-		 * two robots. Of course this is the idea, let us see how to better deal with this aspect of the scenario....
-		 * 
-		 */
+		// insert mapping between item types and destinations in the delivery robots' local knowledge 
 		out("type2destination","typeB",-9.0,9.0)@DeliveryRobot1
 		out("type2destination","typeA",-9.0,-9.0)@DeliveryRobot1
 		out("type2destination","typeB",9.0,-9.0)@DeliveryRobot2
@@ -96,10 +82,10 @@ net RobotColl physical "localhost:9999" {
 		// activate the arm robot by inserting the information that it is in the initial position
 		out("initialPosition")@Arm
 
-		// activate the DeliveryRobot2 by inserting the information that it is available for a delivery
+		// activate the DeliveryRobot1 by inserting the information that it is available for a delivery
 		out("availableForDelivery")@DeliveryRobot1
 
-		// activate the DeliveryRobot1 by inserting the information that it is available for a delivery
+		// activate the DeliveryRobot2 by inserting the information that it is available for a delivery
 		out("availableForDelivery")@DeliveryRobot2
 
 		// activate the processes in charge of making the delivery items to disappear
