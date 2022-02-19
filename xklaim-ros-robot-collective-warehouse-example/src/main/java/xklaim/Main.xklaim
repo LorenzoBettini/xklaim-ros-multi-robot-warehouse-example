@@ -46,7 +46,7 @@ net RobotColl physical "localhost:9999" {
 			eval(new MoveToArm(rosbridgeWebsocketURI, robotId, Arm))@self
 
 			eval(new DeliverItem(rosbridgeWebsocketURI, robotId, Arm))@self
-		}
+	   }
 	}
 
 	node DeliveryRobot2 {
@@ -55,6 +55,7 @@ net RobotColl physical "localhost:9999" {
 
 		while (true) {
 			in("availableForDelivery")@self
+
 
 			eval(new MoveToArm(rosbridgeWebsocketURI, robotId, Arm))@self
 
@@ -87,10 +88,10 @@ net RobotColl physical "localhost:9999" {
 		 * two robots. Of course this is the idea, let us see how to better deal with this aspect of the scenario....
 		 * 
 		 */
-		out("type2destination","idem1","typeA",-8.0,-8.80)@DeliveryRobot1
-		out("type2destination","idem2","typeB",-8.41,8.5)@DeliveryRobot2
-		out("type2destination","idem3","typeA",9.34,8.65)@DeliveryRobot1
-		out("type2destination","idem4","typeB",8.9,-8.5)@DeliveryRobot2
+		out("type2destination","typeB",-9.0,9.0)@DeliveryRobot1
+		out("type2destination","typeA",-9.0,-9.0)@DeliveryRobot1
+		out("type2destination","typeB",9.0,-9.0)@DeliveryRobot2
+		out("type2destination","typeA",9.0,9.0)@DeliveryRobot2
 
 		// activate the arm robot by inserting the information that it is in the initial position
 		out("initialPosition")@Arm

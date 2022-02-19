@@ -135,10 +135,10 @@ public class RobotColl extends LogicalNet {
         out(new Tuple(new Object[] {"item", "idem2", "typeB", 0.554542, 0.187360}), RobotColl.Arm);
         out(new Tuple(new Object[] {"item", "idem3", "typeA", 0.504, 0.307}), RobotColl.Arm);
         out(new Tuple(new Object[] {"item", "idem4", "typeB", 0.332977, 0.470854}), RobotColl.Arm);
-        out(new Tuple(new Object[] {"type2destination", "idem1", "typeA", (-8.0), (-8.80)}), RobotColl.DeliveryRobot1);
-        out(new Tuple(new Object[] {"type2destination", "idem2", "typeB", (-8.41), 8.5}), RobotColl.DeliveryRobot2);
-        out(new Tuple(new Object[] {"type2destination", "idem3", "typeA", 9.34, 8.65}), RobotColl.DeliveryRobot1);
-        out(new Tuple(new Object[] {"type2destination", "idem4", "typeB", 8.9, (-8.5)}), RobotColl.DeliveryRobot2);
+        out(new Tuple(new Object[] {"type2destination", "typeB", (-9.0), 9.0}), RobotColl.DeliveryRobot1);
+        out(new Tuple(new Object[] {"type2destination", "typeA", (-9.0), (-9.0)}), RobotColl.DeliveryRobot1);
+        out(new Tuple(new Object[] {"type2destination", "typeB", 9.0, (-9.0)}), RobotColl.DeliveryRobot2);
+        out(new Tuple(new Object[] {"type2destination", "typeA", 9.0, 9.0}), RobotColl.DeliveryRobot2);
         out(new Tuple(new Object[] {"initialPosition"}), RobotColl.Arm);
         out(new Tuple(new Object[] {"availableForDelivery"}), RobotColl.DeliveryRobot1);
         out(new Tuple(new Object[] {"availableForDelivery"}), RobotColl.DeliveryRobot2);

@@ -54,4 +54,6 @@ proc Release(String rosbridgeWebsocketURI,String itemId,String itemType) {
 			}
 		]
 	)
+		// inform the delivery robot that the gripper is opened and communicate the item type
+				out("gripperOpened",itemId,itemType)@self
 }
