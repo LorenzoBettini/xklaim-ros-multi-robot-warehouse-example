@@ -10,11 +10,11 @@ proc GetDown(String rosbridgeWebsocketURI, Double x, Double y) {
 
 	// connect to the ROS bridge
 	val bridge = new XklaimToRosConnection(rosbridgeWebsocketURI)
-	
+
 	// initialize a publisher for the topic related to the control of the movements of the arm robot 
 	val pub = new Publisher("/arm_controller/command", "trajectory_msgs/JointTrajectory", bridge)
-	
-	val trajectoryPositions = #[Math.atan(y/x)-3.14, -0.2169, -0.5822, 3.14, 1.66, -0.01412]
+
+	val trajectoryPositions = #[Math.atan(y / x) - 3.14, -0.2169, -0.5822, 3.14, 1.66, -0.01412]
 
 	// set joint positions for performing the first movement of the arm
 	val JointTrajectory firstMovement = new JointTrajectory().positions(trajectoryPositions).jointNames(#[
@@ -27,7 +27,7 @@ proc GetDown(String rosbridgeWebsocketURI, Double x, Double y) {
 	])
 
 	// set joint positions for performing the second movement of the arm
-	val secondTrajectoryPositions = #[Math.atan(y/x)-3.14, -0.9975, -0.4970, 3.1400, 1.6613, -0.0142]
+	val secondTrajectoryPositions = #[Math.atan(y / x) - 3.14, -0.9975, -0.4970, 3.1400, 1.6613, -0.0142]
 	val JointTrajectory secondMovement = new JointTrajectory().positions(secondTrajectoryPositions).jointNames(#[
 		"joint1",
 		"joint2",
@@ -60,14 +60,12 @@ proc GetDown(String rosbridgeWebsocketURI, Double x, Double y) {
 			}
 			val norm = Math.sqrt(delta2)
 
-			if (delta1 <= tolerance1) {
-				// the arm has completed the first movement
+			if (delta1 <= tolerance1) { /* the arm has completed the first movement */
 				// publish the second movement trajectory
 				pub.publish(secondMovement)
 			}
 
-			if (norm <= tolerance2) {
-				// the arm has completed the second movement
+			if (norm <= tolerance2) { /* the arm has completed the second movement */
 				// activate the grip Process
 				out("getDownMovementsCompleted")@local
 

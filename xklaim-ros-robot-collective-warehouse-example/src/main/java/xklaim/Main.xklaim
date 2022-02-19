@@ -16,19 +16,19 @@ net RobotColl physical "localhost:9999" {
 		while (true) {
 			in("initialPosition")@self
 
-			in("item",var String itemId,var String itemType,var Double x, var Double y)@self
+			in("item",var String itemId,var String itemType,var Double x,var Double y)@self
 
-			eval(new GetDown(rosbridgeWebsocketURI, x, y))@self
+			eval(new GetDown(rosbridgeWebsocketURI,x,y))@self
 
 			eval(new Grip(rosbridgeWebsocketURI))@self
 
-			eval(new GetUp(rosbridgeWebsocketURI, x, y))@self
+			eval(new GetUp(rosbridgeWebsocketURI,x,y))@self
 
 			eval(new Rotate(rosbridgeWebsocketURI))@self
 
 			eval(new Lay(rosbridgeWebsocketURI))@self
 
-			eval(new Release(rosbridgeWebsocketURI, itemId, itemType))@self
+			eval(new Release(rosbridgeWebsocketURI,itemId,itemType))@self
 
 			eval(new GoToInitialPosition(rosbridgeWebsocketURI))@self
 
@@ -43,9 +43,9 @@ net RobotColl physical "localhost:9999" {
 		while (true) {
 			in("availableForDelivery")@self
 
-			eval(new MoveToArm(rosbridgeWebsocketURI, robotId, Arm))@self
+			eval(new MoveToArm(rosbridgeWebsocketURI,robotId,Arm))@self
 
-			eval(new DeliverItem(rosbridgeWebsocketURI, robotId, Arm))@self
+			eval(new DeliverItem(rosbridgeWebsocketURI,robotId,Arm))@self
 		}
 	}
 
@@ -56,9 +56,9 @@ net RobotColl physical "localhost:9999" {
 		while (true) {
 			in("availableForDelivery")@self
 
-			eval(new MoveToArm(rosbridgeWebsocketURI, robotId, Arm))@self
+			eval(new MoveToArm(rosbridgeWebsocketURI,robotId,Arm))@self
 
-			eval(new DeliverItem(rosbridgeWebsocketURI, robotId, Arm))@self
+			eval(new DeliverItem(rosbridgeWebsocketURI,robotId,Arm))@self
 		}
 	}
 
