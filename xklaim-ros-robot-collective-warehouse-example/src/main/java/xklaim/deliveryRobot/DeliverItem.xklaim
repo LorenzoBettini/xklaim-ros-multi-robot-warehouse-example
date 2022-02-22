@@ -28,6 +28,8 @@ proc DeliverItem(String rosbridgeWebsocketURI,String robotId,Locality Arm) {
 	val destinationY = y
 	val deliveryDestination = new PoseStamped().headerFrameId("world").posePositionXY(x, y).poseOrientation(1.0)
 
+println("###############["+robotId+"] type2destination"+itemType+","+x+","+y)
+
 	// initialize a publisher for the topic related to the control of the robot's wheels
 	val pub = new Publisher("/" + robotId + "/move_base_simple/goal", "geometry_msgs/PoseStamped", bridge)
 
@@ -38,10 +40,22 @@ proc DeliverItem(String rosbridgeWebsocketURI,String robotId,Locality Arm) {
 		[ data, stringRep |
 			var mapper = new ObjectMapper()
 			var JsonNode rosMsgNode = data.get("msg")
-			var ContactsState state = mapper.treeToValue(rosMsgNode, ContactsState)
+			var ContactsState state = mapper.treeToValue(rosMsgNode, ContactsState)	
+
+/////////////////////////////////////////////////
+print("###############["+robotId+"] Sensor pressure: ")
+if (state.states.isEmpty) {
+	println("empty state")
+} else {
+	println("total_wrench.force.z="+state.states.get(0).total_wrench.force.z)
+}
+///////////////////////////////////////////////
+
+				
 			if (!state.states.isEmpty && state.states.get(0).total_wrench.force.z != 0.0) {
 				// publish destination for the delivery
 				pub.publish(deliveryDestination)
+println("###############["+robotId+"] deliveryDestinationPublished: "+destinationX+","+destinationY)				
 
 				// unsubscribe from the pressure sensor topic
 				bridge.unsubscribe("/" + robotId + "/pressure_sensor_state")
@@ -66,6 +80,8 @@ proc DeliverItem(String rosbridgeWebsocketURI,String robotId,Locality Arm) {
 			var deltaY = current_position.pose.pose.position.y - deliveryDestination.pose.position.y
 
 			if (deltaX <= tolerance && deltaY <= tolerance) { /* the robot arrived at destination */
+println("################# The robot "+robotId+" is arrived at destination")
+
 				// stop the robot's wheels
 				val pubvel = new Publisher("/" + robotId + "/cmd_vel", "geometry_msgs/Twist", bridge);
 				val twistMsg = new Twist();
@@ -75,6 +91,8 @@ proc DeliverItem(String rosbridgeWebsocketURI,String robotId,Locality Arm) {
 				//////// I WOULD MOVE THIS CODE OUTSIDE THE ROBOT, IN THE SIMULATION NODE
 				//////// because the robot should not know anything about the simulation stuff (i.e. the modelstate)
 				////////  
+			
+			/* 
 				// posing the item at the destination 
 				val Pose_item = new Publisher("/gazebo/set_model_state", "gazebo_msgs/ModelState", bridge)
 				val modelstate = new ModelState()
@@ -83,6 +101,7 @@ proc DeliverItem(String rosbridgeWebsocketURI,String robotId,Locality Arm) {
 				modelstate.model_name = id
 				modelstate.reference_frame = "world"
 				Pose_item.publish(modelstate)
+			*/	
 
 
 				////////// This tuple now is not received by anyone!!! 

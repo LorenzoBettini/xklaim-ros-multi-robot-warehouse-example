@@ -132,9 +132,7 @@ public class RobotColl extends LogicalNet {
       @Override
       public void executeProcess() {
         out(new Tuple(new Object[] {"item", "idem1", "typeA", 0.583518, 0.0}), RobotColl.Arm);
-        out(new Tuple(new Object[] {"item", "idem2", "typeB", 0.554542, 0.187360}), RobotColl.Arm);
         out(new Tuple(new Object[] {"item", "idem3", "typeA", 0.504, 0.307}), RobotColl.Arm);
-        out(new Tuple(new Object[] {"item", "idem4", "typeB", 0.332977, 0.470854}), RobotColl.Arm);
         out(new Tuple(new Object[] {"type2destination", "typeB", (-9.0), 9.0}), RobotColl.DeliveryRobot1);
         out(new Tuple(new Object[] {"type2destination", "typeA", (-9.0), (-9.0)}), RobotColl.DeliveryRobot1);
         out(new Tuple(new Object[] {"type2destination", "typeB", 9.0, (-9.0)}), RobotColl.DeliveryRobot2);

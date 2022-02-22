@@ -46,7 +46,7 @@ proc Release(String rosbridgeWebsocketURI,String itemId,String itemType) {
 
 			if (norm <= tolerance) { /* the gripper is completely opened */
 				// inform the delivery robot that the gripper is opened and communicate the item id and type
-				//out("gripperOpened",itemId,itemType)@local
+				out("gripperOpened",itemId,itemType)@local
 				
 				// activate the GoToInitialPosition process
 				out("releaseCompleted")@local
@@ -56,9 +56,4 @@ proc Release(String rosbridgeWebsocketURI,String itemId,String itemType) {
 			}
 		]
 	)
-	// THIS OUT MUST NOT BE PLACED HERE, because it is performed before the gripper is fully opened.
-	// It does not create a problem, because the delivery robot uses the pressure sensor before moving.
-	// Anyway, if it would be necessary to perform this out action outside the lambda, we could move it
-	// before the subscribe (the code would be clearer)       
-	out("gripperOpened",itemId,itemType)@self
 }
