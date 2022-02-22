@@ -11,6 +11,8 @@ import ros.SubscriptionRequestMsg
 import ros.msgs.geometry_msgs.Twist
 
 proc MoveToArm(String rosbridgeWebsocketURI,String robotId,Locality Arm) {
+	val local = self
+	
 	// Coordinates of the arm robot (notably, the arm robot has a fixed position)  
 	val x = -0.22
 	val y = 0.34
@@ -51,8 +53,11 @@ println("###############["+robotId+"] go to the arm")
 				val twistMsg = new Twist()
 				pubvel.publish(twistMsg)
 
-				// notify that is ready to receive the item
+				// notify the arm robot that is ready to receive the item
 				out("ready")@Arm
+				
+				// activate the DeliveryItem process
+				out("readyToReceiveTheItem")@local
 
 				// unsubscribe from the robot state topic
 				bridge.unsubscribe("/" + robotId + "/amcl_pose")

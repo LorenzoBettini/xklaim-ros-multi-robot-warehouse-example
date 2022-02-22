@@ -32,6 +32,7 @@ public class MoveToArm extends KlavaProcess {
   
   @Override
   public void executeProcess() {
+    final Locality local = this.self;
     final double x = (-0.22);
     final double y = 0.34;
     final XklaimToRosConnection bridge = new XklaimToRosConnection(this.rosbridgeWebsocketURI);
@@ -53,6 +54,7 @@ public class MoveToArm extends KlavaProcess {
           final Twist twistMsg = new Twist();
           pubvel.publish(twistMsg);
           out(new Tuple(new Object[] {"ready"}), this.Arm);
+          out(new Tuple(new Object[] {"readyToReceiveTheItem"}), local);
           bridge.unsubscribe((("/" + this.robotId) + "/amcl_pose"));
         }
       } catch (Throwable _e) {

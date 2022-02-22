@@ -38,6 +38,7 @@ public class DeliverItem extends KlavaProcess {
   public void executeProcess() {
     final Locality local = this.self;
     final XklaimToRosConnection bridge = new XklaimToRosConnection(this.rosbridgeWebsocketURI);
+    in(new Tuple(new Object[] {"readyToReceiveTheItem"}), this.self);
     String itemId = null;
     String itemType = null;
     Tuple _Tuple = new Tuple(new Object[] {"gripperOpened", String.class, String.class});

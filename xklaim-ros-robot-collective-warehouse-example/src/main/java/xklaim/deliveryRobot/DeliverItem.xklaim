@@ -15,8 +15,21 @@ import ros.SubscriptionRequestMsg
 proc DeliverItem(String rosbridgeWebsocketURI,String robotId,Locality Arm) {
 	val local = self
 
+/*
+ * 
+ * 
+ * move the bridge creation close to the creation of the Publisher pub 
+ * (in fact, until that moment the bridge is not necessary) 
+ * 
+ * 
+ */
+
+
 	// connect to the ROS bridge
 	val bridge = new XklaimToRosConnection(rosbridgeWebsocketURI)
+
+	// wait for the arrival at the arm robot
+	in("readyToReceiveTheItem")@self
 
 	// wait for the notification that the gripper is opened 
 	in("gripperOpened",var String itemId,var String itemType)@Arm
