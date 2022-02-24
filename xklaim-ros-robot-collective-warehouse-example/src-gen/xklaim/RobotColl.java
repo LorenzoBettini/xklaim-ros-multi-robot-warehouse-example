@@ -12,6 +12,7 @@ import xklaim.arm.GetUp;
 import xklaim.arm.GoToInitialPosition;
 import xklaim.arm.Grip;
 import xklaim.arm.Lay;
+import xklaim.arm.PickUp;
 import xklaim.arm.Release;
 import xklaim.arm.Rotate;
 import xklaim.deliveryRobot.DeliverItem;
@@ -140,6 +141,7 @@ public class RobotColl extends LogicalNet {
     private static class SimuationHandlerProcess extends KlavaNodeCoordinator {
       @Override
       public void executeProcess() {
+        final String rosbridgeWebsocketURI = "ws://0.0.0.0:9090";
         out(new Tuple(new Object[] {"item", "idem1", "sector1", "red", 0.583518, 0.0}), RobotColl.Arm);
         out(new Tuple(new Object[] {"item", "idem3", "sector2", "red", 0.504, 0.307}), RobotColl.Arm);
         out(new Tuple(new Object[] {"item", "idem4", "sector2", "blue", 0.332977, 0.470854}), RobotColl.Arm);
@@ -150,6 +152,10 @@ public class RobotColl extends LogicalNet {
         out(new Tuple(new Object[] {"initialPosition"}), RobotColl.Arm);
         out(new Tuple(new Object[] {"availableForDelivery"}), RobotColl.DeliveryRobot1);
         out(new Tuple(new Object[] {"availableForDelivery"}), RobotColl.DeliveryRobot2);
+        PickUp _pickUp = new PickUp(rosbridgeWebsocketURI, RobotColl.DeliveryRobot1);
+        eval(_pickUp, this.self);
+        PickUp _pickUp_1 = new PickUp(rosbridgeWebsocketURI, RobotColl.DeliveryRobot2);
+        eval(_pickUp_1, this.self);
       }
     }
     

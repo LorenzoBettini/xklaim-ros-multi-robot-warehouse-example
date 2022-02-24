@@ -50,8 +50,6 @@ public class DeliverItem extends KlavaProcess {
     read(_Tuple_1, this.self);
     x = (Double) _Tuple_1.getItem(2);
     y = (Double) _Tuple_1.getItem(3);
-    final Double destinationX = x;
-    final Double destinationY = y;
     final PoseStamped deliveryDestination = new PoseStamped().headerFrameId("world").posePositionXY((x).doubleValue(), (y).doubleValue()).poseOrientation(1.0);
     final XklaimToRosConnection bridge = new XklaimToRosConnection(this.rosbridgeWebsocketURI);
     final Publisher pub = new Publisher((("/" + this.robotId) + "/move_base_simple/goal"), "geometry_msgs/PoseStamped", bridge);
@@ -82,7 +80,7 @@ public class DeliverItem extends KlavaProcess {
           final Publisher pubvel = new Publisher((("/" + this.robotId) + "/cmd_vel"), "geometry_msgs/Twist", bridge);
           final Twist twistMsg = new Twist();
           pubvel.publish(twistMsg);
-          out(new Tuple(new Object[] {"itemDelivered", destinationX, destinationY}), local);
+          out(new Tuple(new Object[] {"itemDelivered", id, deliveryDestination.pose.position.x, deliveryDestination.pose.position.y}), local);
           out(new Tuple(new Object[] {"availableForDelivery"}), local);
           bridge.unsubscribe((("/" + this.robotId) + "/amcl_pose"));
         }

@@ -9,6 +9,7 @@ import xklaim.arm.Release
 import xklaim.arm.Rotate
 import xklaim.deliveryRobot.DeliverItem
 import xklaim.deliveryRobot.MoveToArm
+import xklaim.arm.PickUp
 
 /*
  * LIST OF TODOS:
@@ -72,6 +73,7 @@ net RobotColl physical "localhost:9999" {
 	}
 
 	node SimuationHandler {
+		val rosbridgeWebsocketURI = "ws://0.0.0.0:9090"
 
 		// --- initial setup of the scenario ---
 		// insert info about items (id, type and coordinates) in the arm robot's local knowledge 
@@ -99,7 +101,10 @@ net RobotColl physical "localhost:9999" {
 		// activate the DeliveryRobot2 by inserting the information that it is available for a delivery
 		out("availableForDelivery")@DeliveryRobot2
 
-	// activate the processes in charge of making the delivery items to disappear
+		// activate the processes in charge of picking up and posing the delivered items
+		eval(new PickUp(rosbridgeWebsocketURI,DeliveryRobot1))@self
+		eval(new PickUp(rosbridgeWebsocketURI,DeliveryRobot2))@self 
+		
 	}
 }
 
