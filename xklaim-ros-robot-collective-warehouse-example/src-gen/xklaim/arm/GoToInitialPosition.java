@@ -28,8 +28,8 @@ public class GoToInitialPosition extends KlavaProcess {
   public void executeProcess() {
     try {
       final Locality local = this.self;
-      final XklaimToRosConnection bridge = new XklaimToRosConnection(this.rosbridgeWebsocketURI);
       in(new Tuple(new Object[] {"releaseCompleted"}), this.self);
+      final XklaimToRosConnection bridge = new XklaimToRosConnection(this.rosbridgeWebsocketURI);
       Thread.sleep(1000);
       final Publisher pub = new Publisher("/arm_controller/command", "trajectory_msgs/JointTrajectory", bridge);
       final List<Double> jointPositions = Collections.<Double>unmodifiableList(CollectionLiterals.<Double>newArrayList(Double.valueOf(0.000), Double.valueOf(0.000), Double.valueOf(0.000), Double.valueOf(0.000), Double.valueOf(0.000), Double.valueOf(0.000)));

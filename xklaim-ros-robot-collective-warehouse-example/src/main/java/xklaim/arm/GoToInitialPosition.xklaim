@@ -8,11 +8,11 @@ import ros.SubscriptionRequestMsg
 proc GoToInitialPosition(String rosbridgeWebsocketURI) {
 	val local = self
 
-	// connect to the ROS bridge
-	val bridge = new XklaimToRosConnection(rosbridgeWebsocketURI)
-
 	// wait for the completion of the release of the item
 	in("releaseCompleted")@self
+
+	// connect to the ROS bridge
+	val bridge = new XklaimToRosConnection(rosbridgeWebsocketURI)
 
 	// wait for a short delay before moving the arm
 	Thread.sleep(1000)

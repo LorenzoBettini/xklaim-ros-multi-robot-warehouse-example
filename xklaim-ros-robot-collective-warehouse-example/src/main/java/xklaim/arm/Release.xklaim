@@ -8,11 +8,11 @@ import ros.SubscriptionRequestMsg
 proc Release(String rosbridgeWebsocketURI,String itemId,String itemType) {
 	val local = self
 
-	// connect to the ROS bridge
-	val bridge = new XklaimToRosConnection(rosbridgeWebsocketURI)
-
 	// wait for the completion of the lay movement
 	in("layCompleted")@self
+
+	// connect to the ROS bridge
+	val bridge = new XklaimToRosConnection(rosbridgeWebsocketURI)
 
 	// initialize a publisher for the topic related to the control of the gripper
 	val pub = new Publisher("/gripper_controller/command", "trajectory_msgs/JointTrajectory", bridge);

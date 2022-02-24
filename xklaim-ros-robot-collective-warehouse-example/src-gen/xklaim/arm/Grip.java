@@ -26,12 +26,12 @@ public class Grip extends KlavaProcess {
   @Override
   public void executeProcess() {
     final Locality local = this.self;
+    in(new Tuple(new Object[] {"getDownMovementsCompleted"}), this.self);
     final XklaimToRosConnection bridge = new XklaimToRosConnection(this.rosbridgeWebsocketURI);
     final Publisher pub = new Publisher("/gripper_controller/command", "trajectory_msgs/JointTrajectory", bridge);
     final List<Double> gripperPositions = Collections.<Double>unmodifiableList(CollectionLiterals.<Double>newArrayList(Double.valueOf(0.0138), Double.valueOf((-0.0138))));
     final JointTrajectory grip = new JointTrajectory().positions(((double[])Conversions.unwrapArray(gripperPositions, double.class))).jointNames(
       new String[] { "f_joint1", "f_joint2" });
-    in(new Tuple(new Object[] {"getDownMovementsCompleted"}), this.self);
     pub.publish(grip);
     final RosListenDelegate _function = (JsonNode data, String stringRep) -> {
       final JsonNode actual = data.get("msg").get("actual").get("positions");

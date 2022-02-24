@@ -17,11 +17,11 @@ proc MoveToArm(String rosbridgeWebsocketURI,String robotId,String sector,Localit
 	val x = -0.22
 	val y = 0.34
 
-	// connect to the ROS bridge
-	val bridge = new XklaimToRosConnection(rosbridgeWebsocketURI)
-
 	// wait for a call by the arm robot
 	in("itemReadyForTheDelivery",sector)@Arm
+
+	// connect to the ROS bridge
+	val bridge = new XklaimToRosConnection(rosbridgeWebsocketURI)
 	
 println("###############["+robotId+"] go to the arm")
 

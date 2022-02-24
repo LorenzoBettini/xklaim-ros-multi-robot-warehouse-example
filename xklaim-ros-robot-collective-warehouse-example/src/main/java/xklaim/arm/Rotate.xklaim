@@ -7,6 +7,9 @@ import ros.SubscriptionRequestMsg
 
 proc Rotate(String rosbridgeWebsocketURI, String sector) {
 	val local = self
+	
+	// wait for the completion of the get up movement
+	in("getUpCompleted")@self
 
 	// connect to the ROS bridge
 	val bridge = new XklaimToRosConnection(rosbridgeWebsocketURI)
@@ -24,9 +27,6 @@ proc Rotate(String rosbridgeWebsocketURI, String sector) {
 		"joint5",
 		"joint6"
 	])
-
-	// wait for the completion of the get up movement
-	in("getUpCompleted")@self
 
 	// call for a delivery robot
 	out("itemReadyForTheDelivery",sector)@self

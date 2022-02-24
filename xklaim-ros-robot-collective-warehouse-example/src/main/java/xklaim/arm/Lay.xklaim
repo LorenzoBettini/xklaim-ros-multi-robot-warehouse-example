@@ -8,17 +8,17 @@ import ros.SubscriptionRequestMsg
 proc Lay(String rosbridgeWebsocketURI) {
 	val local = self
 
-	// connect to the ROS bridge
-	val bridge = new XklaimToRosConnection(rosbridgeWebsocketURI)
-
-	// Initialize a publisher for the topic related to the control of the robot's arm
-	val pub = new Publisher("/arm_controller/command", "trajectory_msgs/JointTrajectory", bridge);
-
 	// wait for the completion of the rotation 
 	in("rotationCompleted")@self
 
 	// wait for the arrival of the delivery robot
 	in("ready")@self
+
+	// connect to the ROS bridge
+	val bridge = new XklaimToRosConnection(rosbridgeWebsocketURI)
+
+	// Initialize a publisher for the topic related to the control of the robot's arm
+	val pub = new Publisher("/arm_controller/command", "trajectory_msgs/JointTrajectory", bridge);
 
 	// set joint positions for performing the lay movement 
 	val jointPositions = #[-0.9546, -0.0097, -0.9513, 3.1400, 1.7749, -0.0142]

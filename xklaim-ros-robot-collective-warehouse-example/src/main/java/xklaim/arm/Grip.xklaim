@@ -7,7 +7,10 @@ import ros.SubscriptionRequestMsg
 
 proc Grip(String rosbridgeWebsocketURI) {
 	val local = self
-
+	
+	// wait for the completion of the GetDown movement
+	in("getDownMovementsCompleted")@self
+	
 	// connect to the ROS bridge
 	val bridge = new XklaimToRosConnection(rosbridgeWebsocketURI)
 
@@ -20,9 +23,6 @@ proc Grip(String rosbridgeWebsocketURI) {
 		"f_joint1",
 		"f_joint2"
 	])
-
-	// wait for the completion of the GetDown movement
-	in("getDownMovementsCompleted")@self
 
 	// publish the grip trajectory to activate the gripper
 	pub.publish(grip)
