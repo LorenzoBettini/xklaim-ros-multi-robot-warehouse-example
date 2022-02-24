@@ -14,7 +14,6 @@ import messages.Twist;
 import messages.XklaimToRosConnection;
 import org.eclipse.xtext.xbase.lib.Conversions;
 import org.eclipse.xtext.xbase.lib.Exceptions;
-import org.eclipse.xtext.xbase.lib.InputOutput;
 import ros.Publisher;
 import ros.RosListenDelegate;
 import ros.SubscriptionRequestMsg;
@@ -54,7 +53,6 @@ public class DeliverItem extends KlavaProcess {
     final Double destinationX = x;
     final Double destinationY = y;
     final PoseStamped deliveryDestination = new PoseStamped().headerFrameId("world").posePositionXY((x).doubleValue(), (y).doubleValue()).poseOrientation(1.0);
-    InputOutput.<String>println(((((((("###############[" + this.robotId) + "] type2destination") + itemType) + ",") + x) + ",") + y));
     final XklaimToRosConnection bridge = new XklaimToRosConnection(this.rosbridgeWebsocketURI);
     final Publisher pub = new Publisher((("/" + this.robotId) + "/move_base_simple/goal"), "geometry_msgs/PoseStamped", bridge);
     final RosListenDelegate _function = (JsonNode data, String stringRep) -> {
@@ -62,16 +60,8 @@ public class DeliverItem extends KlavaProcess {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode rosMsgNode = data.get("msg");
         ContactsState state = mapper.<ContactsState>treeToValue(rosMsgNode, ContactsState.class);
-        InputOutput.<String>print((("###############[" + this.robotId) + "] Sensor pressure: "));
-        boolean _isEmpty = ((List<ContactState>)Conversions.doWrapArray(state.states)).isEmpty();
-        if (_isEmpty) {
-          InputOutput.<String>println("empty state");
-        } else {
-          InputOutput.<String>println(("total_wrench.force.z=" + Double.valueOf((state.states[0]).total_wrench.force.z)));
-        }
         if (((!((List<ContactState>)Conversions.doWrapArray(state.states)).isEmpty()) && ((state.states[0]).total_wrench.force.z != 0.0))) {
           pub.publish(deliveryDestination);
-          InputOutput.<String>println(((((("###############[" + this.robotId) + "] deliveryDestinationPublished: ") + destinationX) + ",") + destinationY));
           bridge.unsubscribe((("/" + this.robotId) + "/pressure_sensor_state"));
         }
       } catch (Throwable _e) {
@@ -89,7 +79,6 @@ public class DeliverItem extends KlavaProcess {
         double deltaX = (current_position.pose.pose.position.x - deliveryDestination.pose.position.x);
         double deltaY = (current_position.pose.pose.position.y - deliveryDestination.pose.position.y);
         if (((deltaX <= tolerance) && (deltaY <= tolerance))) {
-          InputOutput.<String>println((("################# The robot " + this.robotId) + " is arrived at destination"));
           final Publisher pubvel = new Publisher((("/" + this.robotId) + "/cmd_vel"), "geometry_msgs/Twist", bridge);
           final Twist twistMsg = new Twist();
           pubvel.publish(twistMsg);

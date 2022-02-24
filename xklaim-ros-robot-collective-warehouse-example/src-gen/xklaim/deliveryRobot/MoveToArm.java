@@ -9,7 +9,6 @@ import messages.PoseStamped;
 import messages.PoseWithCovarianceStamped;
 import messages.XklaimToRosConnection;
 import org.eclipse.xtext.xbase.lib.Exceptions;
-import org.eclipse.xtext.xbase.lib.InputOutput;
 import ros.Publisher;
 import ros.RosListenDelegate;
 import ros.SubscriptionRequestMsg;
@@ -40,7 +39,6 @@ public class MoveToArm extends KlavaProcess {
     final double y = 0.34;
     in(new Tuple(new Object[] {"itemReadyForTheDelivery", this.sector}), this.Arm);
     final XklaimToRosConnection bridge = new XklaimToRosConnection(this.rosbridgeWebsocketURI);
-    InputOutput.<String>println((("###############[" + this.robotId) + "] go to the arm"));
     final Publisher pub = new Publisher((("/" + this.robotId) + "/move_base_simple/goal"), "geometry_msgs/PoseStamped", bridge);
     final PoseStamped destination = new PoseStamped().headerFrameId("world").posePositionXY(x, y).poseOrientation(1.0);
     pub.publish(destination);

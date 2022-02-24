@@ -23,8 +23,6 @@ proc MoveToArm(String rosbridgeWebsocketURI,String robotId,String sector,Localit
 	// connect to the ROS bridge
 	val bridge = new XklaimToRosConnection(rosbridgeWebsocketURI)
 	
-println("###############["+robotId+"] go to the arm")
-
 	// initialize a publisher for the topic related to the control of the robot's wheels
 	val pub = new Publisher("/" + robotId + "/move_base_simple/goal", "geometry_msgs/PoseStamped", bridge)
 
