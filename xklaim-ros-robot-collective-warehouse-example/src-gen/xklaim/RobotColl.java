@@ -131,12 +131,13 @@ public class RobotColl extends LogicalNet {
     private static class SimuationHandlerProcess extends KlavaNodeCoordinator {
       @Override
       public void executeProcess() {
-        out(new Tuple(new Object[] {"item", "idem1", "typeA", 0.583518, 0.0}), RobotColl.Arm);
-        out(new Tuple(new Object[] {"item", "idem3", "typeA", 0.504, 0.307}), RobotColl.Arm);
-        out(new Tuple(new Object[] {"type2destination", "typeB", (-9.0), 9.0}), RobotColl.DeliveryRobot1);
-        out(new Tuple(new Object[] {"type2destination", "typeA", (-9.0), (-9.0)}), RobotColl.DeliveryRobot1);
-        out(new Tuple(new Object[] {"type2destination", "typeB", 9.0, (-9.0)}), RobotColl.DeliveryRobot2);
-        out(new Tuple(new Object[] {"type2destination", "typeA", 9.0, 9.0}), RobotColl.DeliveryRobot2);
+        out(new Tuple(new Object[] {"item", "idem1", "red", 0.583518, 0.0}), RobotColl.Arm);
+        out(new Tuple(new Object[] {"item", "idem3", "red", 0.504, 0.307}), RobotColl.Arm);
+        out(new Tuple(new Object[] {"item", "idem4", "blue", 0.332977, 0.470854}), RobotColl.Arm);
+        out(new Tuple(new Object[] {"type2destination", "red", (-9.0), (-9.0)}), RobotColl.DeliveryRobot1);
+        out(new Tuple(new Object[] {"type2destination", "blue", 9.0, (-9.0)}), RobotColl.DeliveryRobot1);
+        out(new Tuple(new Object[] {"type2destination", "red", 9.0, 9.0}), RobotColl.DeliveryRobot2);
+        out(new Tuple(new Object[] {"type2destination", "blue", (-9.0), 9.0}), RobotColl.DeliveryRobot2);
         out(new Tuple(new Object[] {"initialPosition"}), RobotColl.Arm);
         out(new Tuple(new Object[] {"availableForDelivery"}), RobotColl.DeliveryRobot1);
         out(new Tuple(new Object[] {"availableForDelivery"}), RobotColl.DeliveryRobot2);
