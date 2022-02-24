@@ -78,10 +78,10 @@ net RobotColl physical "localhost:9999" {
 		// --- initial setup of the scenario ---
 		// insert info about items (id, type and coordinates) in the arm robot's local knowledge 
 		// (i.e., its tuple space) 			
-		out("item","idem1","sector1","red",0.583518, 0.0)@Arm
-		//out("item","idem2","sector2","blue",0.554542, 0.187360)@Arm
-		out("item","idem3","sector2","red",0.504, 0.307)@Arm
-		out("item","idem4","sector2","blue",0.332977,0.470854)@Arm
+		out("item","item1","sector1","red",0.583518, 0.0)@Arm
+		out("item","item2","sector2","blue",0.554542, 0.187360)@Arm
+		out("item","item3","sector2","red",0.504, 0.307)@Arm
+		out("item","item4","sector2","blue",0.332977,0.470854)@Arm
 
 		// insert mapping between item types and destinations in the delivery robots' local knowledge: 
 		// DeliveryRobot1 is in charge of delivering to the sector1 (left-hand side) 
