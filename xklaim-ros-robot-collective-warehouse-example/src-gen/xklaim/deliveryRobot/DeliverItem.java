@@ -37,7 +37,6 @@ public class DeliverItem extends KlavaProcess {
   @Override
   public void executeProcess() {
     final Locality local = this.self;
-    final XklaimToRosConnection bridge = new XklaimToRosConnection(this.rosbridgeWebsocketURI);
     in(new Tuple(new Object[] {"readyToReceiveTheItem"}), this.self);
     String itemId = null;
     String itemType = null;
@@ -56,6 +55,7 @@ public class DeliverItem extends KlavaProcess {
     final Double destinationY = y;
     final PoseStamped deliveryDestination = new PoseStamped().headerFrameId("world").posePositionXY((x).doubleValue(), (y).doubleValue()).poseOrientation(1.0);
     InputOutput.<String>println(((((((("###############[" + this.robotId) + "] type2destination") + itemType) + ",") + x) + ",") + y));
+    final XklaimToRosConnection bridge = new XklaimToRosConnection(this.rosbridgeWebsocketURI);
     final Publisher pub = new Publisher((("/" + this.robotId) + "/move_base_simple/goal"), "geometry_msgs/PoseStamped", bridge);
     final RosListenDelegate _function = (JsonNode data, String stringRep) -> {
       try {

@@ -93,3 +93,4 @@ net RobotColl physical "localhost:9999" {
 	// activate the processes in charge of making the delivery items to disappear
 	}
 }
+

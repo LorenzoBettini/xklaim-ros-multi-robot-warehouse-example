@@ -15,19 +15,6 @@ import ros.SubscriptionRequestMsg
 proc DeliverItem(String rosbridgeWebsocketURI,String robotId,Locality Arm) {
 	val local = self
 
-/*
- * 
- * 
- * move the bridge creation close to the creation of the Publisher pub 
- * (in fact, until that moment the bridge is not necessary) 
- * 
- * 
- */
-
-
-	// connect to the ROS bridge
-	val bridge = new XklaimToRosConnection(rosbridgeWebsocketURI)
-
 	// wait for the arrival at the arm robot
 	in("readyToReceiveTheItem")@self
 
@@ -42,6 +29,9 @@ proc DeliverItem(String rosbridgeWebsocketURI,String robotId,Locality Arm) {
 	val deliveryDestination = new PoseStamped().headerFrameId("world").posePositionXY(x, y).poseOrientation(1.0)
 
 println("###############["+robotId+"] type2destination"+itemType+","+x+","+y)
+
+	// connect to the ROS bridge
+	val bridge = new XklaimToRosConnection(rosbridgeWebsocketURI)
 
 	// initialize a publisher for the topic related to the control of the robot's wheels
 	val pub = new Publisher("/" + robotId + "/move_base_simple/goal", "geometry_msgs/PoseStamped", bridge)
