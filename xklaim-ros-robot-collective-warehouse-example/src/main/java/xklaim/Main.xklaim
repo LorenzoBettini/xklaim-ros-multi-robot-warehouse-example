@@ -10,6 +10,13 @@ import xklaim.arm.Rotate
 import xklaim.deliveryRobot.DeliverItem
 import xklaim.deliveryRobot.MoveToArm
 
+/*
+ * LIST OF TODOS:
+ * - rename item identifiers (e.g. idem1 in item1) in xklaim and gazebo code
+ * - check the position and orientation of item2 in the gazebo scenario in order to avoid problems with the gripper  
+ */
+
+
 net RobotColl physical "localhost:9999" {
 	node Arm {
 		val rosbridgeWebsocketURI = "ws://0.0.0.0:9090"
@@ -68,23 +75,21 @@ net RobotColl physical "localhost:9999" {
 
 		// --- initial setup of the scenario ---
 		// insert info about items (id, type and coordinates) in the arm robot's local knowledge 
-		// (i.e., its tuple space) 
-		
-		
+		// (i.e., its tuple space) 			
 		out("item","idem1","sector1","red",0.583518, 0.0)@Arm
 		//out("item","idem2","sector2","blue",0.554542, 0.187360)@Arm
 		out("item","idem3","sector2","red",0.504, 0.307)@Arm
 		out("item","idem4","sector2","blue",0.332977,0.470854)@Arm
 
-		// insert mapping between item types and destinations in the delivery robots' local knowledge 
+		// insert mapping between item types and destinations in the delivery robots' local knowledge: 
+		// DeliveryRobot1 is in charge of delivering to the sector1 (left-hand side) 
 		out("type2destination","red",-9.0,-9.0)@DeliveryRobot1	
 		out("type2destination","blue",9.0,-9.0)@DeliveryRobot1
-			
+		// DeliveryRobot2 is in charge of delivering to the sector2 (right-hand side)	
 		out("type2destination","red",9.0,9.0)@DeliveryRobot2
 		out("type2destination","blue",-9.0,9.0)@DeliveryRobot2
 		
 		
-
 		// activate the arm robot by inserting the information that it is in the initial position
 		out("initialPosition")@Arm
 

@@ -17,6 +17,11 @@ import xklaim.arm.Rotate;
 import xklaim.deliveryRobot.DeliverItem;
 import xklaim.deliveryRobot.MoveToArm;
 
+/**
+ * LIST OF TODOS:
+ * - rename item identifiers (e.g. idem1 in item1) in xklaim and gazebo code
+ * - check the position and orientation of item2 in the gazebo scenario in order to avoid problems with the gripper
+ */
 @SuppressWarnings("all")
 public class RobotColl extends LogicalNet {
   private static final LogicalLocality Arm = new LogicalLocality("Arm");
