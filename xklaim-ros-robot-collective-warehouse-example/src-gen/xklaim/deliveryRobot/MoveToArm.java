@@ -21,12 +21,15 @@ public class MoveToArm extends KlavaProcess {
   
   private String robotId;
   
+  private String sector;
+  
   private Locality Arm;
   
-  public MoveToArm(final String rosbridgeWebsocketURI, final String robotId, final Locality Arm) {
+  public MoveToArm(final String rosbridgeWebsocketURI, final String robotId, final String sector, final Locality Arm) {
     super("xklaim.deliveryRobot.MoveToArm");
     this.rosbridgeWebsocketURI = rosbridgeWebsocketURI;
     this.robotId = robotId;
+    this.sector = sector;
     this.Arm = Arm;
   }
   
@@ -36,7 +39,7 @@ public class MoveToArm extends KlavaProcess {
     final double x = (-0.22);
     final double y = 0.34;
     final XklaimToRosConnection bridge = new XklaimToRosConnection(this.rosbridgeWebsocketURI);
-    in(new Tuple(new Object[] {"itemReadyForTheDelivery"}), this.Arm);
+    in(new Tuple(new Object[] {"itemReadyForTheDelivery", this.sector}), this.Arm);
     InputOutput.<String>println((("###############[" + this.robotId) + "] go to the arm"));
     final Publisher pub = new Publisher((("/" + this.robotId) + "/move_base_simple/goal"), "geometry_msgs/PoseStamped", bridge);
     final PoseStamped destination = new PoseStamped().headerFrameId("world").posePositionXY(x, y).poseOrientation(1.0);

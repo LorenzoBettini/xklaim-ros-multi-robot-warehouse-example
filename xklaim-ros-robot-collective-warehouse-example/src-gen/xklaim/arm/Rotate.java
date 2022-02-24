@@ -18,9 +18,12 @@ import ros.SubscriptionRequestMsg;
 public class Rotate extends KlavaProcess {
   private String rosbridgeWebsocketURI;
   
-  public Rotate(final String rosbridgeWebsocketURI) {
+  private String sector;
+  
+  public Rotate(final String rosbridgeWebsocketURI, final String sector) {
     super("xklaim.arm.Rotate");
     this.rosbridgeWebsocketURI = rosbridgeWebsocketURI;
+    this.sector = sector;
   }
   
   @Override
@@ -32,7 +35,7 @@ public class Rotate extends KlavaProcess {
     final JointTrajectory rotateTrajectory = new JointTrajectory().positions(((double[])Conversions.unwrapArray(jointPositions, double.class))).jointNames(
       new String[] { "joint1", "joint2", "joint3", "joint4", "joint5", "joint6" });
     in(new Tuple(new Object[] {"getUpCompleted"}), this.self);
-    out(new Tuple(new Object[] {"itemReadyForTheDelivery"}), this.self);
+    out(new Tuple(new Object[] {"itemReadyForTheDelivery", this.sector}), this.self);
     pub.publish(rotateTrajectory);
     final RosListenDelegate _function = (JsonNode data, String stringRep) -> {
       final JsonNode actual = data.get("msg").get("actual").get("positions");

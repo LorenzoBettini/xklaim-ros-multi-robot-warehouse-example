@@ -10,7 +10,7 @@ import ros.Publisher
 import ros.SubscriptionRequestMsg
 import ros.msgs.geometry_msgs.Twist
 
-proc MoveToArm(String rosbridgeWebsocketURI,String robotId,Locality Arm) {
+proc MoveToArm(String rosbridgeWebsocketURI,String robotId,String sector,Locality Arm) {
 	val local = self
 	
 	// Coordinates of the arm robot (notably, the arm robot has a fixed position)  
@@ -21,7 +21,7 @@ proc MoveToArm(String rosbridgeWebsocketURI,String robotId,Locality Arm) {
 	val bridge = new XklaimToRosConnection(rosbridgeWebsocketURI)
 
 	// wait for a call by the arm robot
-	in("itemReadyForTheDelivery")@Arm
+	in("itemReadyForTheDelivery",sector)@Arm
 	
 println("###############["+robotId+"] go to the arm")
 

@@ -16,7 +16,7 @@ net RobotColl physical "localhost:9999" {
 		while (true) {
 			in("initialPosition")@self
 
-			in("item",var String itemId,var String itemType,var Double x,var Double y)@self
+			in("item",var String itemId,var String sector, var String itemType,var Double x,var Double y)@self
 
 			eval(new GetDown(rosbridgeWebsocketURI,x,y))@self
 
@@ -24,7 +24,7 @@ net RobotColl physical "localhost:9999" {
 
 			eval(new GetUp(rosbridgeWebsocketURI,x,y))@self
 
-			eval(new Rotate(rosbridgeWebsocketURI))@self
+			eval(new Rotate(rosbridgeWebsocketURI,sector))@self
 
 			eval(new Lay(rosbridgeWebsocketURI))@self
 
@@ -39,11 +39,12 @@ net RobotColl physical "localhost:9999" {
 	node DeliveryRobot1 {
 		val rosbridgeWebsocketURI = "ws://0.0.0.0:9090"
 		val robotId = "robot1"
+		val sector ="sector1"
 
 		while (true) {
 			in("availableForDelivery")@self
 
-			eval(new MoveToArm(rosbridgeWebsocketURI,robotId,Arm))@self
+			eval(new MoveToArm(rosbridgeWebsocketURI,robotId,sector,Arm))@self
 
 			eval(new DeliverItem(rosbridgeWebsocketURI,robotId,Arm))@self
 		}
@@ -52,11 +53,12 @@ net RobotColl physical "localhost:9999" {
 	node DeliveryRobot2 {
 		val rosbridgeWebsocketURI = "ws://0.0.0.0:9090"
 		val robotId = "robot2"
+		val sector ="sector2"
 
 		while (true) {
 			in("availableForDelivery")@self
 
-			eval(new MoveToArm(rosbridgeWebsocketURI,robotId,Arm))@self
+			eval(new MoveToArm(rosbridgeWebsocketURI,robotId,sector,Arm))@self
 
 			eval(new DeliverItem(rosbridgeWebsocketURI,robotId,Arm))@self
 		}
@@ -69,10 +71,10 @@ net RobotColl physical "localhost:9999" {
 		// (i.e., its tuple space) 
 		
 		
-		out("item","idem1","red",0.583518, 0.0)@Arm
-		//out("item","idem2","blue",0.554542, 0.187360)@Arm
-		out("item","idem3","red",0.504, 0.307)@Arm
-		out("item","idem4","blue",0.332977,0.470854)@Arm
+		out("item","idem1","sector1","red",0.583518, 0.0)@Arm
+		//out("item","idem2","sector2","blue",0.554542, 0.187360)@Arm
+		out("item","idem3","sector2","red",0.504, 0.307)@Arm
+		out("item","idem4","sector2","blue",0.332977,0.470854)@Arm
 
 		// insert mapping between item types and destinations in the delivery robots' local knowledge 
 		out("type2destination","red",-9.0,-9.0)@DeliveryRobot1	
