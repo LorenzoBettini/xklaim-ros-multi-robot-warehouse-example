@@ -8,12 +8,23 @@ import ros.Publisher
 /* posare l'item in posizioni predefinite per evitare problemi con il calcolo dell'offset*/
 
 
-proc PickUp(String rosbridgeWebsocketURI,Locality DeliveryRobot) {
+proc PickUp(String rosbridgeWebsocketURI,Locality DeliveryRobot,String sector) {
 	var offset = 0.0
+	var initialXforRed = -9.5 
+	var initialYforRed = -9.0
+	var initialXforBlue = 9.5 
+	var initialYforBlue = -9.0
+	
+	if (sector.equals("sector2")) {
+		initialXforRed = 9.5 
+		initialYforRed = 9.0
+		initialXforBlue = -9.5 
+		initialYforBlue = 9.0	
+	}
 	
 	while (true) {
 		
-		in("itemDelivered",var String id,var Double x,var Double y)@DeliveryRobot
+		in("itemDelivered",var String id,var String type,var Double x,var Double y)@DeliveryRobot
 
 		// wait for a short delay before picking up the item
 		Thread.sleep(2000)
@@ -25,14 +36,26 @@ proc PickUp(String rosbridgeWebsocketURI,Locality DeliveryRobot) {
 		// pick up the item and pose it in the destination area
 		val Pose_item = new Publisher("/gazebo/set_model_state", "gazebo_msgs/ModelState", bridge)
 		val modelstate = new ModelState()
-		modelstate.pose.position.x = x + 0.2 + offset
-		modelstate.pose.position.y = y + 0.2 + offset
+		
+		if (type.equals("red")){
+			modelstate.pose.position.x = initialXforRed  
+			modelstate.pose.position.y = initialYforRed	+ offset
+		} else {
+			modelstate.pose.position.x = initialXforBlue  
+			modelstate.pose.position.y = initialYforBlue + offset
+		}
+				
 		modelstate.model_name = id
 		modelstate.reference_frame = "world"
 		Pose_item.publish(modelstate)
 		
-		println("### Item "+id+" delivered at ("+(x + 0.2 + offset)+","+(y + 0.2 + offset)+")")
+		println("### Item "+id+"("+type+") delivered at ("+x+","+y+")")
 		
-		offset += 0.2
+		if (sector.equals("sector1")) {
+		offset += 0.2	
+	} else {
+		offset -= 0.2
+	}
+		
 	}
 }

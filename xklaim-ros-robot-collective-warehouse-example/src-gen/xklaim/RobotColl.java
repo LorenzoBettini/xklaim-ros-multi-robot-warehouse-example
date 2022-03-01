@@ -153,9 +153,9 @@ public class RobotColl extends LogicalNet {
         out(new Tuple(new Object[] {"initialPosition"}), RobotColl.Arm);
         out(new Tuple(new Object[] {"availableForDelivery"}), RobotColl.DeliveryRobot1);
         out(new Tuple(new Object[] {"availableForDelivery"}), RobotColl.DeliveryRobot2);
-        PickUp _pickUp = new PickUp(rosbridgeWebsocketURI, RobotColl.DeliveryRobot1);
+        PickUp _pickUp = new PickUp(rosbridgeWebsocketURI, RobotColl.DeliveryRobot1, "sector1");
         eval(_pickUp, this.self);
-        PickUp _pickUp_1 = new PickUp(rosbridgeWebsocketURI, RobotColl.DeliveryRobot2);
+        PickUp _pickUp_1 = new PickUp(rosbridgeWebsocketURI, RobotColl.DeliveryRobot2, "sector2");
         eval(_pickUp_1, this.self);
       }
     }
