@@ -44,7 +44,6 @@ public class DeliverItem extends KlavaProcess {
     itemId = (String) _Tuple.getItem(1);
     itemType = (String) _Tuple.getItem(2);
     final String id = itemId;
-    final String type = itemType;
     Double x = null;
     Double y = null;
     Tuple _Tuple_1 = new Tuple(new Object[] {"type2destination", itemType, Double.class, Double.class});
@@ -81,7 +80,7 @@ public class DeliverItem extends KlavaProcess {
           final Publisher pubvel = new Publisher((("/" + this.robotId) + "/cmd_vel"), "geometry_msgs/Twist", bridge);
           final Twist twistMsg = new Twist();
           pubvel.publish(twistMsg);
-          out(new Tuple(new Object[] {"itemDelivered", id, type, deliveryDestination.pose.position.x, deliveryDestination.pose.position.y}), local);
+          out(new Tuple(new Object[] {"itemDelivered", id, deliveryDestination.pose.position.x, deliveryDestination.pose.position.y}), local);
           out(new Tuple(new Object[] {"availableForDelivery"}), local);
           bridge.unsubscribe((("/" + this.robotId) + "/amcl_pose"));
         }

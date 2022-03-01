@@ -101,10 +101,12 @@ net RobotColl physical "localhost:9999" {
 		// activate the DeliveryRobot2 by inserting the information that it is available for a delivery
 		out("availableForDelivery")@DeliveryRobot2
 
-		// activate the processes in charge of picking up and posing the delivered items
-		eval(new PickUp(rosbridgeWebsocketURI,DeliveryRobot1,"sector1"))@self
-		eval(new PickUp(rosbridgeWebsocketURI,DeliveryRobot2,"sector2"))@self 
-		
+		// activate the processes in charge of picking up and posing the delivered items 
+		// (there is one process for each pickup area)
+		eval(new PickUp(rosbridgeWebsocketURI,DeliveryRobot1,-9.0,-9.0))@self
+		eval(new PickUp(rosbridgeWebsocketURI,DeliveryRobot1,9.0,-9.0))@self
+		eval(new PickUp(rosbridgeWebsocketURI,DeliveryRobot2,-9.0,9.0))@self
+		eval(new PickUp(rosbridgeWebsocketURI,DeliveryRobot2,9.0,9.0))@self 		
 	}
 }
 
