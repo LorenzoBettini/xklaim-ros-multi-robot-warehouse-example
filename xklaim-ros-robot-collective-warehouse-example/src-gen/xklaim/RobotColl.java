@@ -143,9 +143,9 @@ public class RobotColl extends LogicalNet {
       public void executeProcess() {
         final String rosbridgeWebsocketURI = "ws://0.0.0.0:9090";
         out(new Tuple(new Object[] {"item", "item1", "sector1", "red", 0.583518, 0.0}), RobotColl.Arm);
-        out(new Tuple(new Object[] {"item", "item2", "sector2", "blue", 0.554542, 0.187360}), RobotColl.Arm);
-        out(new Tuple(new Object[] {"item", "item3", "sector2", "red", 0.504, 0.307}), RobotColl.Arm);
-        out(new Tuple(new Object[] {"item", "item4", "sector2", "blue", 0.332977, 0.470854}), RobotColl.Arm);
+        out(new Tuple(new Object[] {"item", "item2", "sector2", "red", 0.554542, 0.187360}), RobotColl.Arm);
+        out(new Tuple(new Object[] {"item", "item3", "sector2", "blue", 0.504, 0.307}), RobotColl.Arm);
+        out(new Tuple(new Object[] {"item", "item4", "sector1", "blue", 0.332977, 0.470854}), RobotColl.Arm);
         out(new Tuple(new Object[] {"type2destination", "red", (-9.0), (-9.0)}), RobotColl.DeliveryRobot1);
         out(new Tuple(new Object[] {"type2destination", "blue", 9.0, (-9.0)}), RobotColl.DeliveryRobot1);
         out(new Tuple(new Object[] {"type2destination", "red", 9.0, 9.0}), RobotColl.DeliveryRobot2);

@@ -5,6 +5,9 @@ import messages.ModelState
 import messages.XklaimToRosConnection
 import ros.Publisher
 
+/* posare l'item in posizioni predefinite per evitare problemi con il calcolo dell'offset*/
+
+
 proc PickUp(String rosbridgeWebsocketURI,Locality DeliveryRobot) {
 	var offset = 0.0
 	
@@ -22,14 +25,14 @@ proc PickUp(String rosbridgeWebsocketURI,Locality DeliveryRobot) {
 		// pick up the item and pose it in the destination area
 		val Pose_item = new Publisher("/gazebo/set_model_state", "gazebo_msgs/ModelState", bridge)
 		val modelstate = new ModelState()
-		modelstate.pose.position.x = x + 0.3 + offset
-		modelstate.pose.position.y = y + 0.3 + offset
+		modelstate.pose.position.x = x + 0.2 + offset
+		modelstate.pose.position.y = y + 0.2 + offset
 		modelstate.model_name = id
 		modelstate.reference_frame = "world"
 		Pose_item.publish(modelstate)
 		
-		println("### Item "+id+" delivered at ("+(x + 0.3 + offset)+","+(y + 0.3 + offset)+")")
+		println("### Item "+id+" delivered at ("+(x + 0.2 + offset)+","+(y + 0.2 + offset)+")")
 		
-		offset += 0.3
+		offset += 0.2
 	}
 }
