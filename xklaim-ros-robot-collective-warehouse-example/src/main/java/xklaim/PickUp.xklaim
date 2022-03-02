@@ -5,7 +5,8 @@ import messages.ModelState
 import messages.XklaimToRosConnection
 import ros.Publisher
 
-proc PickUp(String rosbridgeWebsocketURI,Locality DeliveryRobot,Double x, Double y) {
+proc PickUp(String rosbridgeWebsocketURI,Locality DeliveryRobot,double x, double y) {
+	var String coordinates = "("+x+","+y+")"
 	var poseX = x
 	var poseY = y
 
@@ -21,10 +22,19 @@ proc PickUp(String rosbridgeWebsocketURI,Locality DeliveryRobot,Double x, Double
 	}
 
 	while (true) {
-
-		in("itemDelivered",var String id,x,y)@DeliveryRobot
-
-		println("###### Item " + id + " delivered at (" + x + "," + y + ")")
+		//println("###### ready to consume: " + "itemDelivered"+" id " +coordinates+" "+DeliveryRobot)
+		
+		
+		
+		println("###### COORDINATES: " + coordinates)
+		
+		in("itemDelivered",var String itemId,coordinates)@DeliveryRobot
+		
+		println("###### AAAAHHHHHHHHHHH: " + itemId +" " + coordinates)
+		
+		
+		
+		//println("###### Item " + itemId + " picked up at "+coordinates)
 
 		// wait for a short delay before picking up the item
 		Thread.sleep(2000)
@@ -39,11 +49,11 @@ proc PickUp(String rosbridgeWebsocketURI,Locality DeliveryRobot,Double x, Double
 		modelstate.pose.position.x = poseX
 		modelstate.pose.position.y = poseY
 
-		modelstate.model_name = id
+		modelstate.model_name = itemId
 		modelstate.reference_frame = "world"
 		Pose_item.publish(modelstate)
 
-		println("###### Item " + id + " posed at (" + poseX + "," + poseY + ")")
+		println("###### Item " + itemId + " posed at (" + poseX + "," + poseY + ")")
 
 		if (y < 0) {
 			poseY = poseY + 0.3

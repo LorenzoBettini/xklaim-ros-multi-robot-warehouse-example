@@ -15,11 +15,11 @@ public class PickUp extends KlavaProcess {
   
   private Locality DeliveryRobot;
   
-  private Double x;
+  private double x;
   
-  private Double y;
+  private double y;
   
-  public PickUp(final String rosbridgeWebsocketURI, final Locality DeliveryRobot, final Double x, final Double y) {
+  public PickUp(final String rosbridgeWebsocketURI, final Locality DeliveryRobot, final double x, final double y) {
     super("xklaim.arm.PickUp");
     this.rosbridgeWebsocketURI = rosbridgeWebsocketURI;
     this.DeliveryRobot = DeliveryRobot;
@@ -30,39 +30,41 @@ public class PickUp extends KlavaProcess {
   @Override
   public void executeProcess() {
     try {
-      Double poseX = this.x;
-      Double poseY = this.y;
-      if (((this.x).doubleValue() > 0)) {
-        poseX = Double.valueOf(((poseX).doubleValue() + 0.3));
+      String coordinates = (((("(" + Double.valueOf(this.x)) + ",") + Double.valueOf(this.y)) + ")");
+      double poseX = this.x;
+      double poseY = this.y;
+      if ((this.x > 0)) {
+        poseX = (poseX + 0.3);
       } else {
-        poseX = Double.valueOf(((poseX).doubleValue() - 0.3));
+        poseX = (poseX - 0.3);
       }
-      if (((this.y).doubleValue() < 0)) {
-        poseY = Double.valueOf(((poseY).doubleValue() + 0.5));
+      if ((this.y < 0)) {
+        poseY = (poseY + 0.5);
       } else {
-        poseY = Double.valueOf(((poseY).doubleValue() - 0.5));
+        poseY = (poseY - 0.5);
       }
       while (true) {
         {
-          String id = null;
-          Tuple _Tuple = new Tuple(new Object[] {"itemDelivered", String.class, this.x, this.y});
+          InputOutput.<String>println(("###### COORDINATES: " + coordinates));
+          String itemId = null;
+          Tuple _Tuple = new Tuple(new Object[] {"itemDelivered", String.class, coordinates});
           in(_Tuple, this.DeliveryRobot);
-          id = (String) _Tuple.getItem(1);
-          InputOutput.<String>println((((((("###### Item " + id) + " delivered at (") + this.x) + ",") + this.y) + ")"));
+          itemId = (String) _Tuple.getItem(1);
+          InputOutput.<String>println(((("###### AAAAHHHHHHHHHHH: " + itemId) + " ") + coordinates));
           Thread.sleep(2000);
           final XklaimToRosConnection bridge = new XklaimToRosConnection(this.rosbridgeWebsocketURI);
           final Publisher Pose_item = new Publisher("/gazebo/set_model_state", "gazebo_msgs/ModelState", bridge);
           final ModelState modelstate = new ModelState();
-          modelstate.pose.position.x = (poseX).doubleValue();
-          modelstate.pose.position.y = (poseY).doubleValue();
-          modelstate.model_name = id;
+          modelstate.pose.position.x = poseX;
+          modelstate.pose.position.y = poseY;
+          modelstate.model_name = itemId;
           modelstate.reference_frame = "world";
           Pose_item.publish(modelstate);
-          InputOutput.<String>println((((((("###### Item " + id) + " posed at (") + poseX) + ",") + poseY) + ")"));
-          if (((this.y).doubleValue() < 0)) {
-            poseY = Double.valueOf(((poseY).doubleValue() + 0.3));
+          InputOutput.<String>println((((((("###### Item " + itemId) + " posed at (") + Double.valueOf(poseX)) + ",") + Double.valueOf(poseY)) + ")"));
+          if ((this.y < 0)) {
+            poseY = (poseY + 0.3);
           } else {
-            poseY = Double.valueOf(((poseY).doubleValue() - 0.3));
+            poseY = (poseY - 0.3);
           }
         }
       }

@@ -19,7 +19,7 @@ proc DeliverItem(String rosbridgeWebsocketURI,String robotId,Locality Arm) {
 
 	// wait for the notification that the gripper is opened 
 	in("gripperOpened",var String itemId,var String itemType)@Arm
-	val id = itemId
+	val itemid = itemId
 
 	// retrieve from the local knowledge the destination coordinates
 	read("type2destination",itemType,var Double x,var Double y)@self
@@ -72,9 +72,15 @@ proc DeliverItem(String rosbridgeWebsocketURI,String robotId,Locality Arm) {
 				val twistMsg = new Twist();
 				pubvel.publish(twistMsg);
 
+				var String coordinates = "("+deliveryDestination.pose.position.x+","+deliveryDestination.pose.position.y+")" 
+								
 				// notify that the item with identifier id has been delivered at the destination with coordinates (x,y) 
-				out("itemDelivered",id,deliveryDestination.pose.position.x,deliveryDestination.pose.position.y)@local
-
+				out("itemDelivered",itemid,coordinates)@local
+			
+				
+				
+				println("############## Item "+itemid+" delivered at "+coordinates+" by "+robotId)
+				
 				// set the robot as available for a new delivery
 				out("availableForDelivery")@local
 

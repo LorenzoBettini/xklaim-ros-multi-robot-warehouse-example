@@ -153,13 +153,13 @@ public class RobotColl extends LogicalNet {
         out(new Tuple(new Object[] {"initialPosition"}), RobotColl.Arm);
         out(new Tuple(new Object[] {"availableForDelivery"}), RobotColl.DeliveryRobot1);
         out(new Tuple(new Object[] {"availableForDelivery"}), RobotColl.DeliveryRobot2);
-        PickUp _pickUp = new PickUp(rosbridgeWebsocketURI, RobotColl.DeliveryRobot1, Double.valueOf((-9.0)), Double.valueOf((-9.0)));
+        PickUp _pickUp = new PickUp(rosbridgeWebsocketURI, RobotColl.DeliveryRobot1, (-9.0), (-9.0));
         eval(_pickUp, this.self);
-        PickUp _pickUp_1 = new PickUp(rosbridgeWebsocketURI, RobotColl.DeliveryRobot1, Double.valueOf(9.0), Double.valueOf((-9.0)));
+        PickUp _pickUp_1 = new PickUp(rosbridgeWebsocketURI, RobotColl.DeliveryRobot1, 9.0, (-9.0));
         eval(_pickUp_1, this.self);
-        PickUp _pickUp_2 = new PickUp(rosbridgeWebsocketURI, RobotColl.DeliveryRobot2, Double.valueOf((-9.0)), Double.valueOf(9.0));
+        PickUp _pickUp_2 = new PickUp(rosbridgeWebsocketURI, RobotColl.DeliveryRobot2, (-9.0), 9.0);
         eval(_pickUp_2, this.self);
-        PickUp _pickUp_3 = new PickUp(rosbridgeWebsocketURI, RobotColl.DeliveryRobot2, Double.valueOf(9.0), Double.valueOf(9.0));
+        PickUp _pickUp_3 = new PickUp(rosbridgeWebsocketURI, RobotColl.DeliveryRobot2, 9.0, 9.0);
         eval(_pickUp_3, this.self);
       }
     }

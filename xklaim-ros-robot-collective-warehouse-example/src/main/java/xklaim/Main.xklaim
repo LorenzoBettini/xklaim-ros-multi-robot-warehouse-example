@@ -106,7 +106,10 @@ net RobotColl physical "localhost:9999" {
 		eval(new PickUp(rosbridgeWebsocketURI,DeliveryRobot1,-9.0,-9.0))@self
 		eval(new PickUp(rosbridgeWebsocketURI,DeliveryRobot1,9.0,-9.0))@self
 		eval(new PickUp(rosbridgeWebsocketURI,DeliveryRobot2,-9.0,9.0))@self
-		eval(new PickUp(rosbridgeWebsocketURI,DeliveryRobot2,9.0,9.0))@self 		
+		eval(new PickUp(rosbridgeWebsocketURI,DeliveryRobot2,9.0,9.0))@self
+		
+		
+		
 	}
 }
 

@@ -14,6 +14,7 @@ import messages.Twist;
 import messages.XklaimToRosConnection;
 import org.eclipse.xtext.xbase.lib.Conversions;
 import org.eclipse.xtext.xbase.lib.Exceptions;
+import org.eclipse.xtext.xbase.lib.InputOutput;
 import ros.Publisher;
 import ros.RosListenDelegate;
 import ros.SubscriptionRequestMsg;
@@ -43,7 +44,7 @@ public class DeliverItem extends KlavaProcess {
     in(_Tuple, this.Arm);
     itemId = (String) _Tuple.getItem(1);
     itemType = (String) _Tuple.getItem(2);
-    final String id = itemId;
+    final String itemid = itemId;
     Double x = null;
     Double y = null;
     Tuple _Tuple_1 = new Tuple(new Object[] {"type2destination", itemType, Double.class, Double.class});
@@ -80,7 +81,9 @@ public class DeliverItem extends KlavaProcess {
           final Publisher pubvel = new Publisher((("/" + this.robotId) + "/cmd_vel"), "geometry_msgs/Twist", bridge);
           final Twist twistMsg = new Twist();
           pubvel.publish(twistMsg);
-          out(new Tuple(new Object[] {"itemDelivered", id, deliveryDestination.pose.position.x, deliveryDestination.pose.position.y}), local);
+          String coordinates = (((("(" + Double.valueOf(deliveryDestination.pose.position.x)) + ",") + Double.valueOf(deliveryDestination.pose.position.y)) + ")");
+          out(new Tuple(new Object[] {"itemDelivered", itemid, coordinates}), local);
+          InputOutput.<String>println(((((("############## Item " + itemid) + " delivered at ") + coordinates) + " by ") + this.robotId));
           out(new Tuple(new Object[] {"availableForDelivery"}), local);
           bridge.unsubscribe((("/" + this.robotId) + "/amcl_pose"));
         }
