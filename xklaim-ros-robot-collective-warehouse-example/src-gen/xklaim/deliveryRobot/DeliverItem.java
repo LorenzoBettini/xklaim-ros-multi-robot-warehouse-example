@@ -14,7 +14,6 @@ import messages.Twist;
 import messages.XklaimToRosConnection;
 import org.eclipse.xtext.xbase.lib.Conversions;
 import org.eclipse.xtext.xbase.lib.Exceptions;
-import org.eclipse.xtext.xbase.lib.InputOutput;
 import ros.Publisher;
 import ros.RosListenDelegate;
 import ros.SubscriptionRequestMsg;
@@ -83,7 +82,6 @@ public class DeliverItem extends KlavaProcess {
           pubvel.publish(twistMsg);
           String coordinates = (((("(" + Double.valueOf(deliveryDestination.pose.position.x)) + ",") + Double.valueOf(deliveryDestination.pose.position.y)) + ")");
           out(new Tuple(new Object[] {"itemDelivered", itemid, coordinates}), local);
-          InputOutput.<String>println(((((("############## Item " + itemid) + " delivered at ") + coordinates) + " by ") + this.robotId));
           out(new Tuple(new Object[] {"availableForDelivery"}), local);
           bridge.unsubscribe((("/" + this.robotId) + "/amcl_pose"));
         }

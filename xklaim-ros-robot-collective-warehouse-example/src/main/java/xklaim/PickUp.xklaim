@@ -1,4 +1,4 @@
-package xklaim.arm
+package xklaim
 
 import klava.Locality
 import messages.ModelState
@@ -11,31 +11,19 @@ proc PickUp(String rosbridgeWebsocketURI,Locality DeliveryRobot,double x, double
 	var poseY = y
 
 	if (x > 0) {
-		poseX = poseX + 0.3
+		poseX += 0.3
 	} else {
-		poseX = poseX - 0.3
+		poseX -= 0.3
 	}
 	if (y < 0) {
-		poseY = poseY + 0.5
+		poseY += 0.5
 	} else {
-		poseY = poseY - 0.5
+		poseY -= 0.5
 	}
-
+	
 	while (true) {
-		//println("###### ready to consume: " + "itemDelivered"+" id " +coordinates+" "+DeliveryRobot)
-		
-		
-		
-		println("###### COORDINATES: " + coordinates)
-		
 		in("itemDelivered",var String itemId,coordinates)@DeliveryRobot
-		
-		println("###### AAAAHHHHHHHHHHH: " + itemId +" " + coordinates)
-		
-		
-		
-		//println("###### Item " + itemId + " picked up at "+coordinates)
-
+				
 		// wait for a short delay before picking up the item
 		Thread.sleep(2000)
 
@@ -53,12 +41,12 @@ proc PickUp(String rosbridgeWebsocketURI,Locality DeliveryRobot,double x, double
 		modelstate.reference_frame = "world"
 		Pose_item.publish(modelstate)
 
-		println("###### Item " + itemId + " posed at (" + poseX + "," + poseY + ")")
+		println("############ Item " + itemId + " posed at (" + poseX + "," + poseY + ")")
 
 		if (y < 0) {
-			poseY = poseY + 0.3
+			poseY += 0.3
 		} else {
-			poseY = poseY - 0.3
+			poseY -= 0.3
 		}
 	}
 }

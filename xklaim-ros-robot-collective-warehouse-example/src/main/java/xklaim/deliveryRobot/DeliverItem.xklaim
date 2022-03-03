@@ -76,10 +76,6 @@ proc DeliverItem(String rosbridgeWebsocketURI,String robotId,Locality Arm) {
 								
 				// notify that the item with identifier id has been delivered at the destination with coordinates (x,y) 
 				out("itemDelivered",itemid,coordinates)@local
-			
-				
-				
-				println("############## Item "+itemid+" delivered at "+coordinates+" by "+robotId)
 				
 				// set the robot as available for a new delivery
 				out("availableForDelivery")@local

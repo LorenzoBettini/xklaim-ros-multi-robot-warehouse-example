@@ -12,17 +12,11 @@ import xklaim.arm.GetUp;
 import xklaim.arm.GoToInitialPosition;
 import xklaim.arm.Grip;
 import xklaim.arm.Lay;
-import xklaim.arm.PickUp;
 import xklaim.arm.Release;
 import xklaim.arm.Rotate;
 import xklaim.deliveryRobot.DeliverItem;
 import xklaim.deliveryRobot.MoveToArm;
 
-/**
- * LIST OF TODOS:
- * - rename item identifiers (e.g. idem1 in item1) in xklaim and gazebo code
- * - check the position and orientation of item2 in the gazebo scenario in order to avoid problems with the gripper
- */
 @SuppressWarnings("all")
 public class RobotColl extends LogicalNet {
   private static final LogicalLocality Arm = new LogicalLocality("Arm");
@@ -143,8 +137,8 @@ public class RobotColl extends LogicalNet {
       public void executeProcess() {
         final String rosbridgeWebsocketURI = "ws://0.0.0.0:9090";
         out(new Tuple(new Object[] {"item", "item1", "sector1", "red", 0.583518, 0.0}), RobotColl.Arm);
-        out(new Tuple(new Object[] {"item", "item2", "sector2", "red", 0.554542, 0.187360}), RobotColl.Arm);
-        out(new Tuple(new Object[] {"item", "item3", "sector2", "blue", 0.504, 0.307}), RobotColl.Arm);
+        out(new Tuple(new Object[] {"item", "item2", "sector2", "blue", 0.554542, 0.187360}), RobotColl.Arm);
+        out(new Tuple(new Object[] {"item", "item3", "sector2", "red", 0.504, 0.307}), RobotColl.Arm);
         out(new Tuple(new Object[] {"item", "item4", "sector1", "blue", 0.332977, 0.470854}), RobotColl.Arm);
         out(new Tuple(new Object[] {"type2destination", "red", (-9.0), (-9.0)}), RobotColl.DeliveryRobot1);
         out(new Tuple(new Object[] {"type2destination", "blue", 9.0, (-9.0)}), RobotColl.DeliveryRobot1);
