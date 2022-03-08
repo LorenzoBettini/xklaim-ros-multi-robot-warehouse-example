@@ -68,8 +68,8 @@ net RobotColl physical "localhost:9999" {
 		val rosbridgeWebsocketURI = "ws://0.0.0.0:9090"
 
 		// --- initial setup of the scenario ---
-		// insert info about items (id, type and coordinates) in the arm robot's local knowledge 
-		// (i.e., its tuple space) 			
+		// insert info about items (id, warehouse destination sector, type and coordinates)  
+		// in the arm robot's local knowledge (i.e., its tuple space) 			
 		out("item","item1","sector1","red",0.583518, 0.0)@Arm
 		out("item","item2","sector2","blue",0.554542, 0.187360)@Arm
 		out("item","item3","sector2","red",0.504, 0.307)@Arm 

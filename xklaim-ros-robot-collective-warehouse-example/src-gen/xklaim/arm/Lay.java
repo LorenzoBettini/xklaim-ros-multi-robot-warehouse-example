@@ -19,7 +19,6 @@ public class Lay extends KlavaProcess {
   private String rosbridgeWebsocketURI;
   
   public Lay(final String rosbridgeWebsocketURI) {
-    super("xklaim.arm.Lay");
     this.rosbridgeWebsocketURI = rosbridgeWebsocketURI;
   }
   

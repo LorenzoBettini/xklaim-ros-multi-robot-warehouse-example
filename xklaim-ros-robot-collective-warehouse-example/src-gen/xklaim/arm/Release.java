@@ -23,7 +23,6 @@ public class Release extends KlavaProcess {
   private String itemType;
   
   public Release(final String rosbridgeWebsocketURI, final String itemId, final String itemType) {
-    super("xklaim.arm.Release");
     this.rosbridgeWebsocketURI = rosbridgeWebsocketURI;
     this.itemId = itemId;
     this.itemType = itemType;

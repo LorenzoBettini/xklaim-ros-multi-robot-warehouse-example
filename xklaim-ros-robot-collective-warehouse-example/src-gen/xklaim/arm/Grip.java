@@ -19,7 +19,6 @@ public class Grip extends KlavaProcess {
   private String rosbridgeWebsocketURI;
   
   public Grip(final String rosbridgeWebsocketURI) {
-    super("xklaim.arm.Grip");
     this.rosbridgeWebsocketURI = rosbridgeWebsocketURI;
   }
   

@@ -27,7 +27,6 @@ public class DeliverItem extends KlavaProcess {
   private Locality Arm;
   
   public DeliverItem(final String rosbridgeWebsocketURI, final String robotId, final Locality Arm) {
-    super("xklaim.deliveryRobot.DeliverItem");
     this.rosbridgeWebsocketURI = rosbridgeWebsocketURI;
     this.robotId = robotId;
     this.Arm = Arm;

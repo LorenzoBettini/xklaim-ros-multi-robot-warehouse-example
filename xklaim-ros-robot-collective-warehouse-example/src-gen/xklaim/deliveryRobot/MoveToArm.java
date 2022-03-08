@@ -25,7 +25,6 @@ public class MoveToArm extends KlavaProcess {
   private Locality Arm;
   
   public MoveToArm(final String rosbridgeWebsocketURI, final String robotId, final String sector, final Locality Arm) {
-    super("xklaim.deliveryRobot.MoveToArm");
     this.rosbridgeWebsocketURI = rosbridgeWebsocketURI;
     this.robotId = robotId;
     this.sector = sector;

@@ -20,7 +20,6 @@ public class GoToInitialPosition extends KlavaProcess {
   private String rosbridgeWebsocketURI;
   
   public GoToInitialPosition(final String rosbridgeWebsocketURI) {
-    super("xklaim.arm.GoToInitialPosition");
     this.rosbridgeWebsocketURI = rosbridgeWebsocketURI;
   }
   

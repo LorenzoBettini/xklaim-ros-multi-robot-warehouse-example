@@ -24,7 +24,6 @@ public class GetUp extends KlavaProcess {
   private Double y;
   
   public GetUp(final String rosbridgeWebsocketURI, final Double x, final Double y) {
-    super("xklaim.arm.GetUp");
     this.rosbridgeWebsocketURI = rosbridgeWebsocketURI;
     this.x = x;
     this.y = y;

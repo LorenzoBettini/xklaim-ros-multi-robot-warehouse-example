@@ -21,7 +21,6 @@ public class Rotate extends KlavaProcess {
   private String sector;
   
   public Rotate(final String rosbridgeWebsocketURI, final String sector) {
-    super("xklaim.arm.Rotate");
     this.rosbridgeWebsocketURI = rosbridgeWebsocketURI;
     this.sector = sector;
   }
