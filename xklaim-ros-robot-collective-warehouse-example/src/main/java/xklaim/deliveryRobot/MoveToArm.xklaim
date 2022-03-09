@@ -14,8 +14,6 @@ proc MoveToArm(String rosbridgeWebsocketURI,String robotId,String sector,Localit
 	val local = self
 	
 	// Coordinates of the arm robot (notably, the arm robot has a fixed position)  
-	//val x = -0.22
-	//val y = 0.34
 	val x = -0.21
 	val y = 0.31
 
