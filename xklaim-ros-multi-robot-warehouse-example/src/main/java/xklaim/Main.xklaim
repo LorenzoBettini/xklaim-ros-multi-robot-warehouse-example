@@ -10,7 +10,7 @@ import xklaim.arm.Rotate
 import xklaim.deliveryRobot.DeliverItem
 import xklaim.deliveryRobot.MoveToArm
 
-net RobotColl physical "localhost:9999" {
+net MRS physical "localhost:9999" {
 	node Arm {
 		val rosbridgeWebsocketURI = "ws://0.0.0.0:9090"
 		while (true) {

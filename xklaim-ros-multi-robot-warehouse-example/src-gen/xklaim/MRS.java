@@ -18,7 +18,7 @@ import xklaim.deliveryRobot.DeliverItem;
 import xklaim.deliveryRobot.MoveToArm;
 
 @SuppressWarnings("all")
-public class RobotColl extends LogicalNet {
+public class MRS extends LogicalNet {
   private static final LogicalLocality Arm = new LogicalLocality("Arm");
   
   private static final LogicalLocality DeliveryRobot1 = new LogicalLocality("DeliveryRobot1");
@@ -71,7 +71,7 @@ public class RobotColl extends LogicalNet {
     }
     
     public void addMainProcess() throws IMCException {
-      addNodeCoordinator(new RobotColl.Arm.ArmProcess());
+      addNodeCoordinator(new MRS.Arm.ArmProcess());
     }
   }
   
@@ -85,9 +85,9 @@ public class RobotColl extends LogicalNet {
         while (true) {
           {
             in(new Tuple(new Object[] {"availableForDelivery"}), this.self);
-            MoveToArm _moveToArm = new MoveToArm(rosbridgeWebsocketURI, robotId, sector, RobotColl.Arm);
+            MoveToArm _moveToArm = new MoveToArm(rosbridgeWebsocketURI, robotId, sector, MRS.Arm);
             eval(_moveToArm, this.self);
-            DeliverItem _deliverItem = new DeliverItem(rosbridgeWebsocketURI, robotId, RobotColl.Arm);
+            DeliverItem _deliverItem = new DeliverItem(rosbridgeWebsocketURI, robotId, MRS.Arm);
             eval(_deliverItem, this.self);
           }
         }
@@ -99,7 +99,7 @@ public class RobotColl extends LogicalNet {
     }
     
     public void addMainProcess() throws IMCException {
-      addNodeCoordinator(new RobotColl.DeliveryRobot1.DeliveryRobot1Process());
+      addNodeCoordinator(new MRS.DeliveryRobot1.DeliveryRobot1Process());
     }
   }
   
@@ -113,9 +113,9 @@ public class RobotColl extends LogicalNet {
         while (true) {
           {
             in(new Tuple(new Object[] {"availableForDelivery"}), this.self);
-            MoveToArm _moveToArm = new MoveToArm(rosbridgeWebsocketURI, robotId, sector, RobotColl.Arm);
+            MoveToArm _moveToArm = new MoveToArm(rosbridgeWebsocketURI, robotId, sector, MRS.Arm);
             eval(_moveToArm, this.self);
-            DeliverItem _deliverItem = new DeliverItem(rosbridgeWebsocketURI, robotId, RobotColl.Arm);
+            DeliverItem _deliverItem = new DeliverItem(rosbridgeWebsocketURI, robotId, MRS.Arm);
             eval(_deliverItem, this.self);
           }
         }
@@ -127,7 +127,7 @@ public class RobotColl extends LogicalNet {
     }
     
     public void addMainProcess() throws IMCException {
-      addNodeCoordinator(new RobotColl.DeliveryRobot2.DeliveryRobot2Process());
+      addNodeCoordinator(new MRS.DeliveryRobot2.DeliveryRobot2Process());
     }
   }
   
@@ -136,24 +136,24 @@ public class RobotColl extends LogicalNet {
       @Override
       public void executeProcess() {
         final String rosbridgeWebsocketURI = "ws://0.0.0.0:9090";
-        out(new Tuple(new Object[] {"item", "item1", "sector1", "red", 0.583518, 0.0}), RobotColl.Arm);
-        out(new Tuple(new Object[] {"item", "item2", "sector2", "blue", 0.554542, 0.187360}), RobotColl.Arm);
-        out(new Tuple(new Object[] {"item", "item3", "sector2", "red", 0.504, 0.307}), RobotColl.Arm);
-        out(new Tuple(new Object[] {"item", "item4", "sector1", "blue", 0.332977, 0.470854}), RobotColl.Arm);
-        out(new Tuple(new Object[] {"type2destination", "red", (-9.0), (-9.0)}), RobotColl.DeliveryRobot1);
-        out(new Tuple(new Object[] {"type2destination", "blue", 9.0, (-9.0)}), RobotColl.DeliveryRobot1);
-        out(new Tuple(new Object[] {"type2destination", "red", 9.0, 9.0}), RobotColl.DeliveryRobot2);
-        out(new Tuple(new Object[] {"type2destination", "blue", (-9.0), 9.0}), RobotColl.DeliveryRobot2);
-        out(new Tuple(new Object[] {"initialPosition"}), RobotColl.Arm);
-        out(new Tuple(new Object[] {"availableForDelivery"}), RobotColl.DeliveryRobot1);
-        out(new Tuple(new Object[] {"availableForDelivery"}), RobotColl.DeliveryRobot2);
-        PickUp _pickUp = new PickUp(rosbridgeWebsocketURI, RobotColl.DeliveryRobot1, (-9.0), (-9.0));
+        out(new Tuple(new Object[] {"item", "item1", "sector1", "red", 0.583518, 0.0}), MRS.Arm);
+        out(new Tuple(new Object[] {"item", "item2", "sector2", "blue", 0.554542, 0.187360}), MRS.Arm);
+        out(new Tuple(new Object[] {"item", "item3", "sector2", "red", 0.504, 0.307}), MRS.Arm);
+        out(new Tuple(new Object[] {"item", "item4", "sector1", "blue", 0.332977, 0.470854}), MRS.Arm);
+        out(new Tuple(new Object[] {"type2destination", "red", (-9.0), (-9.0)}), MRS.DeliveryRobot1);
+        out(new Tuple(new Object[] {"type2destination", "blue", 9.0, (-9.0)}), MRS.DeliveryRobot1);
+        out(new Tuple(new Object[] {"type2destination", "red", 9.0, 9.0}), MRS.DeliveryRobot2);
+        out(new Tuple(new Object[] {"type2destination", "blue", (-9.0), 9.0}), MRS.DeliveryRobot2);
+        out(new Tuple(new Object[] {"initialPosition"}), MRS.Arm);
+        out(new Tuple(new Object[] {"availableForDelivery"}), MRS.DeliveryRobot1);
+        out(new Tuple(new Object[] {"availableForDelivery"}), MRS.DeliveryRobot2);
+        PickUp _pickUp = new PickUp(rosbridgeWebsocketURI, MRS.DeliveryRobot1, (-9.0), (-9.0));
         eval(_pickUp, this.self);
-        PickUp _pickUp_1 = new PickUp(rosbridgeWebsocketURI, RobotColl.DeliveryRobot1, 9.0, (-9.0));
+        PickUp _pickUp_1 = new PickUp(rosbridgeWebsocketURI, MRS.DeliveryRobot1, 9.0, (-9.0));
         eval(_pickUp_1, this.self);
-        PickUp _pickUp_2 = new PickUp(rosbridgeWebsocketURI, RobotColl.DeliveryRobot2, (-9.0), 9.0);
+        PickUp _pickUp_2 = new PickUp(rosbridgeWebsocketURI, MRS.DeliveryRobot2, (-9.0), 9.0);
         eval(_pickUp_2, this.self);
-        PickUp _pickUp_3 = new PickUp(rosbridgeWebsocketURI, RobotColl.DeliveryRobot2, 9.0, 9.0);
+        PickUp _pickUp_3 = new PickUp(rosbridgeWebsocketURI, MRS.DeliveryRobot2, 9.0, 9.0);
         eval(_pickUp_3, this.self);
       }
     }
@@ -163,19 +163,19 @@ public class RobotColl extends LogicalNet {
     }
     
     public void addMainProcess() throws IMCException {
-      addNodeCoordinator(new RobotColl.SimuationHandler.SimuationHandlerProcess());
+      addNodeCoordinator(new MRS.SimuationHandler.SimuationHandlerProcess());
     }
   }
   
-  public RobotColl() throws IMCException {
+  public MRS() throws IMCException {
     super(new PhysicalLocality("localhost:9999"));
   }
   
   public void addNodes() throws IMCException {
-    RobotColl.Arm arm = new RobotColl.Arm();
-    RobotColl.DeliveryRobot1 deliveryRobot1 = new RobotColl.DeliveryRobot1();
-    RobotColl.DeliveryRobot2 deliveryRobot2 = new RobotColl.DeliveryRobot2();
-    RobotColl.SimuationHandler simuationHandler = new RobotColl.SimuationHandler();
+    MRS.Arm arm = new MRS.Arm();
+    MRS.DeliveryRobot1 deliveryRobot1 = new MRS.DeliveryRobot1();
+    MRS.DeliveryRobot2 deliveryRobot2 = new MRS.DeliveryRobot2();
+    MRS.SimuationHandler simuationHandler = new MRS.SimuationHandler();
     arm.addMainProcess();
     deliveryRobot1.addMainProcess();
     deliveryRobot2.addMainProcess();
