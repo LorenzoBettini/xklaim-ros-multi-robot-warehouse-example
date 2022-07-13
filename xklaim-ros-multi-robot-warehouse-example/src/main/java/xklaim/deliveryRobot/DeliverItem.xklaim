@@ -63,8 +63,8 @@ proc DeliverItem(String rosbridgeWebsocketURI,String robotId,Locality Arm) {
 			// calculate the delta between the actual position and the destination position
 			// to measure the completeness of the movement
 			val tolerance = 0.16
-			var deltaX = current_position.pose.pose.position.x - deliveryDestination.pose.position.x
-			var deltaY = current_position.pose.pose.position.y - deliveryDestination.pose.position.y
+			var deltaX = Math.abs(current_position.pose.pose.position.x - deliveryDestination.pose.position.x)
+			var deltaY = Math.abs(current_position.pose.pose.position.y - deliveryDestination.pose.position.y)
 
 			if (deltaX <= tolerance && deltaY <= tolerance) { /* the robot arrived at destination */
 				// stop the robot's wheels

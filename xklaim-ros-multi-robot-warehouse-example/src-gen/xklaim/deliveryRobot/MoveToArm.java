@@ -47,8 +47,8 @@ public class MoveToArm extends KlavaProcess {
         JsonNode rosMsgNode = data.get("msg");
         PoseWithCovarianceStamped current_position = mapper.<PoseWithCovarianceStamped>treeToValue(rosMsgNode, PoseWithCovarianceStamped.class);
         final double tolerance = 0.16;
-        double deltaX = (current_position.pose.pose.position.x - destination.pose.position.x);
-        double deltaY = (current_position.pose.pose.position.y - destination.pose.position.y);
+        double deltaX = Math.abs((current_position.pose.pose.position.x - destination.pose.position.x));
+        double deltaY = Math.abs((current_position.pose.pose.position.y - destination.pose.position.y));
         if (((deltaX <= tolerance) && (deltaY <= tolerance))) {
           final Publisher pubvel = new Publisher((("/" + this.robotId) + "/cmd_vel"), "geometry_msgs/Twist", bridge);
           final Twist twistMsg = new Twist();

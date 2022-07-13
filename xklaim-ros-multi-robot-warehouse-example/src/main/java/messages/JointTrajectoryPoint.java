@@ -6,7 +6,7 @@ public class JointTrajectoryPoint {
 	public double[] velocities;
 	public double[] accelerations;
 	public double[] effort;
-	public Duration time_from_start = new Duration(120, 0);
+	public Duration time_from_start = new Duration(20, 0);
 
 	public JointTrajectoryPoint() {
 		this.velocities = new double[0];

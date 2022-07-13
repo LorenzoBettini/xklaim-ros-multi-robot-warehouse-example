@@ -43,8 +43,8 @@ proc MoveToArm(String rosbridgeWebsocketURI,String robotId,String sector,Localit
 			// calculate the delta between the actual position and the destination position
 			// to measure the completeness of the movement
 			val tolerance = 0.16
-			var deltaX = current_position.pose.pose.position.x - destination.pose.position.x
-			var deltaY = current_position.pose.pose.position.y - destination.pose.position.y
+			var deltaX = Math.abs(current_position.pose.pose.position.x - destination.pose.position.x)
+			var deltaY = Math.abs(current_position.pose.pose.position.y - destination.pose.position.y)
 			if (deltaX <= tolerance && deltaY <= tolerance) { /* the delivery robot came to the arm robot */
 				// stop the wheels
 				val pubvel = new Publisher("/" + robotId + "/cmd_vel", "geometry_msgs/Twist", bridge)
