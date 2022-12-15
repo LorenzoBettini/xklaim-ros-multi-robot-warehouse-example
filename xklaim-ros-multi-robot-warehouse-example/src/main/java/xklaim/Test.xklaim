@@ -1,23 +1,32 @@
 package xklaim
 
-import messages.PoseStamped
-import messages.XklaimToRosConnection
-import ros.Publisher
+import xklaim.arm.GetDown
+import xklaim.arm.GetUp
+import xklaim.arm.GoToInitialPosition
+import xklaim.arm.Grip
+import xklaim.arm.Lay
+import xklaim.arm.Release
+import xklaim.arm.Rotate
 
 net TestColl physical "localhost:9999" {
-	node DeliveryRobot1 {
+	node Arm {
 		val rosbridgeWebsocketURI = "ws://0.0.0.0:9090"
-		val robotId = "robot1"
-				  
-		val x = 1.0
-		val y = 1.0
-		val bridge = new XklaimToRosConnection(rosbridgeWebsocketURI)
+		
+		//out("getDownMovementsCompleted")@self
+		
+		eval(new GetDown(rosbridgeWebsocketURI,0.583518,0.0))@self
+		
+		eval(new Grip(rosbridgeWebsocketURI))@self
+		
+		in("gripCompleted")@self
+		println("Evviva!")
 
-		val pub = new Publisher("/" + robotId + "/move_base_simple/goal", "geometry_msgs/PoseStamped", bridge)
-		val destination = new PoseStamped().headerFrameId("world").posePositionXY(x, y).poseOrientation(1.0)
-		pub.publish(destination)
+		
+		
 
 	}
+	
+
 }	
 	
 

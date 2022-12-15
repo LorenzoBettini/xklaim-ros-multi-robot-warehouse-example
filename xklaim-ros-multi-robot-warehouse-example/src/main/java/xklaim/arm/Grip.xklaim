@@ -4,6 +4,7 @@ import messages.JointTrajectory
 import messages.XklaimToRosConnection
 import ros.Publisher
 import ros.SubscriptionRequestMsg
+import messages.Duration
 
 proc Grip(String rosbridgeWebsocketURI) {
 	val local = self
@@ -23,6 +24,8 @@ proc Grip(String rosbridgeWebsocketURI) {
 		"f_joint1",
 		"f_joint2"
 	])
+	
+	grip.points.get(0).time_from_start=new Duration(120, 0)
 
 	// publish the grip trajectory to activate the gripper
 	pub.publish(grip)
@@ -43,6 +46,8 @@ proc Grip(String rosbridgeWebsocketURI) {
 				delta += Math.pow(actual.get(i).asDouble() - gripperPositions.get(i), 2.0)
 			}
 			val norm = Math.sqrt(delta)
+
+			println("NORM: "+norm)
 
 			if (norm <= tolerance) { /* the gripper has completed the grip movement */
 				// activate the get up process

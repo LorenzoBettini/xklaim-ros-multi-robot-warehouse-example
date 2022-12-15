@@ -6,7 +6,9 @@ import java.util.List;
 import klava.Locality;
 import klava.Tuple;
 import klava.topology.KlavaProcess;
+import messages.Duration;
 import messages.JointTrajectory;
+import messages.JointTrajectoryPoint;
 import messages.XklaimToRosConnection;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.Conversions;
@@ -41,6 +43,9 @@ public class GetUp extends KlavaProcess {
     final List<Double> jointPositions = Collections.<Double>unmodifiableList(CollectionLiterals.<Double>newArrayList(Double.valueOf(_minus), Double.valueOf((-0.2862)), Double.valueOf((-0.5000)), Double.valueOf(3.1400), Double.valueOf(1.6613), Double.valueOf((-0.0142))));
     final JointTrajectory getUpJointTrajectory = new JointTrajectory().positions(((double[])Conversions.unwrapArray(jointPositions, double.class))).jointNames(
       new String[] { "joint1", "joint2", "joint3", "joint4", "joint5", "joint6" });
+    JointTrajectoryPoint _get = getUpJointTrajectory.points[0];
+    Duration _duration = new Duration(120, 0);
+    _get.time_from_start = _duration;
     pub.publish(getUpJointTrajectory);
     final RosListenDelegate _function = (JsonNode data, String stringRep) -> {
       final JsonNode actual = data.get("msg").get("actual").get("positions");
@@ -49,8 +54,8 @@ public class GetUp extends KlavaProcess {
       for (int i = 0; (i < jointPositions.size()); i++) {
         double _delta = delta;
         double _asDouble = actual.get(i).asDouble();
-        Double _get = jointPositions.get(i);
-        double _minus_1 = (_asDouble - (_get).doubleValue());
+        Double _get_1 = jointPositions.get(i);
+        double _minus_1 = (_asDouble - (_get_1).doubleValue());
         double _pow = Math.pow(_minus_1, 2.0);
         delta = (_delta + _pow);
       }

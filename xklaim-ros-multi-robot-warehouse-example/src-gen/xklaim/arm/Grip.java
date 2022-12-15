@@ -6,10 +6,13 @@ import java.util.List;
 import klava.Locality;
 import klava.Tuple;
 import klava.topology.KlavaProcess;
+import messages.Duration;
 import messages.JointTrajectory;
+import messages.JointTrajectoryPoint;
 import messages.XklaimToRosConnection;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.Conversions;
+import org.eclipse.xtext.xbase.lib.InputOutput;
 import ros.Publisher;
 import ros.RosListenDelegate;
 import ros.SubscriptionRequestMsg;
@@ -31,6 +34,9 @@ public class Grip extends KlavaProcess {
     final List<Double> gripperPositions = Collections.<Double>unmodifiableList(CollectionLiterals.<Double>newArrayList(Double.valueOf(0.0138), Double.valueOf((-0.0138))));
     final JointTrajectory grip = new JointTrajectory().positions(((double[])Conversions.unwrapArray(gripperPositions, double.class))).jointNames(
       new String[] { "f_joint1", "f_joint2" });
+    JointTrajectoryPoint _get = grip.points[0];
+    Duration _duration = new Duration(120, 0);
+    _get.time_from_start = _duration;
     pub.publish(grip);
     final RosListenDelegate _function = (JsonNode data, String stringRep) -> {
       final JsonNode actual = data.get("msg").get("actual").get("positions");
@@ -39,12 +45,13 @@ public class Grip extends KlavaProcess {
       for (int i = 0; (i < gripperPositions.size()); i++) {
         double _delta = delta;
         double _asDouble = actual.get(i).asDouble();
-        Double _get = gripperPositions.get(i);
-        double _minus = (_asDouble - (_get).doubleValue());
+        Double _get_1 = gripperPositions.get(i);
+        double _minus = (_asDouble - (_get_1).doubleValue());
         double _pow = Math.pow(_minus, 2.0);
         delta = (_delta + _pow);
       }
       final double norm = Math.sqrt(delta);
+      InputOutput.<String>println(("NORM: " + Double.valueOf(norm)));
       if ((norm <= tolerance)) {
         out(new Tuple(new Object[] {"gripCompleted"}), local);
         bridge.unsubscribe("/gripper_controller/state");
