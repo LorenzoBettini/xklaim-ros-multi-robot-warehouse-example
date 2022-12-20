@@ -4,7 +4,6 @@ import messages.JointTrajectory
 import messages.XklaimToRosConnection
 import ros.Publisher
 import ros.SubscriptionRequestMsg
-import messages.Duration
 
 proc GetUp(String rosbridgeWebsocketURI, Double x, Double y) {
 	val local = self
@@ -28,8 +27,6 @@ proc GetUp(String rosbridgeWebsocketURI, Double x, Double y) {
 		"joint5",
 		"joint6"
 	])
-	
-	getUpJointTrajectory.points.get(0).time_from_start=new Duration(120, 0)
 
 	// publish the trajectory to move up the arm	 
 	pub.publish(getUpJointTrajectory)

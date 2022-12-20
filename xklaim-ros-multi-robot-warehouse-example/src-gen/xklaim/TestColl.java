@@ -2,39 +2,39 @@ package xklaim;
 
 import klava.LogicalLocality;
 import klava.PhysicalLocality;
-import klava.Tuple;
 import klava.topology.ClientNode;
 import klava.topology.KlavaNodeCoordinator;
 import klava.topology.LogicalNet;
-import org.eclipse.xtext.xbase.lib.InputOutput;
+import messages.PoseStamped;
+import messages.XklaimToRosConnection;
 import org.mikado.imc.common.IMCException;
-import xklaim.arm.GetDown;
-import xklaim.arm.Grip;
+import ros.Publisher;
 
 @SuppressWarnings("all")
 public class TestColl extends LogicalNet {
-  private static final LogicalLocality Arm = new LogicalLocality("Arm");
+  private static final LogicalLocality DeliveryRobot1 = new LogicalLocality("DeliveryRobot1");
   
-  public static class Arm extends ClientNode {
-    private static class ArmProcess extends KlavaNodeCoordinator {
+  public static class DeliveryRobot1 extends ClientNode {
+    private static class DeliveryRobot1Process extends KlavaNodeCoordinator {
       @Override
       public void executeProcess() {
         final String rosbridgeWebsocketURI = "ws://0.0.0.0:9090";
-        GetDown _getDown = new GetDown(rosbridgeWebsocketURI, Double.valueOf(0.583518), Double.valueOf(0.0));
-        eval(_getDown, this.self);
-        Grip _grip = new Grip(rosbridgeWebsocketURI);
-        eval(_grip, this.self);
-        in(new Tuple(new Object[] {"gripCompleted"}), this.self);
-        InputOutput.<String>println("Evviva!");
+        final String robotId = "robot1";
+        final double x = 1.0;
+        final double y = 1.0;
+        final XklaimToRosConnection bridge = new XklaimToRosConnection(rosbridgeWebsocketURI);
+        final Publisher pub = new Publisher((("/" + robotId) + "/move_base_simple/goal"), "geometry_msgs/PoseStamped", bridge);
+        final PoseStamped destination = new PoseStamped().headerFrameId("world").posePositionXY(x, y).poseOrientation(1.0);
+        pub.publish(destination);
       }
     }
     
-    public Arm() {
-      super(new PhysicalLocality("localhost:9999"), new LogicalLocality("Arm"));
+    public DeliveryRobot1() {
+      super(new PhysicalLocality("localhost:9999"), new LogicalLocality("DeliveryRobot1"));
     }
     
     public void addMainProcess() throws IMCException {
-      addNodeCoordinator(new TestColl.Arm.ArmProcess());
+      addNodeCoordinator(new TestColl.DeliveryRobot1.DeliveryRobot1Process());
     }
   }
   
@@ -43,7 +43,7 @@ public class TestColl extends LogicalNet {
   }
   
   public void addNodes() throws IMCException {
-    TestColl.Arm arm = new TestColl.Arm();
-    arm.addMainProcess();
+    TestColl.DeliveryRobot1 deliveryRobot1 = new TestColl.DeliveryRobot1();
+    deliveryRobot1.addMainProcess();
   }
 }
